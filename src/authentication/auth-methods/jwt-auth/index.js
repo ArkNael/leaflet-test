@@ -25,7 +25,7 @@ export const useProvideAuth = () => {
   const userLogin = (user, callbackFun) => {
     fetchStart();
     httpClient
-      .post('auth/login', user)
+      .post('auth/signin', user)
       .then(({ data }) => {
         if (data.result) {
           fetchSuccess();
