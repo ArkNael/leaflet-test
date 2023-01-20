@@ -5,7 +5,6 @@ import {Link} from "react-router-dom";
 import CustomScrollbars from "util/CustomScrollbars";
 import SidebarLogo from "./SidebarLogo";
 import UserProfile from "./UserProfile";
-import AppsNavigation from "./AppsNavigation";
 import {
   NAV_STYLE_NO_HEADER_EXPANDED_SIDEBAR,
   NAV_STYLE_NO_HEADER_MINI_SIDEBAR,
@@ -34,7 +33,6 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
       <div className="gx-sidebar-content">
         <div className={`gx-sidebar-notifications ${getNoHeaderClass(navStyle)}`}>
           <UserProfile/>
-          <AppsNavigation/>
         </div>
         <CustomScrollbars className="gx-layout-sider-scrollbar">
           <Menu
