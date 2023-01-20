@@ -1,6 +1,5 @@
 import React from "react";
-import { Button, Checkbox, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Form, Input } from "antd";
 import IntlMessages from "util/IntlMessages";
 import { useAuth } from "../authentication";
 import AppNotificationContainer from "../components/AppNotificationContainer";
@@ -20,16 +19,19 @@ const SignIn = () => {
       <div className="gx-app-login-container">
         <div className="gx-app-login-main-content">
           <div className="gx-app-logo-content">
-            <div className="gx-app-logo-content-bg">
-              <img src="https://via.placeholder.com/272x395" alt='Neature' />
-            </div>
+            <div className="gx-app-logo-content-bg"></div>
             <div className="gx-app-logo-wid">
-              <h1><IntlMessages id="app.userAuth.signIn" /></h1>
-              <p><IntlMessages id="app.userAuth.bySigning" /></p>
-              <p><IntlMessages id="app.userAuth.getAccount" /></p>
+              <h1>
+                <IntlMessages id="app.userAuth.signIn" />
+                <span> - </span>
+                <IntlMessages id="topbar.titulo" />
+              </h1>
+              <p>
+                <IntlMessages id="app.userAuth.bySigning" />
+              </p>
             </div>
             <div className="gx-app-logo">
-              <img alt="example" src="/assets/images/logo-unimed.png" />
+              <img alt="Unimed" src="/assets/images/logo-unimed.png" style={{ width: "100px" }}/>
             </div>
           </div>
           <div className="gx-app-login-content">
@@ -41,26 +43,17 @@ const SignIn = () => {
               className="gx-signin-form gx-form-row0">
 
               <Form.Item
-                initialValue="demo@example.com"
                 rules={[{ required: true, message: 'Preencha o campo com seu usuário de rede.' }]} name="username">
                 <Input placeholder="Usuário de rede" />
               </Form.Item>
               <Form.Item
-                initialValue="demo#123"
                 rules={[{ required: true, message: 'Preencha o campo de senha.' }]} name="password">
                 <Input type="password" placeholder="Senha" />
-              </Form.Item>
-              <Form.Item>
-                <Checkbox><IntlMessages id="appModule.iAccept" /></Checkbox>
-                <span className="gx-signup-form-forgot gx-link"><IntlMessages
-                  id="appModule.termAndCondition" /></span>
               </Form.Item>
               <Form.Item>
                 <Button type="primary" className="gx-mb-0" htmlType="submit">
                   <IntlMessages id="app.userAuth.signIn" />
                 </Button>
-                <span><IntlMessages id="app.userAuth.or" /></span> <Link to="/signup"><IntlMessages
-                  id="app.userAuth.signUp" /></Link>
               </Form.Item>
             </Form>
           </div>

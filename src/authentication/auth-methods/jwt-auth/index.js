@@ -25,7 +25,7 @@ export const useProvideAuth = () => {
   const userLogin = (user, callbackFun) => {
     fetchStart();
     httpClient
-      .post('auth/login', user)
+      .post('auth/signin', user)
       .then(({ data }) => {
         if (data.result) {
           fetchSuccess();
@@ -83,23 +83,10 @@ export const useProvideAuth = () => {
   const renderSocialMediaLogin = () => null;
 
   const userSignOut = (callbackFun) => {
-    fetchStart();
-    httpClient
-      .post('auth/logout')
-      .then(({ data }) => {
-        if (data.result) {
-          fetchSuccess();
-          httpClient.defaults.headers.common['Authorization'] = '';
-          localStorage.removeItem('token');
-          setAuthUser(false);
-          if (callbackFun) callbackFun();
-        } else {
-          fetchError(data.error);
-        }
-      })
-      .catch(function (error) {
-        fetchError(error.message);
-      });
+    httpClient.defaults.headers.common['Authorization'] = '';
+    localStorage.removeItem('token');
+    setAuthUser(false);
+    if (callbackFun) callbackFun();
   };
 
   const getAuthUser = () => {

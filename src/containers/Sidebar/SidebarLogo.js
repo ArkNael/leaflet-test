@@ -30,10 +30,10 @@ const SidebarLogo = ({sidebarCollapsed, setSidebarCollapsed}) => {
 
       <Link to="/" className="gx-site-logo">
         {navStyle === NAV_STYLE_NO_HEADER_MINI_SIDEBAR && width >= TAB_SIZE ?
-          <img alt="lo" src={("/assets/images/w-logo.png")}/> :
+          <img alt="lo" src="https://api.unimednatal.com.br/api/imgs/logos/unimed_quad.png" style={{height: "30px"}} /> :
           themeType === THEME_TYPE_LITE ?
-            <img alt="logo1" src={("/assets/images/logo-white.png")}/> :
-            <img alt="logo2" src={("/assets/images/logo.png")}/>}
+            <img alt="logo1" src={("https://api.unimednatal.com.br/api/imgs/logos/logo2.png")} style={{height: "45px"}} /> :
+            <img alt="logo2" src={("https://api.unimednatal.com.br/api/imgs/logos/logo2.png")} style={{height: "45px"}} />}
       </Link>
     </div>
   );
