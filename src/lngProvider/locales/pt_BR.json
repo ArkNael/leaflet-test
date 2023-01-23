@@ -1,0 +1,16 @@
+{
+	"nomeSistema": "Sistema Gerenciador de Manifestações da Ouvidoria",
+	"topbar.titulo": "OuviMed",
+	
+	"sidebar.main": "Principal",
+	"sidebar.dashboard": "Dashboard",
+
+	"sidebar.configuracoes": "Configurações",
+	"sidebar.temas": "Temas",
+	"sidebar.temas.adicionar": "Adicionar",
+	"sidebar.temas.novo": "cadastrar novo tema",
+	"sidebar.temas.editar": "modificar tema",
+
+	"app.userAuth.signIn": "Login",
+	"app.userAuth.bySigning": "Faça o login para acessar os serviços"
+}
