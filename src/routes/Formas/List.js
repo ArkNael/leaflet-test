@@ -26,7 +26,12 @@ const List = (props) => {
 			title: 'Nome',
 			dataIndex: 'nomeForma',
 			sorter: (a, b) => a.nomeForma.localeCompare(b.nomeForma),
-			width: '60%'
+		},
+		{
+			title: 'Tipo',
+			dataIndex: 'tipoForma',
+			sorter: (a, b) => a.tipoForma.localeCompare(b.tipoForma),
+			width: '16%'
 		},
 		{
 			title: 'Adicionado em',
@@ -34,6 +39,7 @@ const List = (props) => {
 			sorter: (a, b) => 
 				moment(a.createdAt, "DD/MM/YYYY HH:mm:ss").unix() - 
 				moment(b.createdAt, "DD/MM/YYYY HH:mm:ss").unix(),
+			width: '16%'
 		},
 		{
 			title: 'Ação',
@@ -46,7 +52,8 @@ const List = (props) => {
 						</span>
 					</Dropdown>
 				</div>
-			  )
+			  ),
+			  width: '8%'
 		},
 	];
 
