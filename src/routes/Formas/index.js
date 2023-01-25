@@ -10,9 +10,9 @@ const Formas = () => {
     return (
         <div className="gx-main-content-wrapper">
             <Switch>
-                <Route exact path={`/${controller}`} render={(props) => <List {...props} controller={controller} />} />
-                <Route exact path={`/${controller}/adicionar`} render={(props) => <Add {...props} controller={controller} />} />
-                <Route exact path={`/${controller}/editar/:id`} render={(props) => <Edit {...props} controller={controller} />} />
+                <Route exact path={`/${controller}`} component={(props) => <List {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/adicionar`} component={(props) => <Add {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/editar/:id`} component={(props) => <Edit {...props} controller={controller} />} />
             </Switch>
         </div>
     );
