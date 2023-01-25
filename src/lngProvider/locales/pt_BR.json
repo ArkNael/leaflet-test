@@ -23,5 +23,10 @@
 	"sidebar.tipos": "Tipos",
 	"sidebar.tipos.add": "Adicionar",
 	"sidebar.tipos.new": "cadastrar novo tipo",
-	"sidebar.tipos.edit": "modificar tipo"
+	"sidebar.tipos.edit": "modificar tipo",
+
+	"sidebar.status": "Status",
+	"sidebar.status.add": "Adicionar",
+	"sidebar.status.new": "cadastrar novo status",
+	"sidebar.status.edit": "modificar status"
 }
