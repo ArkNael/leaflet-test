@@ -64,24 +64,24 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								</span>
 							}
 						>
-							<Menu.Item key="temas">
-								<Link to="/temas">
-									<span><IntlMessages id="sidebar.temas"/></span>
-								</Link>
-							</Menu.Item>
 							<Menu.Item key="formas">
 								<Link to="/formas">
 									<span><IntlMessages id="sidebar.formas"/></span>
 								</Link>
 							</Menu.Item>
-							<Menu.Item key="tipos">
-								<Link to="/tipos">
-									<span><IntlMessages id="sidebar.tipos"/></span>
-								</Link>
-							</Menu.Item>
 							<Menu.Item key="status">
 								<Link to="/status">
 									<span><IntlMessages id="sidebar.status"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="temas">
+								<Link to="/temas">
+									<span><IntlMessages id="sidebar.temas"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="tipos">
+								<Link to="/tipos">
+									<span><IntlMessages id="sidebar.tipos"/></span>
 								</Link>
 							</Menu.Item>
 						</Menu.SubMenu>
