@@ -79,6 +79,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.tipos"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="status">
+								<Link to="/status">
+									<span><IntlMessages id="sidebar.status"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 						
 					</Menu>
