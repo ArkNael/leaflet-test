@@ -28,5 +28,10 @@
 	"sidebar.status": "Status",
 	"sidebar.status.add": "Adicionar",
 	"sidebar.status.new": "cadastrar novo status",
-	"sidebar.status.edit": "modificar status"
+	"sidebar.status.edit": "modificar status",
+
+	"sidebar.finalidades": "Finalidades",
+	"sidebar.finalidades.add": "Adicionar",
+	"sidebar.finalidades.new": "cadastrar nova finalidade",
+	"sidebar.finalidades.edit": "modificar finalidade"
 }
