@@ -9,14 +9,18 @@ import IntlMessages from "util/IntlMessages";
 const Add = (props) => {
 
 	const handleSubmit = async ({name}) => {
-		let { data } = await api.post(`api/${props.controller}/adicionar`, { nome: name })
-
-		if (data.ok === 1) {
-			message.success(data.mensagem)
-			props.history.push(`/${props.controller}`)
-		} else {
-			message.error(data.mensagem)
-		}
+		await api.post(`api/${props.controller}/adicionar`, { nome: name })
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
 	}
 	
 	return (

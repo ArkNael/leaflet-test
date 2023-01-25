@@ -35,7 +35,7 @@ const Edit = (props) => {
 			await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
 			.then(({data}) => {
 				if (data.ok === 1) {
-					setName(data.retorno[0].nomeStatus)
+					setName(data.retorno[0].nomeTema)
 				} else {
 					message.error(data.message)
 				}

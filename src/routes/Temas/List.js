@@ -24,8 +24,8 @@ const List = (props) => {
 		},
 		{
 			title: 'Nome',
-			dataIndex: 'nomeStatus',
-			sorter: (a, b) => a.nomeStatus.localeCompare(b.nomeStatus),
+			dataIndex: 'nomeTema',
+			sorter: (a, b) => a.nomeTema.localeCompare(b.nomeTema),
 		},
 		{
 			title: 'Adicionado em',
