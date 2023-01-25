@@ -3,14 +3,20 @@
 	"topbar.titulo": "OuviMed",
 	
 	"sidebar.main": "Principal",
+	"app.userAuth.signIn": "Login",
+	"app.userAuth.bySigning": "Faça o login para acessar os serviços",
+
 	"sidebar.dashboard": "Dashboard",
 
 	"sidebar.configuracoes": "Configurações",
+
 	"sidebar.temas": "Temas",
 	"sidebar.temas.adicionar": "Adicionar",
 	"sidebar.temas.novo": "cadastrar novo tema",
 	"sidebar.temas.editar": "modificar tema",
 
-	"app.userAuth.signIn": "Login",
-	"app.userAuth.bySigning": "Faça o login para acessar os serviços"
+	"sidebar.formas": "Formas",
+	"sidebar.formas.add": "Adicionar",
+	"sidebar.formas.new": "cadastrar nova forma",
+	"sidebar.formas.edit": "modificar forma"
 }

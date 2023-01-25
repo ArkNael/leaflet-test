@@ -69,6 +69,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.temas"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="formas">
+								<Link to="/formas"><i className="icon icon-listing-dbrd"/>
+									<span><IntlMessages id="sidebar.formas"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 						
 					</Menu>
