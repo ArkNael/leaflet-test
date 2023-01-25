@@ -18,5 +18,10 @@
 	"sidebar.formas": "Formas",
 	"sidebar.formas.add": "Adicionar",
 	"sidebar.formas.new": "cadastrar nova forma",
-	"sidebar.formas.edit": "modificar forma"
+	"sidebar.formas.edit": "modificar forma",
+
+	"sidebar.tipos": "Tipos",
+	"sidebar.tipos.add": "Adicionar",
+	"sidebar.tipos.new": "cadastrar novo tipo",
+	"sidebar.tipos.edit": "modificar tipo"
 }
