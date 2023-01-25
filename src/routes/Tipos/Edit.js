@@ -16,24 +16,33 @@ const Edit = (props) => {
 			return
 		}
 
-		let res = await api.post(`api/${props.controller}/editar/${props.match.params.id}`, { nome: name })
-
-		if (res.data.ok === 1) {
-			message.success(res.data.mensagem)
-			props.history.push(`/${props.controller}`)
-		} else {
-			message.error(res.data.mensagem)
-		}
+		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, { nome: name })
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
 	}
 
 	useEffect(() => {
 		const getData = async () => {
-			let res = await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
-			if (res.data.ok === 1) {
-				setName(res.data.retorno[0].nomeTipo)
-			} else {
-				message.error(res.data.message)
-			}
+			await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
+			.then(({data}) => {
+				if (data.ok === 1) {
+					setName(data.retorno[0].nomeTipo)
+				} else {
+					message.error(data.message)
+				}
+			})
+			.catch((err) => {
+				message.error('Erro ao carregar informações do registro')
+			})
 		}
 
 		getData()

@@ -2,24 +2,28 @@ import React from 'react';
 
 import { api } from "util/Api"
 
-import { Select, Button, Card, Col, Form, Input, message } from 'antd';
+import { Select, Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
 const Add = (props) => {
 
 	const handleSubmit = async ({name, type}) => {
-		let { data } = await api.post(`api/${props.controller}/adicionar`, {
+		await api.post(`api/${props.controller}/adicionar`, {
 			nome: name,
 			tipoForma: type
 		})
-
-		if (data.ok === 1) {
-			message.success(data.mensagem)
-			props.history.push(`/${props.controller}`)
-		} else {
-			message.error(data.mensagem)
-		}
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
 	}
 	
 	return (

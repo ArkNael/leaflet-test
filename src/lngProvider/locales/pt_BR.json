@@ -11,9 +11,9 @@
 	"sidebar.configuracoes": "Configurações",
 
 	"sidebar.temas": "Temas",
-	"sidebar.temas.adicionar": "Adicionar",
-	"sidebar.temas.novo": "cadastrar novo tema",
-	"sidebar.temas.editar": "modificar tema",
+	"sidebar.temas.add": "Adicionar",
+	"sidebar.temas.new": "cadastrar novo tema",
+	"sidebar.temas.edit": "modificar tema",
 
 	"sidebar.formas": "Formas",
 	"sidebar.formas.add": "Adicionar",

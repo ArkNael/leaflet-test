@@ -4,7 +4,7 @@ import { matchPath, Link } from "react-router-dom";
 
 const Migalha = () => {
 	const home = matchPath(window.location.pathname, {
-		path: "/home",
+		path: "/dashboard",
 		exact: true,
 		strict: false
 	});
@@ -148,7 +148,7 @@ const Migalha = () => {
 		<div style={{ padding: "0 0 15px 0" }}>
 			<Breadcrumb>
 				<Breadcrumb.Item>
-					<Link to="/home">
+					<Link to="/dashboard">
 						<span className="gx-link">Início</span>
 					</Link>
 				</Breadcrumb.Item>

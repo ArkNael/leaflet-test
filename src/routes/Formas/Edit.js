@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import { api } from "util/Api"
 
-import { Select, Button, Card, Col, Form, Input, message, Row } from 'antd';
+import { Select, Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
@@ -16,29 +16,43 @@ const Edit = (props) => {
 			message.error('Preencha o campo "nome"!') 
 			return
 		}
+		if (type === null) {
+			message.error('Preencha o campo "tipo"!') 
+			return
+		}
 
-		let res = await api.post(`api/${props.controller}/editar/${props.match.params.id}`, {
+		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, {
 			nome: name,
 			tipoForma: type
 		})
-
-		if (res.data.ok === 1) {
-			message.success(res.data.mensagem)
-			props.history.push(`/${props.controller}`)
-		} else {
-			message.error(res.data.mensagem)
-		}
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
 	}
 
 	useEffect(() => {
 		const getData = async () => {
-			let res = await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
-			if (res.data.ok === 1) {
-				setName(res.data.retorno[0].nomeForma)
-				setType(res.data.retorno[0].tipoForma)
-			} else {
-				message.error(res.data.message)
-			}
+			await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
+			.then(({data}) => {
+				if (data.ok === 1) {
+					setName(data.retorno[0].nomeForma)
+					setType(data.retorno[0].tipoForma)
+				} else {
+					message.error(data.message)
+				}
+			})
+			.catch((err) => {
+				message.error('Erro ao carregar informações do registro')
+			})
+			
 		}
 
 		getData()

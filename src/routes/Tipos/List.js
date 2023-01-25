@@ -80,23 +80,33 @@ const List = (props) => {
 	const deleteReg = async (key) => {
 		const registros = data.filter(item => item.id !== key);
 
-		let res = await api.post(`api/${props.controller}/excluir/${key}`)
-		if (res.data.ok === 1) {
-			message.success(res.data.mensagem)
-			setData(registros)
-		} else {
-			message.error(res.data.mensagem)
-		}
+		await api.post(`api/${props.controller}/excluir/${key}`)
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				setData(registros)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao excluir registro')
+		})
 	};
 
 	useEffect(() => {
 		let getData = async () => {
-			let res = await api.get(`api/${props.controller}/listar`)
-			if (res.data.ok === 1) {
-				setData(res.data.retorno)
-			} else {
-				message.error(res.data.mensagem)
-			}
+			await api.get(`api/${props.controller}/listar`)
+			.then(({data}) => {
+				if (data.ok === 1) {
+					setData(data.retorno)
+				} else {
+					message.error(data.mensagem)
+				}
+			})
+			.catch((err) => {
+				message.error('Erro ao carregar registros')
+			})
 		}
 
 		getData()
@@ -111,8 +121,8 @@ const List = (props) => {
 				<p className="gx-text-primary gx-mb-0 gx-pointer">
 					<Link to={`/${props.controller}/adicionar`}>
 						<Button type="primary">
-							<i className="icon icon-plus" />
-							<IntlMessages style={{ paddingLeft: "15px" }} id={`sidebar.${props.controller}.add`} />
+							<Icons.PlusOutlined style={{paddingRight: '5px'}} />
+							<IntlMessages id={`sidebar.${props.controller}.add`} />
 						</Button>
 					</Link>
 				</p>

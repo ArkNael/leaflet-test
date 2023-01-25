@@ -1,19 +1,21 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
 
-import asyncComponent from "util/asyncComponent";
+import List from "./List"
+import Add from "./Add"
+import Edit from "./Edit"
 
 const controller = "temas"
-const Auditoria = () => {
+const Temas = () => {
     return (
         <div className="gx-main-content-wrapper">
             <Switch>
-                <Route exact path={`/${controller}`} component={asyncComponent(() => import("./Listar"))} />
-                <Route exact path={`/${controller}/adicionar`} component={asyncComponent(() => import("./Adicionar"))} />
-                <Route exact path={`/${controller}/editar/:id`} component={asyncComponent(() => import("./Editar"))} />
+            <Route exact path={`/${controller}`} component={(props) => <List {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/adicionar`} component={(props) => <Add {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/editar/:id`} component={(props) => <Edit {...props} controller={controller} />} />
             </Switch>
         </div>
     );
 }
 
-export default Auditoria
+export default Temas
