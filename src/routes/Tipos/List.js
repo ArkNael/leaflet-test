@@ -100,7 +100,7 @@ const List = (props) => {
 		}
 
 		getData()
-	}, [])
+	}, [props])
 
 	return (
 		<Card 
