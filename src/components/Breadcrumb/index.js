@@ -39,6 +39,21 @@ const Migalha = () => {
 				}
 			}
 		},
+
+		tipos: {
+			nome: "Tipos",
+			params: "",
+			subs: {
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
 	};
 
 	let matched = null;
