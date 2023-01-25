@@ -65,17 +65,17 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 							}
 						>
 							<Menu.Item key="temas">
-								<Link to="/temas"><i className="icon icon-invert-color"/>
+								<Link to="/temas">
 									<span><IntlMessages id="sidebar.temas"/></span>
 								</Link>
 							</Menu.Item>
 							<Menu.Item key="formas">
-								<Link to="/formas"><i className="icon icon-listing-dbrd"/>
+								<Link to="/formas">
 									<span><IntlMessages id="sidebar.formas"/></span>
 								</Link>
 							</Menu.Item>
 							<Menu.Item key="tipos">
-								<Link to="/tipos"><i className="icon icon-timeline-left-align"/>
+								<Link to="/tipos">
 									<span><IntlMessages id="sidebar.tipos"/></span>
 								</Link>
 							</Menu.Item>
