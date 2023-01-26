@@ -15,7 +15,7 @@ const Dashboard = () => {
 				<h4>Seja bem vindo(a)(e)(x), {authUser.name?.split(' ')[0]}!</h4>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
 export default Dashboard;

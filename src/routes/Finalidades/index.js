@@ -1,9 +1,9 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
 
-import List from "./List"
-import Add from "./Add"
-import Edit from "./Edit"
+import List from "../../components/Crud/Listing/DefaultList"
+import Add from "../../components/Crud/Add/DefaultAdd"
+import Edit from "../../components/Crud/Edit/DefaultEdit"
 
 const controller = "finalidades"
 const Formas = () => {
@@ -15,7 +15,7 @@ const Formas = () => {
                 <Route exact path={`/${controller}/editar/:id`} render={(props) => <Edit {...props} controller={controller} />} />
             </Switch>
         </div>
-    );
+    )
 }
 
 export default Formas
