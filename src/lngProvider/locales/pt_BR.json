@@ -43,5 +43,10 @@
 	"sidebar.destinos": "Destinos",
 	"sidebar.destinos.add": "Adicionar",
 	"sidebar.destinos.new": "cadastrar novo destino",
-	"sidebar.destinos.edit": "modificar destino"
+	"sidebar.destinos.edit": "modificar destino",
+
+	"sidebar.contratos": "Contratos",
+	"sidebar.contratos.add": "Adicionar",
+	"sidebar.contratos.new": "cadastrar novo contrato",
+	"sidebar.contratos.edit": "modificar contrato"
 }
