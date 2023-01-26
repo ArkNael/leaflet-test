@@ -15,7 +15,7 @@ const Formas = () => {
                 <Route exact path={`/${controller}/editar/:id`} component={(props) => <Edit {...props} controller={controller} />} />
             </Switch>
         </div>
-    );
+    )
 }
 
 export default Formas
