@@ -18,6 +18,7 @@ const App = ({match}) => (
 			<Route path={`${match.url}origens`} component={asyncComponent(() => import('./Origens'))}/>
 			<Route path={`${match.url}destinos`} component={asyncComponent(() => import('./Destinos'))}/>
 			<Route path={`${match.url}contratos`} component={asyncComponent(() => import('./Contratos'))}/>
+			<Route path={`${match.url}assuntos`} component={asyncComponent(() => import('./Assuntos'))}/>
 		</Switch>
 	</div>
 );
