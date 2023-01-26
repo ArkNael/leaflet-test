@@ -64,6 +64,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								</span>
 							}
 						>
+							<Menu.Item key="destinos">
+								<Link to="/destinos">
+									<span><IntlMessages id="sidebar.destinos"/></span>
+								</Link>
+							</Menu.Item>
 							<Menu.Item key="finalidades">
 								<Link to="/finalidades">
 									<span><IntlMessages id="sidebar.finalidades"/></span>

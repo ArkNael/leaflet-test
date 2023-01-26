@@ -38,5 +38,10 @@
 	"sidebar.origens": "Origens",
 	"sidebar.origens.add": "Adicionar",
 	"sidebar.origens.new": "cadastrar nova origem",
-	"sidebar.origens.edit": "modificar origem"
+	"sidebar.origens.edit": "modificar origem",
+
+	"sidebar.destinos": "Destinos",
+	"sidebar.destinos.add": "Adicionar",
+	"sidebar.destinos.new": "cadastrar novo destino",
+	"sidebar.destinos.edit": "modificar destino"
 }
