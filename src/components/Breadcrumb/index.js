@@ -69,6 +69,36 @@ const Migalha = () => {
 				}
 			}
 		},
+
+		origens: {
+			nome: "Origens",
+			params: "",
+			subs: {
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
+
+		destinos: {
+			nome: "Destinos",
+			params: "",
+			subs: {
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
 	};
 
 	let matched = null;
