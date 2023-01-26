@@ -33,5 +33,10 @@
 	"sidebar.finalidades": "Finalidades",
 	"sidebar.finalidades.add": "Adicionar",
 	"sidebar.finalidades.new": "cadastrar nova finalidade",
-	"sidebar.finalidades.edit": "modificar finalidade"
+	"sidebar.finalidades.edit": "modificar finalidade",
+
+	"sidebar.origens": "Origens",
+	"sidebar.origens.add": "Adicionar",
+	"sidebar.origens.new": "cadastrar nova origem",
+	"sidebar.origens.edit": "modificar origem"
 }
