@@ -99,6 +99,21 @@ const Migalha = () => {
 				}
 			}
 		},
+
+		contratos: {
+			nome: "Contratos",
+			params: "",
+			subs: {
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
 	};
 
 	let matched = null;
