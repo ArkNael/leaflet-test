@@ -48,5 +48,10 @@
 	"sidebar.contratos": "Contratos",
 	"sidebar.contratos.add": "Adicionar",
 	"sidebar.contratos.new": "cadastrar novo contrato",
-	"sidebar.contratos.edit": "modificar contrato"
+	"sidebar.contratos.edit": "modificar contrato",
+
+	"sidebar.assuntos": "Assuntos",
+	"sidebar.assuntos.add": "Adicionar",
+	"sidebar.assuntos.new": "cadastrar novo assunto",
+	"sidebar.assuntos.edit": "modificar assunto"
 }
