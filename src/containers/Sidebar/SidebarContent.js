@@ -53,11 +53,23 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								<span><IntlMessages id="sidebar.dashboard"/></span>
 							</Link>
 						</Menu.Item>
-						<Menu.Item key="ocorrencias">
-							<Link to="/ocorrencias"><i className="icon icon-alert"/>
-								<span><IntlMessages id="sidebar.ocorrencias"/></span>
-							</Link>
-						</Menu.Item>
+						<Menu.SubMenu
+							key="ocorrencias"
+							className={getNavStyleSubMenuClass(navStyle)}
+							title={
+								<span>
+									{" "}
+									<i className="icon icon-alert" />
+									<IntlMessages id="sidebar.ocorrencias" />
+								</span>
+							}
+						>
+							<Menu.Item key="ocorrencias-new">
+								<Link to="/ocorrencias/adicionar">
+									<span><IntlMessages id="sidebar.ocorrencias.add"/></span>
+								</Link>
+							</Menu.Item>
+						</Menu.SubMenu>
 						<Menu.SubMenu
 							key="benefs"
 							className={getNavStyleSubMenuClass(navStyle)}
