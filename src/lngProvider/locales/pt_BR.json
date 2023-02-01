@@ -53,5 +53,10 @@
 	"sidebar.assuntos": "Assuntos",
 	"sidebar.assuntos.add": "Adicionar",
 	"sidebar.assuntos.new": "cadastrar novo assunto",
-	"sidebar.assuntos.edit": "modificar assunto"
+	"sidebar.assuntos.edit": "modificar assunto",
+
+	"sidebar.ocorrencias": "Ocorrencias",
+	"sidebar.ocorrencias.add": "Adicionar",
+	"sidebar.ocorrencias.new": "cadastrar nova ocorrencia",
+	"sidebar.ocorrencias.edit": "modificar ocorrencia"
 }
