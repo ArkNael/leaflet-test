@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
 import { api } from "util/Api"
+import { useAuth } from '../../authentication';
 
 import { Select, Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
 const Edit = (props) => {
+	const {authUser} = useAuth();
 
 	const [name, setName] = useState()
 	const [type, setType] = useState()
@@ -23,7 +25,8 @@ const Edit = (props) => {
 
 		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, {
 			nome: name,
-			tipoForma: type
+			tipoForma: type,
+			usuario: authUser.name.split(' ')[0]
 		})
 		.then(({data}) => {
 			if (data.ok === 1) {

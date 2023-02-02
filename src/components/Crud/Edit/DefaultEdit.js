@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
 import { api } from "util/Api"
+import { useAuth } from '../../../authentication';
 
 import { Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
 const Edit = (props) => {
-
+	const {authUser} = useAuth();
+	
 	const config = useMemo(() => {
 		return({
 			defaultVarLabel: props.config?.defaultVar.label || 'Nome',
@@ -24,7 +26,12 @@ const Edit = (props) => {
 			return
 		}
 
-		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, {[config.defaultVarIndex]: value})
+		let body = {
+			[config.defaultVarIndex]: value,
+			usuario: authUser.name.split(' ')[0]
+		}
+
+		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, body)
 		.then(({data}) => {
 			if (data.ok === 1) {
 				message.success(data.mensagem)

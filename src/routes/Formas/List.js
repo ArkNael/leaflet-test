@@ -42,6 +42,12 @@ const List = (props) => {
 			width: '16%'
 		},
 		{
+			title: 'Criado por',
+			dataIndex: 'createdBy',
+			sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
+			width: '20%'
+		},
+		{
 			title: 'Ação',
 			render: (text, record) => (
 				<div>
