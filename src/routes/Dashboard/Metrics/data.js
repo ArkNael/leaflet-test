@@ -78,13 +78,43 @@ export const queriesData = [
 ];
 
 export const increamentData = [
-  {name: 'Page A', price: 200},
-  {name: 'Page B', price: 1200},
-  {name: 'Page C', price: 600},
-  {name: 'Page D', price: 1600},
-  {name: 'Page D', price: 1000},
-  {name: 'Page H', price: 2260},
-  {name: 'Page K', price: 800},
+  {name: '01/01/2023', quantidade: 2},
+  {name: '02/01/2023', quantidade: 6},
+  {name: '03/01/2023', quantidade: 4},
+  {name: '04/01/2023', quantidade: 8},
+  {name: '05/01/2023', quantidade: 5},
+  {name: '06/01/2023', quantidade: 14},
+  {name: '07/01/2023', quantidade: 7},
+];
+
+export const ocorrenciasEncaminhadas = [
+  {name: '02/01/2023', quantidade: 4},
+  {name: '04/01/2023', quantidade: 6},
+  {name: '05/01/2023', quantidade: 3},
+  {name: '06/01/2023', quantidade: 7},
+  {name: '09/01/2023', quantidade: 4},
+  {name: '10/01/2023', quantidade: 12},
+  {name: '11/01/2023', quantidade: 8},
+];
+
+export const ocorrenciasFechadas = [
+  {name: '03/01/2023', quantidade: 2},
+  {name: '05/01/2023', quantidade: 3},
+  {name: '09/01/2023', quantidade: 1},
+  {name: '10/01/2023', quantidade: 3},
+  {name: '12/01/2023', quantidade: 2},
+  {name: '14/01/2023', quantidade: 1},
+  {name: '15/01/2023', quantidade: 4},
+];
+
+export const ocorrenciasPausadas = [
+  {name: '06/01/2023', quantidade: 1},
+  {name: '09/01/2023', quantidade: 4},
+  {name: '12/01/2023', quantidade: 2},
+  {name: '14/01/2023', quantidade: 3},
+  {name: '15/01/2023', quantidade: 2},
+  {name: '16/01/2023', quantidade: 1},
+  {name: '17/01/2023', quantidade: 4},
 ];
 
 export const increamentRevenueData = [
