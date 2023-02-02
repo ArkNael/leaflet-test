@@ -1,17 +1,20 @@
 import React from 'react';
 
 import { api } from "util/Api"
+import { useAuth } from '../../authentication';
 
 import { Select, Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
 const Add = (props) => {
+	const {authUser} = useAuth();
 
 	const handleSubmit = async ({name, type}) => {
 		await api.post(`api/${props.controller}/adicionar`, {
 			nome: name,
-			tipoForma: type
+			tipoForma: type,
+			usuario: authUser.name.split(' ')[0]
 		})
 		.then(({data}) => {
 			if (data.ok === 1) {

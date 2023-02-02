@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { api } from "util/Api"
+import { useAuth } from '../../../authentication';
 
 import { Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 
 const DefaultAdd = (props) => {
+	const {authUser} = useAuth();
 
 	const config = {
 		defaultVarLabel: props.config?.defaultVar.label || 'Nome',
@@ -15,8 +17,10 @@ const DefaultAdd = (props) => {
 	}
 
 	const handleSubmit = async ({value}) => {
-		let body = {}
-		body[config.defaultVarIndex] = value
+		let body = {
+			[config.defaultVarIndex]: value,
+			usuario: authUser.name.split(' ')[0]
+		}
 
 		await api.post(`api/${props.controller}/adicionar`, body)
 		.then(({data}) => {
