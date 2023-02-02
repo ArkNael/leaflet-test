@@ -24,13 +24,13 @@ const List = (props) => {
 		},
 		{
 			title: 'Nome',
-			dataIndex: 'nomeForma',
-			sorter: (a, b) => a.nomeForma.localeCompare(b.nomeForma),
+			dataIndex: 'nome',
+			sorter: (a, b) => a.nome.localeCompare(b.nome),
 		},
 		{
 			title: 'Tipo',
-			dataIndex: 'tipoForma',
-			sorter: (a, b) => a.tipoForma.localeCompare(b.tipoForma),
+			dataIndex: 'tipo',
+			sorter: (a, b) => a.tipo.localeCompare(b.tipo),
 			width: '16%'
 		},
 		{

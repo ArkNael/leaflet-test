@@ -43,8 +43,8 @@ const Edit = (props) => {
 			await api.get(`api/${props.controller}/listar/${props.match.params.id}`)
 			.then(({data}) => {
 				if (data.ok === 1) {
-					setName(data.retorno[0].nomeForma)
-					setType(data.retorno[0].tipoForma)
+					setName(data.retorno[0].nome)
+					setType(data.retorno[0].tipo)
 				} else {
 					message.error(data.message)
 				}
