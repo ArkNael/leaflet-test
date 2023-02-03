@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  sistema-ouvidoria:
+    image: harbor.unimednatal.com.br/sistema-ouvidoria-homolog/unimed/sis-ouvidoria:dev
+    network_mode: bridge
+    container_name: sistema-ouvidoria
+    ports:
+      - '5039:3002'
+    restart: always
+    volumes:
+      - ./src:/home/node/app/src
+    command: yarn run dev
+
+networks:
+    default:
+        external:
+            name: sistema-ouvidoria
