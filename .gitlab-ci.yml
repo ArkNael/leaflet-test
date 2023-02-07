@@ -1,0 +1,56 @@
+## SISTEMA DE OUVIDORIA DE **HOMOLOGACAO**
+# Este projeto é voltado no CI/CD e operações rodando no ambiente de homologação stand alone.
+
+image: harbor.unimednatal.com.br/sistema-ouvidoria-homolog/unimed/sis-ouvidoria:dev
+
+stages:
+    - clone
+    - build
+    - test
+    - push
+    - deploy_docker
+
+clone:
+    stage: clone
+    tags:
+        - sistema-ouv-hml
+    only:
+        - release/staging
+    script:
+        - cd /home/unimed/projetos/; rm -rf sistema-ouvidoria
+        - cd /home/unimed/projetos/; git clone -b release/staging https://thanos:1A1e64xqYMJiL3AeVHpd@gitlab.unimednatal.com.br/devunimednatal/sistema-ouvidoria.git sistema-ouvidoria
+        #clonando o repositório para dentro do host apartir de uma branch específica
+
+build:
+    stage: build
+    tags:
+        - sis-ouv-hml
+    only:
+        - release/staging
+    script:
+        - cd /home/unimed/projetos/sistema-ouvidoria; docker build . -t unimed/sistema-ouvidoria:dev
+        - cd /home/unimed/projetos/sistema-ouvidoria; docker tag unimed/sistema-ouvidoria:dev harbor.unimednatal.com.br/sistema-ouvidoria-homolog/unimed/sis-ouvidoria:dev
+        #buildando uma nova imagem docker e tagueando como "latest"
+    needs: ["clone"]
+                                    
+push:
+    stage: push
+    tags:
+        - sis-ouv-hml
+    only:
+        - release/staging
+    script:
+        - docker push harbor.unimednatal.com.br/sistema-ouvidoria-homolog/unimed/sis-ouvidoria:dev
+        #enviando a nova imagem ao repositório do harbor
+    needs: ["clone", "build"]
+
+deploy_docker:
+    stage: deploy_docker
+    tags:
+        - sis-ouv-hml
+    only:
+        - release/staging
+    script:
+        - cd /home/unimed/projetos/sistema-ouvidoria; docker-compose up -d
+        #fazendo deployment da stack em docker swarm, através do compose file;
+    needs: ["clone", "build","push"]
