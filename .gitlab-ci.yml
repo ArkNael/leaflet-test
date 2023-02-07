@@ -13,7 +13,7 @@ stages:
 clone:
     stage: clone
     tags:
-        - sistema-ouv-hml
+        - sis-ouv-hml
     only:
         - release/staging
     script:
