@@ -1,8 +1,8 @@
 import React from "react";
 import {Col, Row} from "antd";
 
-import {Area, AreaChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {increamentData, ocorrenciasEncaminhadas, ocorrenciasFechadas, ocorrenciasPausadas, lineData} from "./Metrics/data";
+import {Area, AreaChart, Line, LineChart, ResponsiveContainer, Tooltip, XAxis} from "recharts";
+import {increamentData, ocorrenciasEncaminhadas, ocorrenciasFechadas, ocorrenciasPausadas} from "./Metrics/data";
 import ChartCard from "components/dashboard/Crypto/ChartCard";
 import Auxiliary from "util/Auxiliary";
 import OcorrenciasMes from "components/dashboard/Ocorrencias/Metragem";
@@ -87,7 +87,7 @@ const Dashboard = () => {
 			</Row>
 
 		</Auxiliary>
-	);
-};
+	)
+}
 
 export default Dashboard;

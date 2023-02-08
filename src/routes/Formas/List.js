@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { api } from "util/Api"
 import moment from "moment"
 
-import { Card, Button, Table, Dropdown, Popconfirm, message } from "antd";
+import { Space, Card, Input, Button, Table, Dropdown, Popconfirm, message } from "antd";
 import * as Icons from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
 import IntlMessages from "util/IntlMessages";
 
 
@@ -13,6 +14,93 @@ import IntlMessages from "util/IntlMessages";
 const List = (props) => {
 
 	const [data, setData] = useState(null)
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
+	};
+
+	const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText('');
+	};
+
+	const getColumnSearchProps = (dataIndex) => ({
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+			<div
+				style={{
+					padding: 8,
+				}}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				<Input
+					ref={searchInput}
+					placeholder={`Buscar por ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+					onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+					style={{
+						marginBottom: 8,
+						display: 'block',
+					}}
+				/>
+				<Space>
+					<Button
+						type="primary"
+						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+						icon={<Icons.SearchOutlined />}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Buscar
+					</Button>
+					<Button
+						onClick={() => clearFilters && handleReset(clearFilters)}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Limpar
+					</Button>
+				</Space>
+			</div>
+		),
+		filterIcon: (filtered) => (
+			<Icons.SearchOutlined
+				style={{
+					color: filtered ? '#1890ff' : undefined,
+				}}
+			/>
+		),
+		onFilter: (value, record) =>
+			record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+		onFilterDropdownOpenChange: (visible) => {
+			if (visible) {
+				setTimeout(() => searchInput.current?.select(), 100);
+			}
+		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{
+						backgroundColor: '#ffc069',
+						padding: 0,
+					}}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ''}
+				/>
+			) : (
+				text
+			),
+	});
 
 	const columns = [
 		{
@@ -26,12 +114,14 @@ const List = (props) => {
 			title: 'Nome',
 			dataIndex: 'nome',
 			sorter: (a, b) => a.nome.localeCompare(b.nome),
+			...getColumnSearchProps('nome')
 		},
 		{
 			title: 'Tipo',
 			dataIndex: 'tipo',
-			sorter: (a, b) => a.tipo.localeCompare(b.tipo),
-			width: '16%'
+			sorter: (a, b) => a.tipo?.localeCompare(b.tipo),
+			width: '16%',
+			...getColumnSearchProps('tipo')
 		},
 		{
 			title: 'Adicionado em',
