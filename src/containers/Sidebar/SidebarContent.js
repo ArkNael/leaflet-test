@@ -76,8 +76,8 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 							title={
 								<span>
 									{" "}
-									<i className="icon icon-extra-components" />
-									<IntlMessages id="sidebar.configuracoes" />
+									<i className="icon icon-product-list" />
+									<IntlMessages id="sidebar.cadastrosBasicos" />
 								</span>
 							}
 						>
@@ -129,6 +129,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 							<Menu.Item key="tipos">
 								<Link to="/tipos">
 									<span><IntlMessages id="sidebar.tipos"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="centro-custo">
+								<Link to="/centro-custo">
+									<span><IntlMessages id="sidebar.centroCusto"/></span>
 								</Link>
 							</Menu.Item>
 						</Menu.SubMenu>
