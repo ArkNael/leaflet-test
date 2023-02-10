@@ -159,6 +159,21 @@ const Migalha = () => {
 				}
 			}
 		},
+
+		ccustos: {
+			nome: "Centros de Custo",
+			params: "",
+			subs: {
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
 	};
 
 	let matched = null;
