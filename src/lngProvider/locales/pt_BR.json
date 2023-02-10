@@ -65,8 +65,8 @@
 	"sidebar.reversoes.new": "cadastrar nova reversão",
 	"sidebar.reversoes.edit": "modificar reversão",
 	
-	"sidebar.centroCusto": "Centros de Custo",
-	"sidebar.centroCusto.add": "Adicionar",
-	"sidebar.centroCusto.new": "cadastrar novo centro de custo",
-	"sidebar.centroCusto.edit": "modificar centro de custo"
+	"sidebar.ccustos": "Centros de Custo",
+	"sidebar.ccustos.add": "Adicionar",
+	"sidebar.ccustos.new": "cadastrar novo centro de custo",
+	"sidebar.ccustos.edit": "modificar centro de custo"
 }
