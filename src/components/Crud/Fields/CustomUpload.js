@@ -41,7 +41,7 @@ const CustomUpload = ({...rest}) => {
 
     const dummyRequest = ({file, onSuccess}) => {
         setTimeout(() => {
-            console.log(onSuccess("ok"))
+            onSuccess("ok")
         }, 0)
     }
 
