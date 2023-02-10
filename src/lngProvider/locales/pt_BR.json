@@ -8,7 +8,7 @@
 
 	"sidebar.dashboard": "Dashboard",
 
-	"sidebar.configuracoes": "Configurações",
+	"sidebar.cadastrosBasicos": "Cadastros Básicos",
 
 	"sidebar.temas": "Temas",
 	"sidebar.temas.add": "Adicionar",
@@ -63,5 +63,10 @@
 	"sidebar.reversoes": "Reversões",
 	"sidebar.reversoes.add": "Adicionar",
 	"sidebar.reversoes.new": "cadastrar nova reversão",
-	"sidebar.reversoes.edit": "modificar reversão"
+	"sidebar.reversoes.edit": "modificar reversão",
+	
+	"sidebar.ccustos": "Centros de Custo",
+	"sidebar.ccustos.add": "Adicionar",
+	"sidebar.ccustos.new": "cadastrar novo centro de custo",
+	"sidebar.ccustos.edit": "modificar centro de custo"
 }
