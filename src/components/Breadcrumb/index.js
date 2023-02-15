@@ -164,6 +164,10 @@ const Migalha = () => {
 			nome: "Centros de Custo",
 			params: "",
 			subs: {
+				responsaveis: {
+					nome: "Responsáveis",
+					params: "/:id"
+				},
 				editar: {
 					nome: "Editar",
 					params: "/:id"
