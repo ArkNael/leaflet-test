@@ -131,20 +131,6 @@ const List = (props) => {
 			...getColumnSearchProps('codigoPai')
 		},
 		{
-			title: 'Adicionado em',
-			dataIndex: 'createdAt',
-			sorter: (a, b) => 
-				moment(a.createdAt, "DD/MM/YYYY HH:mm:ss").unix() - 
-				moment(b.createdAt, "DD/MM/YYYY HH:mm:ss").unix(),
-			width: '16%'
-		},
-		{
-			title: 'Criado por',
-			dataIndex: 'createdBy',
-			sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
-			width: '20%'
-		},
-		{
 			title: 'Ação',
 			render: (text, record) => (
 				<div>
@@ -164,6 +150,15 @@ const List = (props) => {
 		{
 			key: '1',
 			label: (
+				<Link to={`/${props.controller}/responsaveis/${rec.id}`}>
+					<span style={{ paddingLeft: "5px" }}>Responsáveis</span>
+				</Link>
+			),
+			icon: (<i className="icon icon-user" />)
+		},
+		{
+			key: '2',
+			label: (
 				<Link to={`/${props.controller}/editar/${rec.id}`}>
 					<span style={{ paddingLeft: "5px" }}>Editar</span>
 				</Link>
@@ -171,7 +166,7 @@ const List = (props) => {
 			icon: (<i className="icon icon-edit" />)
 		},
 		{
-			key: '2',
+			key: '3',
 			label: (
 				<Popconfirm
 					title="Deseja excluir o registro?"
@@ -237,7 +232,8 @@ const List = (props) => {
 				</p>
 			}
 		>
-			<Table columns={columns} dataSource={data} />
+			<Table columns={columns} dataSource={data} rowClassName={record => record.deletedAt && "disabled-row"}
+/>
 		</Card>
 	);
 };
