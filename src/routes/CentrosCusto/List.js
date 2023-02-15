@@ -111,12 +111,6 @@ const List = (props) => {
 			width: '6%'
 		},
 		{
-			title: 'Nome',
-			dataIndex: 'nome',
-			sorter: (a, b) => a.nome.localeCompare(b.nome),
-			...getColumnSearchProps('nome')
-		},
-		{
 			title: 'Código',
 			dataIndex: 'codigo',
 			sorter: (a, b) => a.codigo?.localeCompare(b.codigo),
@@ -124,11 +118,23 @@ const List = (props) => {
 			...getColumnSearchProps('codigo')
 		},
 		{
+			title: 'Nome',
+			dataIndex: 'nome',
+			sorter: (a, b) => a.nome.localeCompare(b.nome),
+			...getColumnSearchProps('nome')
+		},
+		{
 			title: 'Código Pai',
 			dataIndex: 'codigoPai',
 			sorter: (a, b) => a.codigoPai?.localeCompare(b.codigoPai),
 			width: '12%',
 			...getColumnSearchProps('codigoPai')
+		},
+		{
+			title: 'Centro de Custo Pai',
+			dataIndex: 'nomePai',
+			sorter: (a, b) => a.nomePai?.localeCompare(b.nomePai),
+			...getColumnSearchProps('nomePai')
 		},
 		{
 			title: 'Ação',
