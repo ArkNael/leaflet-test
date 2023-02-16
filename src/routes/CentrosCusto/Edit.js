@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from "util/Api"
 import { useAuth } from '../../authentication';
 
-import { Select, Button, Card, Form, Input, message } from 'antd';
+import { Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
 
 

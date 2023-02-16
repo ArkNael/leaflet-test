@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from "util/Api"
 import { useAuth } from '../../authentication';
 
-import { Table, Select, Button, Card, Form, Dropdown, Popconfirm, submenus, message } from 'antd';
+import { Table, Select, Button, Card, Form, Dropdown, Popconfirm, message } from 'antd';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
 
@@ -61,7 +61,25 @@ const Edit = (props) => {
 		{
 			title: 'Tipo',
 			dataIndex: 'tipo',
-			sorter: (a, b) => a.nome.toLowerCase().localeCompare(b.nome.toLowerCase()),
+			sorter: (a, b) => a.tipo.toLowerCase().localeCompare(b.tipo.toLowerCase()),
+			render: (text, record) => (
+				<Select
+					placeholder="Selecione o tipo"
+					onChange={value => alterarTipo(value, record.id)}
+					defaultValue={record.tipo}
+					options={[
+						{
+							value: 'FACILITADOR',
+							label: 'FACILITADOR',
+						},
+						{
+							value: 'GESTOR',
+							label: 'GESTOR',
+						}
+					]}
+					style={{width: '100%'}}
+				/>
+			),
 			width: '20%'
 		},
 		{
@@ -98,11 +116,12 @@ const Edit = (props) => {
 	];
 
 	const deleteReg = async (key) => {
-		const registros = data.filter(item => item.id !== key);
+		// const registros = data.filter(item => item.id !== key);
 		await api.post(`api/responsaveis/excluir/${key}`)
 		.then(({data}) => {
 			if (data.ok === 1) {
-				setData(registros)
+				// setData(registros)
+				props.history.push(`/${props.controller}/responsaveis/${props.match.params.id}`)
 				message.success(data.mensagem)
 			} else {
 				message.error(data.mensagem)
@@ -112,6 +131,20 @@ const Edit = (props) => {
 			message.error('Erro ao excluir registro')
 		})
 	};
+
+	const alterarTipo = async (value, id_resp) => {
+		await api.post(`api/responsaveis/editar/${id_resp}`, {tipo: value})
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao modificar registro')
+		})
+	}
 
 	const onChange = (value, setFunc) => setFunc(value)
 
@@ -156,7 +189,7 @@ const Edit = (props) => {
 					/>
 				</Form.Item>
 				<Form.Item label="*Código" wrapperCol={{span: 5}}>
-				<Select
+					<Select
 						placeholder="Selecione o tipo"
 						onChange={value => onChange(value, setTipo)}
 						options={[

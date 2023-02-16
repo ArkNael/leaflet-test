@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { api } from "util/Api"
-import { useAuth } from '../../authentication';
 
 import { Button, Card, Form, Input, message } from 'antd';
 import IntlMessages from "util/IntlMessages";
