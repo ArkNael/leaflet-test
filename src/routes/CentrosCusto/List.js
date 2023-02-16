@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { api } from "util/Api"
-import moment from "moment"
 
 import { Space, Card, Input, Button, Table, Dropdown, Popconfirm, message } from "antd";
 import * as Icons from '@ant-design/icons';
