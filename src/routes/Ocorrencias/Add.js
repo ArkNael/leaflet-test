@@ -39,12 +39,6 @@ const Add = (props) => {
 		{value: 'Totem', 		label: 'Totem'}
 	]
 
-	const complexidades = [
-		{value: 'Complexa', 			label: 'Complexa'},
-		{value: 'Simples', 				label: 'Simples'},
-		{value: 'Primeira Instância',	label: 'Primeira Instância'}
-	]
-
 	const criticidade = [
 		{value: '1', label: '1 Ponto'},
 		{value: '2', label: '2 Pontos'},
@@ -56,7 +50,7 @@ const Add = (props) => {
 			<Form form={form} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
 
 				<Divider orientation='left'>Informações da Ocorrência</Divider>
-				<Form.Item label="Quem está abrindo a ocorrencia?" name="origem" rules={[{ required: true, message: 'Informe quem está abrindo a ocorrencia!' }]} wrapperCol={{span: 10}}>
+				<Form.Item label="Quem está abrindo a ocorrência?" name="origem" rules={[{ required: true, message: 'Informe quem está abrindo a ocorrencia!' }]} wrapperCol={{span: 10}}>
 					<CustomSelect placeholder='Selecione a origem' controller="origens" onChange={setOrigem} />
 				</Form.Item>
 				<Form.Item label="Qual a finalidade desta ocorrência?" name="finalidade" rules={[{ required: true, message: 'Informe a finalidade desta ocorrência!' }]} wrapperCol={{span: 10}}>
@@ -169,7 +163,7 @@ const Add = (props) => {
 						<CustomSelect placeholder='Selecione o assunto' controller="assuntos" onChange={setOrigem} />
 					</Form.Item>
 					<Form.Item label="Complexidade:" name="complexidade" rules={[required]} wrapperCol={{span: 6}}>
-						<Select placeholder="Selecione a complexidade" options={complexidades} />
+						<CustomSelect placeholder='Selecione a complexidade' controller="complexidades" />
 					</Form.Item>
 
 					
