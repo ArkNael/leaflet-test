@@ -1,10 +1,9 @@
 import { Button, Card, Form, Input, Select, message, Divider, Switch, DatePicker, Radio, Tooltip } from 'antd';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { api } from "util/Api"
 import { useAuth } from "../../authentication";
-
-import moment from 'moment';
+import moment from "moment"
 
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
@@ -48,12 +47,14 @@ const Add = (props) => {
 			emailRemetente: 			values.emailRemetente,
 			numeroCasaRemetente: 		values.numeroRemetente,
 			bairroRemetente: 			values.bairroRemetente,
+			ruaRemetente: 				values.ruaRemetente,
 			cepRemetente: 				values.cepRemetente,
 			cidadeRemetente: 			values.cidadeRemetente,
 			ufRemetente: 				values.ufRemetente,
 			telefoneRemetente: 			values.telefoneRemetente,
-			celularRemetente: 			values.celularRemetente,
-			dataNascimentoRemetente:	values.dataNascimentoRemetente,
+			celularRemetente: 			values.telefoneRemetente,
+			dataNascimentoRemetente:	moment(values.dataNascimentoRemetente).format('DD/MM/YYYY'),
+			sexoRemetente: 				values.sexoRemetente,
 
 			descricaoOcorrencia: 		values.descricao,
 			assuntoOcorrencia: 			values.descricaoAssunto,
@@ -73,11 +74,11 @@ const Add = (props) => {
 			como: 						values.como,
 		}
 
-		await api.post(`api/ocorrencias/adicionar`, body)
+		await api.post(`api/${props.controller}/adicionar`, body)
 		.then(({data}) => {
 			if (data.ok === 1) {
 				message.success(data.mensagem)
-				props.history.push(`/ocorrencias`)
+				props.history.push(`/${props.controller}`)
 			} else {
 				message.error(data.mensagem)
 			}
@@ -88,7 +89,7 @@ const Add = (props) => {
 	}
 
 
-	const required = { required: true, message: 'Campo obrigatório!' }
+	const required = { required: false, message: 'Campo obrigatório!' }
 
 	const formas = [
 		{value: 'Aplicativos', 	label: 'Aplicativos'},
@@ -152,6 +153,9 @@ const Add = (props) => {
 					<Form.Item label="Nome:" name="nomeRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 12}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
+					<Form.Item label="Celular:" name="celularRemetente" rules={[required]} wrapperCol={{span: 6}}>
+						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
+					</Form.Item>
 					<Form.Item label="Telefone:" name="telefoneRemetente" rules={[required]} wrapperCol={{span: 6}}>
 						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
 					</Form.Item>
@@ -168,7 +172,7 @@ const Add = (props) => {
 						</Radio.Group>
 					</Form.Item>
 					<Form.Item label="CEP:" name="cepRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
-						<MaskedInput mask="000000-000" maskOptions={{lazy: true}} disabled={!clienteOutroEstado}/>
+						<MaskedInput mask="00000-000" maskOptions={{lazy: true}} disabled={!clienteOutroEstado}/>
 					</Form.Item>
 					<Form.Item label="UF:" name="ufRemetente" rules={[clienteOutroEstado?required:{}, {max: 2, message: 'Informe apenas a sigla do estado!'}]} wrapperCol={{span: 2}}>
 						<Input disabled={!clienteOutroEstado} maxLength={2} />
@@ -201,7 +205,7 @@ const Add = (props) => {
 						<Input />
 					</Form.Item>
 					<Form.Item label="CEP:" name="cepReclamado" wrapperCol={{span: 4}}>
-						<MaskedInput mask="000000-000" maskOptions={{lazy: true}}/>
+						<MaskedInput mask="00000-000" maskOptions={{lazy: true}}/>
 					</Form.Item>
 					<Form.Item label="UF:" name="ufReclamado" rules={[{max: 2, message: 'Informe apenas a sigla do estado!'}]} wrapperCol={{span: 2}}>
 						<Input maxLength={2} />
@@ -228,7 +232,7 @@ const Add = (props) => {
 						<CustomSelect placeholder='Selecione o tipo da ocorrência' controller="tipos" />
 					</Form.Item>
 					<Form.Item label="Qual a forma de envio da ocorrência?:" name="formaEnvio" rules={[required]} wrapperCol={{span: 8}}>
-						<Select options={formas} />
+						<CustomSelect placeholder='Selecione a forma de envio' controller="formas" />
 					</Form.Item>
 					<Form.Item label="Você classifica está ocorrência como:" name="classificacao" rules={[required]} wrapperCol={{span: 8}}>
 						<Radio.Group>
