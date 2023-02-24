@@ -1,7 +1,8 @@
-import { Button, Card, Form, Input, Select, message, Divider, Switch, DatePicker, Radio } from 'antd';
+import { Button, Card, Form, Input, Select, message, Divider, Switch, DatePicker, Radio, Tooltip } from 'antd';
 import React, { useState, useEffect } from 'react';
 
 import { api } from "util/Api"
+import { useAuth } from "../../authentication";
 
 import moment from 'moment';
 
@@ -14,6 +15,8 @@ import { MaskedInput } from 'antd-mask-input';
 
 
 const Add = (props) => {
+	const { authUser } = useAuth();
+
 	const [origem, setOrigem] = useState()
 	const [finalidade, setFinalidade] = useState()
 	const [destino, setDestino] = useState()
@@ -25,7 +28,64 @@ const Add = (props) => {
 	const [form] = Form.useForm()
 
 
-	const handleSubmit = async (values) => { }
+	const handleSubmit = async (values) => {
+		console.log(values)
+
+		const body = {
+			nomeReclamado:				values.nomeReclamado,
+			emailReclamado:				values.emailReclamado,
+			numeroCasaReclamado:		values.numeroReclamado,
+			bairroReclamado:			values.bairroReclamado,
+			ruaReclamado:				values.ruaReclamado,
+			cepReclamado:				values.cepReclamado,
+			cidadeReclamado:			values.cidadeReclamado,
+			ufReclamado:				values.ufReclamado,
+			telefoneReclamado:			values.telefoneReclamado,
+			infoExtraReclamado:			values.extraReclamado,
+
+			codigoRemetente: 			values.codigoRemetente,
+			nomeRemetente: 				values.nomeRemetente,
+			emailRemetente: 			values.emailRemetente,
+			numeroCasaRemetente: 		values.numeroRemetente,
+			bairroRemetente: 			values.bairroRemetente,
+			cepRemetente: 				values.cepRemetente,
+			cidadeRemetente: 			values.cidadeRemetente,
+			ufRemetente: 				values.ufRemetente,
+			telefoneRemetente: 			values.telefoneRemetente,
+			celularRemetente: 			values.celularRemetente,
+			dataNascimentoRemetente:	values.dataNascimentoRemetente,
+
+			descricaoOcorrencia: 		values.descricao,
+			assuntoOcorrencia: 			values.descricaoAssunto,
+			temaId: 					values.tema,
+			assuntoId: 					values.assunto,
+			origemId: 					values.origem,
+			contratoId: 				values.contrato,
+			destinoId: 					values.destino,
+			formaId: 					values.formaEnvio,
+			finalidadeId: 				values.finalidade,
+			tipoId: 					values.tipoOcorrencia,
+			complexidadeId: 			values.complexidade,
+			criadoPor: 					authUser.name.split(' ')[0],
+			quem: 						values.quem,
+			quando: 					values.quando,
+			quanto: 					values.quanto,
+			como: 						values.como,
+		}
+
+		await api.post(`api/ocorrencias/adicionar`, body)
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/ocorrencias`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
+	}
 
 
 	const required = { required: true, message: 'Campo obrigatório!' }
@@ -62,75 +122,101 @@ const Add = (props) => {
 
 
 				{(origem && finalidade && destino) && <>
-					<Divider orientation="left" style={{marginTop: '50px'}}>Protocolo de Instância Anterior</Divider>
-					<Form.Item label="Possui Protocolo de instância anterior?" name="protocoloAnterior">
-						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setProtocoloAnterior}/>
-					</Form.Item>
-					{(!protocoloAnterior && <>
-						<Form.Item label="Canal Anterior:" name="canalAnterior" rules={[required]} wrapperCol={{span: 6}}>
-							<Input />
-						</Form.Item>
-						<Form.Item label="Nome do Atendente:" name="nomeAtendente" rules={[required]} wrapperCol={{span: 12}}>
-							<Input name="nomeAtendente"/>
-						</Form.Item>
-						<Form.Item label="Local:" name="local" rules={[required]} wrapperCol={{span: 8}}>
-							<Input />
-						</Form.Item>
-						<Form.Item label="Data:" name="data" rules={[required]} wrapperCol={{span: 6}}>
-							<DatePicker format="DD/MM/YYYY" />
-						</Form.Item>
-					</>) || (
-						<Form.Item label="Número de Protocolo da instância anterior:" name="numProtocoloAnterior" rules={[required]} wrapperCol={{span: 6}}>
-							<Input />
-						</Form.Item>
-					)}
-					<Form.Item label="O paciente está internado?" name="pacienteInternado">
-						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
-					</Form.Item>
-
-
 					<Divider orientation="left" style={{marginTop: '50px'}}>Informe seus dados (Todos os campos com * são obrigatórios)</Divider>
 					<Form.Item label="Cliente de outro estado(Intercâmbio)?" name="clienteOutroEstado">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setClienteOutroEstado}/>
 					</Form.Item>
-					<Form.Item label="Matrícula:" name="matricula" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item 
+						label={(
+							<Tooltip 
+								title={
+									<>
+									<p>Código de identificação:</p>
+									<p>Para beneficiário ou cooperado, utilizar CPF. Outros casos utilizar CNPJ</p>
+									</>
+								}
+								color="#00995d"
+								placement="topRight"
+								style={{maxWidth: 500}}
+							>
+								Código de identificação:
+								<Icons.QuestionCircleTwoTone style={{marginLeft: 5}}/>
+							</Tooltip>
+						)} 
+						name="codigoRemetente" 
+						rules={[required]} 
+						wrapperCol={{span: 8}}
+					>
 						<Input />
 					</Form.Item>
-					<Form.Item label="Nome:" name="nome" rules={[required]} wrapperCol={{span: 12}}>
+					<Form.Item label="Nome:" name="nomeRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 12}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Telefone:" name="telefone" rules={[required]} wrapperCol={{span: 6}}>
+					<Form.Item label="Telefone:" name="telefoneRemetente" rules={[required]} wrapperCol={{span: 6}}>
 						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
 					</Form.Item>
-					<Form.Item label="Email:" name="email" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Email:" name="emailRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Data de nascimento:" name="dataNascimento" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Data de nascimento:" name="dataNascimentoRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<DatePicker format="DD/MM/YYYY" disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Sexo:" name="sexo" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Sexo:" name="sexoRemetente" rules={[required]} wrapperCol={{span: 8}}>
 						<Radio.Group>
 							<Radio value='M'>Masculino</Radio>
 							<Radio value='F'>Feminino</Radio>
 						</Radio.Group>
 					</Form.Item>
-					<Form.Item label="CEP:" name="cep" rules={[required]} wrapperCol={{span: 8}}>
-						<Input disabled={!clienteOutroEstado} />
+					<Form.Item label="CEP:" name="cepRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
+						<MaskedInput mask="000000-000" maskOptions={{lazy: true}} disabled={!clienteOutroEstado}/>
 					</Form.Item>
-					<Form.Item label="UF:" name="uf" rules={[required, {max: 2, message: 'Informe apenas a sigla do estado!'}]} wrapperCol={{span: 3}}>
+					<Form.Item label="UF:" name="ufRemetente" rules={[clienteOutroEstado?required:{}, {max: 2, message: 'Informe apenas a sigla do estado!'}]} wrapperCol={{span: 2}}>
 						<Input disabled={!clienteOutroEstado} maxLength={2} />
 					</Form.Item>
-					<Form.Item label="Cidade:" name="cidade" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Cidade:" name="cidadeRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Bairro:" name="bairro" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Bairro:" name="bairroRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Rua:" name="rua" rules={[required]} wrapperCol={{span: 8}}>
+					<Form.Item label="Rua:" name="ruaRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Numero:" name="numero" rules={[required]} wrapperCol={{span: 3}}>
+					<Form.Item label="Numero:" name="numeroRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 3}}>
 						<Input disabled={!clienteOutroEstado} />
+					</Form.Item>
+
+
+					<Divider orientation="left" style={{marginTop: '50px'}}>Dados do reclamado (Todos os campos com * são obrigatórios)</Divider>
+					<Form.Item label="Nome:" name="nomeReclamado" rules={[required]} wrapperCol={{span: 12}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="Extra:" name="extraReclamado" rules={[required]} wrapperCol={{span: 12}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="Telefone:" name="telefoneReclamado" wrapperCol={{span: 6}}>
+						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
+					</Form.Item>
+					<Form.Item label="Email:" name="emailReclamado" wrapperCol={{span: 8}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="CEP:" name="cepReclamado" wrapperCol={{span: 4}}>
+						<MaskedInput mask="000000-000" maskOptions={{lazy: true}}/>
+					</Form.Item>
+					<Form.Item label="UF:" name="ufReclamado" rules={[{max: 2, message: 'Informe apenas a sigla do estado!'}]} wrapperCol={{span: 2}}>
+						<Input maxLength={2} />
+					</Form.Item>
+					<Form.Item label="Cidade:" name="cidadeReclamado" wrapperCol={{span: 8}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="Bairro:" name="bairroReclamado" wrapperCol={{span: 8}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="Rua:" name="ruaReclamado" wrapperCol={{span: 8}}>
+						<Input />
+					</Form.Item>
+					<Form.Item label="Numero:" name="numeroReclamado" wrapperCol={{span: 3}}>
+						<Input />
 					</Form.Item>
 	
 
@@ -138,11 +224,11 @@ const Add = (props) => {
 					<Form.Item label="Informe o assunto da ocorrência:" name="descricaoAssunto" rules={[required]} wrapperCol={{span: 10}}>
 						<Input.TextArea rows={2} />
 					</Form.Item>
+					<Form.Item label="Tipo de ocorrência:" name="tipoOcorrencia" rules={[required]} wrapperCol={{span: 6}}>
+						<CustomSelect placeholder='Selecione o tipo da ocorrência' controller="tipos" />
+					</Form.Item>
 					<Form.Item label="Qual a forma de envio da ocorrência?:" name="formaEnvio" rules={[required]} wrapperCol={{span: 8}}>
 						<Select options={formas} />
-					</Form.Item>
-					<Form.Item label="Deseja manter sigilo sobre seus dados?" name="sigilo">
-						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
 					<Form.Item label="Você classifica está ocorrência como:" name="classificacao" rules={[required]} wrapperCol={{span: 8}}>
 						<Radio.Group>
@@ -186,13 +272,7 @@ const Add = (props) => {
 					<Form.Item label="Deseja que o sistema envie carta automática?" name="cartaAutomatica">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
-
-
-					<Divider orientation="left" style={{marginTop: '50px'}}></Divider>
-					<Form.Item label="Histórico:" name="historico" wrapperCol={{span: 12}}>
-						<Input.TextArea rows={4} />
-					</Form.Item>
-
+					
 					
 					<Divider orientation="left" style={{marginTop: '50px'}}>Caso deseje anexar arquivos, utilize o campo abaixo:</Divider>
 					<Form.Item label=" " name="assunto" wrapperCol={{span: 24}}>
