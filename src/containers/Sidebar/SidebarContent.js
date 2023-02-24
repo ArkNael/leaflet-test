@@ -69,6 +69,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.ocorrencias.add"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="ocorrencias-list">
+								<Link to="/ocorrencias">
+									<span><IntlMessages id="sidebar.ocorrencias.list"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 						<Menu.SubMenu
 							key="benefs"

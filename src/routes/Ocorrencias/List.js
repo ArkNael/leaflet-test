@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { api } from "util/Api"
 import moment from "moment"
 
-import { Card, Button, Table, Dropdown, Popconfirm, message } from "antd";
+import { Space, Card, Button, Input, Table, Dropdown, Popconfirm, DatePicker, message } from "antd";
+import Highlighter from 'react-highlight-words';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
 
@@ -13,6 +14,166 @@ import IntlMessages from "util/IntlMessages";
 const List = (props) => {
 
 	const [data, setData] = useState(null)
+	const [searchText, setSearchText] = useState('');
+	const [searchedColumn, setSearchedColumn] = useState('');
+	const searchInput = useRef(null);
+
+	const handleSearch = (selectedKeys, confirm, dataIndex) => {
+		confirm();
+		setSearchText(selectedKeys[0]);
+		setSearchedColumn(dataIndex);
+	};
+
+	const handleReset = (clearFilters) => {
+		clearFilters();
+		setSearchText('');
+	};
+
+	const getColumnSearchProps = (dataIndex) => ({
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+			<div
+				style={{
+					padding: 8,
+				}}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				<Input
+					ref={searchInput}
+					placeholder={`Buscar por ${dataIndex}`}
+					value={selectedKeys[0]}
+					onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+					onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+					style={{
+						marginBottom: 8,
+						display: 'block',
+					}}
+				/>
+				<Space>
+					<Button
+						type="primary"
+						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+						icon={<Icons.SearchOutlined />}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Buscar
+					</Button>
+					<Button
+						onClick={() => clearFilters && handleReset(clearFilters)}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Limpar
+					</Button>
+				</Space>
+			</div>
+		),
+		filterIcon: (filtered) => (
+			<Icons.SearchOutlined
+				style={{
+					color: filtered ? '#1890ff' : undefined,
+				}}
+			/>
+		),
+		onFilter: (value, record) =>
+			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+		onFilterDropdownOpenChange: (visible) => {
+			if (visible) {
+				setTimeout(() => searchInput.current?.select(), 100);
+			}
+		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{
+						backgroundColor: '#ffc069',
+						padding: 0,
+					}}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ''}
+				/>
+			) : (
+				text
+			),
+	});
+
+	const getColumnSearchPropsDatePicker = (dataIndex) => ({
+		filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+			<div
+				style={{
+					padding: 8,
+				}}
+				onKeyDown={(e) => e.stopPropagation()}
+			>
+				<DatePicker
+					format="DD/MM/YYYY"
+					onChange={(e) => {
+					setSelectedKeys([e]);
+					}}
+					allowClear={true}
+					style={{
+						marginBottom: 8,
+						display: 'block',
+					}}
+				/>
+				<Space>
+					<Button
+						type="primary"
+						onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+						icon={<Icons.SearchOutlined />}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Buscar
+					</Button>
+					<Button
+						onClick={() => clearFilters && handleReset(clearFilters)}
+						size="small"
+						style={{
+							width: 90,
+						}}
+					>
+						Limpar
+					</Button>
+				</Space>
+			</div>
+		),
+		filterIcon: (filtered) => (
+			<Icons.SearchOutlined
+				style={{
+					color: filtered ? '#1890ff' : undefined,
+				}}
+			/>
+		),
+		onFilter: (value, record) =>
+			moment(record[dataIndex], "DD/MM/YYYY HH:mm:ss").format("DD/MM/YYYY") == moment(value).format("DD/MM/YYYY"),
+		onFilterDropdownOpenChange: (visible) => {
+			if (visible) {
+				setTimeout(() => searchInput.current?.select(), 100);
+			}
+		},
+		render: (text) =>
+			searchedColumn === dataIndex ? (
+				<Highlighter
+					highlightStyle={{
+						backgroundColor: '#ffc069',
+						padding: 0,
+					}}
+					searchWords={[searchText]}
+					autoEscape
+					textToHighlight={text ? text.toString() : ''}
+				/>
+			) : (
+				text
+			),
+	});
 
 	const columns = [
 		{
@@ -20,18 +181,32 @@ const List = (props) => {
 			dataIndex: 'id',
 			defaultSortOrder: 'descend',
 			sorter: (a, b) => a.id - b.id,
-			width: '6%'
+			width: '6%',
+			...getColumnSearchProps('id')
 		},
 		{
-			title: 'Nome',
-			dataIndex: 'nomeForma',
-			sorter: (a, b) => a.nomeForma.localeCompare(b.nomeForma),
+			title: 'Remetente',
+			dataIndex: 'remetente',
+			sorter: (a, b) => a.remetente.localeCompare(b.remetente),
+			...getColumnSearchProps('remetente')
 		},
 		{
-			title: 'Tipo',
-			dataIndex: 'tipoForma',
-			sorter: (a, b) => a.tipoForma.localeCompare(b.tipoForma),
-			width: '16%'
+			title: 'Reclamado',
+			dataIndex: 'reclamado',
+			sorter: (a, b) => a.reclamado.localeCompare(b.reclamado),
+			...getColumnSearchProps('reclamado')
+		},
+		{
+			title: 'Último Setor',
+			dataIndex: 'ultimoSetor',
+			sorter: (a, b) => a.ultimoSetor?.localeCompare(b.ultimoSetor),
+			...getColumnSearchProps('ultimoSetor')
+		},
+		{
+			title: 'Dias no Setor',
+			dataIndex: 'diasSetor',
+			sorter: (a, b) => a.diasSetor?.localeCompare(b.diasSetor),
+			...getColumnSearchProps('diasSetor')
 		},
 		{
 			title: 'Adicionado em',
@@ -39,7 +214,6 @@ const List = (props) => {
 			sorter: (a, b) => 
 				moment(a.createdAt, "DD/MM/YYYY HH:mm:ss").unix() - 
 				moment(b.createdAt, "DD/MM/YYYY HH:mm:ss").unix(),
-			width: '16%'
 		},
 		{
 			title: 'Ação',
@@ -61,26 +235,47 @@ const List = (props) => {
 		{
 			key: '1',
 			label: (
-				<Link to={`/${props.controller}/editar/${rec.id}`}>
-					<span style={{ paddingLeft: "5px" }}>Editar</span>
+				<Link to={`/${props.controller}/visualizar/${rec.id}`}>
+					<span style={{ paddingLeft: "5px" }}>Visualizar</span>
 				</Link>
 			),
-			icon: (<i className="icon icon-edit" />)
+			disabled: true,
 		},
 		{
 			key: '2',
 			label: (
-				<Popconfirm
-					title="Deseja excluir o registro?"
-					onConfirm={e => { deleteReg(rec.id) }}
-					okText="Sim"
-					cancelText="Não"
-				>
-					<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
-				</Popconfirm>
+				<Link to={`/${props.controller}/editar/${rec.id}`}>
+					<span style={{ paddingLeft: "5px" }}>Editar</span>
+				</Link>
+			),
+			icon: (<i className="icon icon-edit" />),
+			disabled: true,
+		},
+		{
+			key: '3',
+			label: (
+				<Link to={`/${props.controller}/excluir/${rec.id}`}>
+					<span style={{ paddingLeft: "5px" }}>Exluir</span>
+				</Link>
 			),
 			icon: (<i className="icon icon-trash" />),
+			disabled: true,
 		},
+		// {
+		// 	key: '3',
+		// 	label: (
+		// 		<Popconfirm
+		// 			title="Deseja excluir o registro?"
+		// 			onConfirm={e => { deleteReg(rec.id) }}
+		// 			okText="Sim"
+		// 			cancelText="Não"
+		// 		>
+		// 			<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
+		// 		</Popconfirm>
+		// 	),
+		// 	icon: (<i className="icon icon-trash" />),
+		// 	disabled: true,
+		// },
 	];
 
 	const deleteReg = async (key) => {
@@ -105,7 +300,17 @@ const List = (props) => {
 			await api.get(`api/${props.controller}/listar`)
 			.then(({data}) => {
 				if (data.ok === 1) {
-					setData(data.retorno)
+
+					let res = data.retorno.map(item => { return {
+						id: item.id,
+						remetente: item.remetente.nomeRemetente,
+						reclamado: item.reclamado.nomeReclamado,
+						ultimoSetor: 'OUVIDORIA',
+						diasSetor: '1',
+						createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
+					}})
+
+					setData(res)
 				} else {
 					message.error(data.mensagem)
 				}
