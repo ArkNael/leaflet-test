@@ -4,7 +4,7 @@ import { api } from "util/Api"
 import { useAuth } from "../../authentication";
 import moment from "moment"
 
-import { Button, Card, Form, Input, Select, message, Divider, Switch, DatePicker, Radio, Tooltip, Tag } from 'antd';
+import { Button, Card, Form, Input, Select, message, Divider, Switch, DatePicker, Radio, Tooltip } from 'antd';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
 import CustomSelect from '../../components/Crud/Fields/CustomSelect'
@@ -20,106 +20,51 @@ const Add = (props) => {
 	const [finalidade, setFinalidade] = useState()
 	const [destino, setDestino] = useState()
 	const [clienteOutroEstado, setClienteOutroEstado] = useState(false)
-	const [quem, setQuem] = useState()
-	const [quando, setQuando] = useState()
-	const [quanto, setQuanto] = useState()
-	const [como, setComo] = useState()
-	const [criticidade, setCriticidade] = useState({})
 
 	const [loadingCodigo, setLoadingCodigo] = useState(false)
 
 	const [form] = Form.useForm()
 
-	const calculateCriticidade = (params) => {
-		let obj = {
-			...criticidade,
-			...params,
-			color: '',
-			level: ''
-		}
-
-		console.log(obj)
-
-		let total = obj.quem + obj.quando + obj.quanto + obj.como
-
-		if (total >= 4 && total <= 6) {
-			obj.color = 'green'
-			obj.level = 'Baixa'
-		}
-
-		if (total >= 7 && total <= 10) {
-			obj.color = 'orange'
-			obj.level = 'Média ou Atenção'
-		}
-
-		if (total >= 11 && total <= 12) {
-			obj.color = 'red'
-			obj.level = 'Alta'
-		}
-
-		setCriticidade(obj)
-	}
-
-	const unsetRemetente = () => {
-		form.setFieldsValue({
-			nomeRemetente: 				'',
-			celularRemetente: 			'',
-			telefoneRemetente: 			'',
-			emailRemetente: 			'',
-			dataNascimentoRemetente: 	'',
-			sexoRemetente: 				'',
-			cepRemetente: 				'',
-			ufRemetente: 				'',
-			cidadeRemetente: 			'',
-			bairroRemetente: 			'',
-			ruaRemetente: 				'',
-			numeroRemetente: 			''
-		})
-	}
 
 	const setRemetente = values => {
+		console.log('values')
+		console.log(values)
 		form.setFieldsValue({
-			nomeRemetente: 				values.NM_PESSOA,
-			celularRemetente: 			values.TELEFONE,
-			telefoneRemetente: 			'',
-			emailRemetente: 			values.EMAIL,
-			dataNascimentoRemetente: 	moment(values.DT_NASCIMENTO, 'DD/MM/YYYY'),
-			sexoRemetente: 				values.SEXO,
-			cepRemetente: 				values.CEP,
-			ufRemetente: 				values.UF,
-			cidadeRemetente: 			values.CIDADE,
-			bairroRemetente: 			values.BAIRRO,
-			ruaRemetente: 				values.LOGRADOURO,
-			numeroRemetente: 			values.NUM_LOGRADOURO
+			nomeRemetente: values.NM_PESSOA,
+			celularRemetente: values.TELEFONE,
+			telefoneRemetente: '',
+			emailRemetente: values.EMAIL,
+			// dataNascimentoRemetente: values.DT_NASCIMENTO,
+			sexoRemetente: values.SEXO,
+			cepRemetente: values.CEP,
+			ufRemetente: values.UF,
+			cidadeRemetente: values.CIDADE,
+			bairroRemetente: values.BAIRRO,
+			ruaRemetente: values.LOGRADOURO,
+			numeroRemetente: values.NUM_LOGRADOURO,
 		})
 	}
 
 	const getRemetente = async search => {
-		search = search.replace(/\D/g, "");
-
-		form.setFieldsValue({codigoRemetente: search})
-		unsetRemetente()
 		if (search.length === 11 || search.length === 17) {
 			setLoadingCodigo(true)
 			await api.get(`api/${props.controller}/buscar-beneficiario`, {params: {busca: search}})
 			.then(({data}) => {
 				if (data.ok === 1) {
-					setLoadingCodigo(false)
 					if (data.retorno.length === 0) {
 						message.error('Código não encontrado. Verifique e tente novamente.')
 					} else {
 						setRemetente(data.retorno[0])
 					}
 				} else {
-					setLoadingCodigo(false)
 					message.error(data.mensagem)
 				}
 			})
 			.catch((err) => {
 				message.error('Erro ao buscar registro')
 			})
-			
 		}
+		setLoadingCodigo(false)
 	}
 
 	const handleSubmit = async (values) => {
@@ -166,9 +111,7 @@ const Add = (props) => {
 			quanto: 					values.quanto,
 			como: 						values.como,
 			temHistoricoNips:			values.temHistoricoNips,
-			temAcaoJudicial:			values.acaoJudicial,
-			procedencia:				values.classificacao?1:0,
-			enviarCarta:				values.cartaAutomatica?1:0
+			temAcaoJudicial:			values.acaoJudicial
 		}
 
 		await api.post(`api/${props.controller}/adicionar`, body)
@@ -188,10 +131,10 @@ const Add = (props) => {
 
 	const required = { required: true, message: 'Campo obrigatório!' }
 
-	const optionsCriticidade = [
-		{value: 1, label: '1 Ponto'},
-		{value: 2, label: '2 Pontos'},
-		{value: 3, label: '3 Pontos'}
+	const criticidade = [
+		{value: '1', label: '1 Ponto'},
+		{value: '2', label: '2 Pontos'},
+		{value: '3', label: '3 Pontos'}
 	]
 
 	return (
@@ -220,9 +163,8 @@ const Add = (props) => {
 							<Tooltip 
 								title={
 									<>
-									<p>Para beneficiário, utilizar carteira ou CPF.</p>
-									<p>Para cooperado, utilizar CRM.</p>
-									<p>Outros casos, utilizar CNPJ</p>
+									<p>Código de identificação:</p>
+									<p>Para beneficiário ou cooperado, utilizar CPF. Outros casos, utilizar CNPJ</p>
 									</>
 								}
 								color="#00995d"
@@ -237,13 +179,41 @@ const Add = (props) => {
 						rules={[required]} 
 						wrapperCol={{span: 8}}
 					>
-						<Input.Search onChange={e => getRemetente(e.target.value)} maxLength={17} loading={loadingCodigo}/>
+						<Input.Search onKeyUp={e => getRemetente(e.target.value)} maxLength={17} loading={loadingCodigo}/>
 					</Form.Item>
 					<Form.Item label="Nome:" name="nomeRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 12}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
 					<Form.Item label="Celular:" name="celularRemetente" rules={[required]} wrapperCol={{span: 6}} >
-						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
+						{/* <MaskedInput mask="(00) 00000-0000"/> */}
+						<Input />
+						{/* <MaskedInput
+							mask="(00) 00000-0000"
+							guide={false}
+							showMask={false}
+							render={(ref, props) => {
+								const { value } = form.getFieldProps('celularRemetente')
+								console.log('value')
+								console.log(value)
+								return (
+									<Input
+										name={'celularRemetente'}
+										prefix={<Icons.PhoneOutlined/>}
+										value={value}
+										ref={(input) => ref(input && input.input)}
+										{...props}
+										onChange={(event) => {
+											alert('123')
+											props.onChange(event)
+											form.setFieldsValue({
+												['celularRemetente']: event.target.value
+											})
+										}}
+									/>
+								)
+							}}
+						/> */}
+						
 					</Form.Item>
 					<Form.Item label="Telefone:" name="telefoneRemetente" rules={[required]} wrapperCol={{span: 6}}>
 						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}} />
@@ -325,8 +295,8 @@ const Add = (props) => {
 					</Form.Item>
 					<Form.Item label="Você classifica está ocorrência como:" name="classificacao" rules={[required]} wrapperCol={{span: 8}}>
 						<Radio.Group>
-							<Radio value={1}>Procedente</Radio>
-							<Radio value={0}>Improcedente</Radio>
+							<Radio value='Procedente'>Procedente</Radio>
+							<Radio value='Improcedente'>Improcedente</Radio>
 						</Radio.Group>
 					</Form.Item>
 					<Form.Item label="Descreva a ocorrência:" name="descricao" rules={[required]} wrapperCol={{span: 14}}>
@@ -348,24 +318,24 @@ const Add = (props) => {
 					
 					<Divider orientation="left" style={{marginTop: '50px'}}>Análise de Criticidade</Divider>
 					<Form.Item label="Quem?" name="quem" rules={[required]} wrapperCol={{span: 4}}>
-						<Select placeholder="Selecione a pontuacao" options={optionsCriticidade} onChange={e => calculateCriticidade({quem: e})} />
+						<Select placeholder="Selecione a pontuacao" options={criticidade} />
 					</Form.Item>
 					<Form.Item label="Quando?" name="quando" rules={[required]} wrapperCol={{span: 4}}>
-						<Select placeholder="Selecione a pontuacao" options={optionsCriticidade} onChange={e => calculateCriticidade({quando: e})} />
+						<Select placeholder="Selecione a pontuacao" options={criticidade} />
 					</Form.Item>
 					<Form.Item label="Quanto?" name="quanto" rules={[required]} wrapperCol={{span: 4}}>
-						<Select placeholder="Selecione a pontuacao" options={optionsCriticidade} onChange={e => calculateCriticidade({quanto: e})} />
+						<Select placeholder="Selecione a pontuacao" options={criticidade} />
 					</Form.Item>
 					<Form.Item label="Como?" name="como" rules={[required]} wrapperCol={{span: 4}}>
-						<Select placeholder="Selecione a pontuacao" options={optionsCriticidade} onChange={e => calculateCriticidade({como: e})} />
+						<Select placeholder="Selecione a pontuacao" options={criticidade} />
 					</Form.Item>
-					<Form.Item label="Criticidade:" name="criticidade" wrapperCol={{span: 6}}>
-						<Tag style={{margin: 0, padding: '5px 15px 5px 15px', fontSize: 16}} color={criticidade.color}>{criticidade.level}</Tag>
+					<Form.Item label="Criticidade" name="criticidade" wrapperCol={{span: 6}}>
+						<span style={{color: 'green'}}>Média ou Atenção</span>
 					</Form.Item>
 					<Form.Item label="Beneficiário com histórico de NIP's?" name="historicoNip">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
-					<Form.Item label="Beneficiário com ação judicial?" name="acaoJudicial">
+					<Form.Item label="Beneficiário com ação judicial??" name="acaoJudicial">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
 					<Form.Item label="Deseja que o sistema envie carta automática?" name="cartaAutomatica">

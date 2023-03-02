@@ -178,6 +178,25 @@ const Migalha = () => {
 				}
 			}
 		},
+
+		ocorrencias: {
+			nome: "Ocorrências",
+			params: "",
+			subs: {
+				acompanhar: {
+					nome: "Acompanhar",
+					params: "/:id"
+				},
+				editar: {
+					nome: "Editar",
+					params: "/:id"
+				},
+				adicionar: {
+					nome: "Adicionar",
+					params: ""
+				}
+			}
+		},
 	};
 
 	let matched = null;
