@@ -4,66 +4,11 @@ import { Link } from "react-router-dom";
 import { api } from "util/Api"
 import moment from "moment"
 
-import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, message } from "antd";
+import { Space, Card, Button, Input, Table, Dropdown, Popconfirm, Form, DatePicker, message } from "antd";
 import Highlighter from 'react-highlight-words';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
 
-
-const getColorCriticidade = (values) => {
-	let total = Number(values.criticidadeQuem) + Number(values.criticidadeQuando) + Number(values.criticidadeQuanto) + Number(values.criticidadeComo)
-	let res = ''
-
-	if (total >= 4 && total <= 6) {
-		res = 'Baixa'
-	}
-
-	if (total >= 7 && total <= 10) {
-		res = 'Média ou Atenção'
-	}
-
-	if (total >= 11 && total <= 12) {
-		res = 'Alta'
-	}
-	
-	return res
-}
-
-const getCriticidade = (val, type='level') => {
-	let res = ''
-
-	if (type === 'level') {
-		let total = Number(val.criticidadeQuem) + 
-					Number(val.criticidadeQuando) + 
-					Number(val.criticidadeQuanto) + 
-					Number(val.criticidadeComo)
-
-		if (total >= 4 && total <= 6) res = 'Baixa'
-		if (total >= 7 && total <= 10) res = 'Média ou Atenção'
-		if (total >= 11 && total <= 12) res = 'Alta'
-
-	} else {
-		if (val === 'Baixa') res = 'green'
-		if (val === 'Média ou Atenção') res = 'orange'
-		if (val === 'Alta') res = 'red'
-	}
-	
-	return res
-}
-
-const processData = data => {
-	let newData = data.map(item => { return {
-		id: item.id,
-		protocolo: item.protocolo,
-		remetente: item.remetente.nomeRemetente,
-		reclamado: item.reclamado.nomeReclamado,
-		ultimoSetor: 'OUVIDORIA',
-		diasSetor: '1',
-		criticidade: getCriticidade(item.criticidade),
-		createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
-	}})
-	return newData
-}
 
 
 const List = (props) => {
@@ -135,7 +80,7 @@ const List = (props) => {
 			/>
 		),
 		onFilter: (value, record) =>
-			record[dataIndex]?.toString().toLowerCase().includes(value.toLowerCase()),
+			record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
 		onFilterDropdownOpenChange: (visible) => {
 			if (visible) {
 				setTimeout(() => searchInput.current?.select(), 100);
@@ -159,11 +104,12 @@ const List = (props) => {
 
 	const columns = [
 		{
-			title: 'Protocolo',
-			dataIndex: 'protocolo',
+			title: 'Id',
+			dataIndex: 'id',
 			defaultSortOrder: 'descend',
-			sorter: (a, b) => a.protocolo - b.protocolo,
-			...getColumnSearchProps('protocolo')
+			sorter: (a, b) => a.id - b.id,
+			width: '6%',
+			...getColumnSearchProps('id')
 		},
 		{
 			title: 'Remetente',
@@ -195,27 +141,6 @@ const List = (props) => {
 			sorter: (a, b) => 
 				moment(a.createdAt, "DD/MM/YYYY HH:mm:ss").unix() - 
 				moment(b.createdAt, "DD/MM/YYYY HH:mm:ss").unix(),
-		},
-		{
-			title: 'Criticidade',
-			dataIndex: 'criticidade',
-			render: item => <Tag style={{margin: 0, padding: '4px 10px', fontSize: 15}} color={getCriticidade(item, 'color')} key={'1'}>{item}</Tag>,
-			sorter: (a, b) => a.criticidade?.level?.localeCompare(b.criticidade?.level),
-			filters: [
-				{
-					text: 'Baixa',
-					value: 'Baixa',
-				},
-				{
-					text: 'Média ou Atenção',
-					value: 'Média ou Atenção',
-				},
-				{
-					text: 'Alta',
-					value: 'Alta',
-				},
-			],
-			onFilter: (value, record) => record.criticidade.indexOf(value) === 0,
 		},
 		{
 			title: 'Ação',
@@ -298,16 +223,28 @@ const List = (props) => {
 	};
 
 	const onSubmit = async values => {
+		console.log(values)
 		let filter = {
 			params : {
 				dtInicial: values.data?.[0]?moment(values.data[0]).format('DD/MM/YYYY'):'',
 				dtFinal: values.data?.[1]?moment(values.data[1]).format('DD/MM/YYYY'):''
 			}
 		}
+		console.log('init')
 		await api.get(`api/${props.controller}/listar`, filter)
 		.then(({data}) => {
 			if (data.ok === 1) {
-				setData(processData(data.retorno))
+
+				let res = data.retorno.map(item => { return {
+					id: item.id,
+					remetente: item.remetente.nomeRemetente,
+					reclamado: item.reclamado.nomeReclamado,
+					ultimoSetor: 'OUVIDORIA',
+					diasSetor: '1',
+					createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
+				}})
+
+				setData(res)
 			} else {
 				message.error(data.mensagem)
 			}
@@ -323,7 +260,17 @@ const List = (props) => {
 			await api.get(`api/${props.controller}/listar`)
 			.then(({data}) => {
 				if (data.ok === 1) {
-					setData(processData(data.retorno))
+
+					let res = data.retorno.map(item => { return {
+						id: item.id,
+						remetente: item.remetente.nomeRemetente,
+						reclamado: item.reclamado.nomeReclamado,
+						ultimoSetor: 'OUVIDORIA',
+						diasSetor: '1',
+						createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
+					}})
+
+					setData(res)
 				} else {
 					message.error(data.mensagem)
 				}
