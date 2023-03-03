@@ -8,26 +8,8 @@ import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, mes
 import Highlighter from 'react-highlight-words';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
+import './styles.css'
 
-
-const getColorCriticidade = (values) => {
-	let total = Number(values.criticidadeQuem) + Number(values.criticidadeQuando) + Number(values.criticidadeQuanto) + Number(values.criticidadeComo)
-	let res = ''
-
-	if (total >= 4 && total <= 6) {
-		res = 'Baixa'
-	}
-
-	if (total >= 7 && total <= 10) {
-		res = 'Média ou Atenção'
-	}
-
-	if (total >= 11 && total <= 12) {
-		res = 'Alta'
-	}
-	
-	return res
-}
 
 const getCriticidade = (val, type='level') => {
 	let res = ''
@@ -367,7 +349,18 @@ const List = (props) => {
 				</Button>
           </Form.Item>
 		</Form>
-			<Table columns={columns} dataSource={data} />
+			<Table 
+				columns={columns}
+				dataSource={data}
+				rowClassName={(record, index) => {
+					switch (getCriticidade(record.criticidade, 'color')) {
+						case 'green': return 'table-row-green-custom'
+						case 'orange': return 'table-row-orange-custom'
+						case 'red': return 'table-row-red-custom'
+						default: break;
+					}
+				}}
+			/>
 		</Card>
 	);
 };

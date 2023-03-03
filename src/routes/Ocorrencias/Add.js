@@ -24,11 +24,18 @@ const Add = (props) => {
 	const [quando, setQuando] = useState()
 	const [quanto, setQuanto] = useState()
 	const [como, setComo] = useState()
+	const [protocoloAnterior, setProtocoloAnterior] = useState()
 	const [criticidade, setCriticidade] = useState({})
 
 	const [loadingCodigo, setLoadingCodigo] = useState(false)
 
 	const [form] = Form.useForm()
+
+	const setProtAnt = value => {
+		value = value.replace(/\D/g, "")
+		// netNumProtocoloAnterior(value)
+		form.setFieldsValue({ numProtocoloAnterior: value })
+	}
 
 	const calculateCriticidade = (params) => {
 		let obj = {
@@ -168,7 +175,8 @@ const Add = (props) => {
 			temHistoricoNips:			values.temHistoricoNips,
 			temAcaoJudicial:			values.acaoJudicial,
 			procedencia:				values.classificacao?1:0,
-			enviarCarta:				values.cartaAutomatica?1:0
+			enviarCarta:				values.cartaAutomatica?1:0,
+			protocoloAnterior:			values.numProtocoloAnterior
 		}
 
 		await api.post(`api/${props.controller}/adicionar`, body)
@@ -211,6 +219,16 @@ const Add = (props) => {
 
 
 				{(origem && finalidade && destino) && <>
+					<Divider orientation="left" style={{marginTop: '50px'}}>Protocolo de Instância Anterior</Divider>
+					<Form.Item label="Possui Protocolo de instância anterior?" name="protocoloAnterior">
+						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setProtocoloAnterior}/>
+					</Form.Item>
+					{(protocoloAnterior && 
+						<Form.Item label="Número de Protocolo da instância anterior:" name="numProtocoloAnterior" rules={[required]} wrapperCol={{span: 6}} onChange={e => setProtAnt(e.target.value)}>
+							<Input />
+						</Form.Item>
+					)}
+
 					<Divider orientation="left" style={{marginTop: '50px'}}>Informe seus dados (Todos os campos com * são obrigatórios)</Divider>
 					<Form.Item label="Cliente de outro Estado (Intercâmbio)?" name="clienteOutroEstado">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setClienteOutroEstado}/>
