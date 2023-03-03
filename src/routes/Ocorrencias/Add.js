@@ -171,12 +171,7 @@ const Add = (props) => {
 			quem: 						values.quem,
 			quando: 					values.quando,
 			quanto: 					values.quanto,
-			como: 						values.como,
-			temHistoricoNips:			values.temHistoricoNips,
-			temAcaoJudicial:			values.acaoJudicial,
-			procedencia:				values.classificacao?1:0,
-			enviarCarta:				values.cartaAutomatica?1:0,
-			protocoloAnterior:			values.numProtocoloAnterior
+			como: 						values.como
 		}
 
 		await api.post(`api/${props.controller}/adicionar`, body)
@@ -263,13 +258,13 @@ const Add = (props) => {
 					<Form.Item label="Celular:" name="celularRemetente" rules={[required]} wrapperCol={{span: 6}} >
 						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
 					</Form.Item>
-					<Form.Item label="Telefone:" name="telefoneRemetente" rules={[required]} wrapperCol={{span: 6}}>
+					<Form.Item label="Telefone:" name="telefoneRemetente" wrapperCol={{span: 6}}>
 						<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}} />
 					</Form.Item>
 					<Form.Item label="Email:" name="emailRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
 						<Input disabled={!clienteOutroEstado} />
 					</Form.Item>
-					<Form.Item label="Data de nascimento:" name="dataNascimentoRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
+					<Form.Item label="Data de nascimento:" name="dataNascimentoRemetente" wrapperCol={{span: 8}}>
 						<DatePicker format="DD/MM/YYYY" disabled={!clienteOutroEstado} />
 					</Form.Item>
 					<Form.Item label="Sexo:" name="sexoRemetente" rules={[required]} wrapperCol={{span: 8}}>
