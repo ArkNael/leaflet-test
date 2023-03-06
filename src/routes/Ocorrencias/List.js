@@ -210,8 +210,7 @@ const List = (props) => {
 						</span>
 					</Dropdown>
 				</div>
-			  ),
-			  width: '8%'
+			  )
 		},
 	];
 
