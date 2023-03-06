@@ -1,9 +1,29 @@
 .table-row-green-custom {
-    background-color: #c5ffa3;
+    background-color: #c5ffa3e0;
 }
 .table-row-orange-custom {
-    background-color: #ffd8ab;
+    background-color: #f4ff454f;
 }
 .table-row-red-custom {
-    background-color: #ff8787;
+    background-color: #ff878796;
+}
+
+.table-row-green-custom td.ant-table-column-sort {
+    background-color: #b1fd85;
+}
+.table-row-orange-custom td.ant-table-column-sort {
+    background-color: #f9ffa4;
+}
+.table-row-red-custom td.ant-table-column-sort {
+    background-color: #ffadad;
+}
+
+.table-row-green-custom:hover td {
+    background-color: #9dff64 !important;
+}
+.table-row-orange-custom:hover td {
+    background-color: #f7ff7b !important;
+}
+.table-row-red-custom:hover td {
+    background-color: #ff9494 !important;
 }
