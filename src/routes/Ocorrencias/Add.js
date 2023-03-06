@@ -20,13 +20,10 @@ const Add = (props) => {
 	const [finalidade, setFinalidade] = useState()
 	const [destino, setDestino] = useState()
 	const [clienteOutroEstado, setClienteOutroEstado] = useState(false)
-	const [quem, setQuem] = useState()
-	const [quando, setQuando] = useState()
-	const [quanto, setQuanto] = useState()
-	const [como, setComo] = useState()
 	const [protocoloAnterior, setProtocoloAnterior] = useState()
 	const [criticidade, setCriticidade] = useState({})
 
+	const [loading, setLoading] = useState(false)
 	const [loadingCodigo, setLoadingCodigo] = useState(false)
 
 	const [form] = Form.useForm()
@@ -129,7 +126,31 @@ const Add = (props) => {
 		}
 	}
 
+	const sendFiles = async fileList => {
+		let formData = new FormData();
+
+		fileList.map(element => {
+			formData.append('arquivos', element.originFileObj)
+        })
+		// formData.append('main', 'excalibur')
+		// formData.append('requiemMods', ['Oul', 'Vome', 'Ris', 'Xata', 'Krah', 'Lohk'])
+
+		await api.post(`api/teste`, formData)
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				// props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao enviar anexos')
+		})
+	}
+
 	const handleSubmit = async (values) => {
+		setLoading(true)
 		const body = {
 			nomeReclamado:				values.nomeReclamado,
 			emailReclamado:				values.emailReclamado,
@@ -152,7 +173,7 @@ const Add = (props) => {
 			cidadeRemetente: 			values.cidadeRemetente,
 			ufRemetente: 				values.ufRemetente,
 			telefoneRemetente: 			values.telefoneRemetente,
-			celularRemetente: 			values.telefoneRemetente,
+			celularRemetente: 			values.celularRemetente,
 			dataNascimentoRemetente:	moment(values.dataNascimentoRemetente).format('DD/MM/YYYY'),
 			sexoRemetente: 				values.sexoRemetente,
 
@@ -171,10 +192,25 @@ const Add = (props) => {
 			quem: 						values.quem,
 			quando: 					values.quando,
 			quanto: 					values.quanto,
-			como: 						values.como
+			como: 						values.como,
+			temHistoricoNips:			values.historicoNip?'1':'0',
+			temAcaoJudicial:			values.acaoJudicial?'1':'0',
+			procedencia:				values.classificacao?'1':'0',
+			enviarCarta:				values.cartaAutomatica?'1':'0',
+			protocoloAnterior:			values.numProtocoloAnterior
 		}
 
-		await api.post(`api/${props.controller}/adicionar`, body)
+ 
+		const formData = new FormData();
+
+		for (let key in body) formData.append(key, body[key] || '')
+		
+		if (values.anexos.length > 0) {
+			values.anexos.map(element => formData.append('arquivos', element.originFileObj))
+		}
+
+		
+		await api.post(`api/${props.controller}/adicionar`, formData)
 		.then(({data}) => {
 			if (data.ok === 1) {
 				message.success(data.mensagem)
@@ -186,6 +222,8 @@ const Add = (props) => {
 		.catch((err) => {
 			message.error('Erro ao salvar registro')
 		})
+
+		setLoading(false)
 	}
 
 
@@ -202,13 +240,13 @@ const Add = (props) => {
 			<Form form={form} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
 
 				<Divider orientation='left'>Informações da Ocorrência</Divider>
-				<Form.Item label="Quem está abrindo a ocorrência?" name="origem" rules={[{ required: true, message: 'Informe quem está abrindo a ocorrencia!' }]} wrapperCol={{span: 10}}>
+				<Form.Item label="Quem está abrindo a ocorrência?" name="origem" rules={[{ required: false, message: 'Informe quem está abrindo a ocorrencia!' }]} wrapperCol={{span: 10}}>
 					<CustomSelect placeholder='Selecione a origem' controller="origens" onChange={setOrigem} />
 				</Form.Item>
-				<Form.Item label="Qual a finalidade desta ocorrência?" name="finalidade" rules={[{ required: true, message: 'Informe a finalidade desta ocorrência!' }]} wrapperCol={{span: 10}}>
+				<Form.Item label="Qual a finalidade desta ocorrência?" name="finalidade" rules={[{ required: false, message: 'Informe a finalidade desta ocorrência!' }]} wrapperCol={{span: 10}}>
 					<CustomSelect placeholder='Selecione a finalidade' controller="finalidades" onChange={setFinalidade} />
 				</Form.Item>
-				<Form.Item label="A quem se destina a ocorrência?" name="destino" rules={[{ required: true, message: 'Informe a quem se destina esta ocorrência!' }]} wrapperCol={{span: 10}}>
+				<Form.Item label="A quem se destina a ocorrência?" name="destino" rules={[{ required: false, message: 'Informe a quem se destina esta ocorrência!' }]} wrapperCol={{span: 10}}>
 					<CustomSelect placeholder='Selecione o destino' controller="destinos" onChange={setDestino} />
 				</Form.Item>
 
@@ -378,7 +416,7 @@ const Add = (props) => {
 					<Form.Item label="Beneficiário com histórico de NIP's?" name="historicoNip">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
-					<Form.Item label="Beneficiário com ação judicial?" name="acaoJudicial">
+					<Form.Item label="Beneficiário com histórico de ação judicial?" name="acaoJudicial">
 						<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 					</Form.Item>
 					<Form.Item label="Deseja que o sistema envie carta automática?" name="cartaAutomatica">
@@ -387,12 +425,11 @@ const Add = (props) => {
 					
 					
 					<Divider orientation="left" style={{marginTop: '50px'}}>Caso deseje anexar arquivos, utilize o campo abaixo:</Divider>
-					<Form.Item label=" " name="assunto" wrapperCol={{span: 24}}>
-						<CustomUpload />
-					</Form.Item>
+					<CustomUpload form={form}/>
+
 
 					<Form.Item label=' ' wrapperCol={{span: 24}}>
-						<Button className="gx-mb-0" type="primary" htmlType="submit">Abrir</Button>
+						<Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Abrir</Button>
 					</Form.Item>
 				</>}
 				
