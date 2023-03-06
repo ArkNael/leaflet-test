@@ -25,9 +25,9 @@ const getCriticidade = (val, type='level') => {
 		if (total >= 11 && total <= 12) res = 'Alta'
 
 	} else {
-		if (val === 'Baixa') res = 'green'
-		if (val === 'Média ou Atenção') res = 'orange'
-		if (val === 'Alta') res = 'red'
+		if (val === 'Baixa') res = type==='color-hex'?'#9dff64':'green'
+		if (val === 'Média ou Atenção') res = type==='color-hex'?'#f7ff7b':'orange'
+		if (val === 'Alta') res = type==='color-hex'?'#ff8787':'red'
 	}
 	
 	return res
@@ -181,8 +181,8 @@ const List = (props) => {
 		{
 			title: 'Criticidade',
 			dataIndex: 'criticidade',
-			render: item => <Tag style={{margin: 0, padding: '4px 10px', fontSize: 15}} color={getCriticidade(item, 'color')} key={'1'}>{item}</Tag>,
-			sorter: (a, b) => a.criticidade?.level?.localeCompare(b.criticidade?.level),
+			render: item => <Tag style={{margin: 0, padding: '4px 10px', fontSize: 15, width: '100%', textAlign: 'center'}} color={getCriticidade(item, 'color')} key={'1'}>{item}</Tag>,
+			sorter: (a, b) => a.criticidade?.localeCompare(b.criticidade),
 			filters: [
 				{
 					text: 'Baixa',
@@ -334,32 +334,25 @@ const List = (props) => {
 				</p>
 			}
 		>
-		<Form layout="inline" onFinish={onSubmit}>
-			<Form.Item label="Data" name="data" labelCol={{xs: {span: 24}, sm: {span: 4}}}>
-				<DatePicker.RangePicker format='DD/MM/YYYY' />
-			</Form.Item>
-			<Form.Item>
-				<Button
-					className="gx-mb-0"
-					type="primary"
-					htmlType="submit"
-					// loading={this.state.loading}
-				>
-					Filtrar
-				</Button>
-          </Form.Item>
-		</Form>
+			<Form layout="inline" onFinish={onSubmit}>
+				<Form.Item label="Data" name="data" labelCol={{xs: {span: 24}, sm: {span: 4}}}>
+					<DatePicker.RangePicker format='DD/MM/YYYY' />
+				</Form.Item>
+				<Form.Item>
+					<Button
+						className="gx-mb-0"
+						type="primary"
+						htmlType="submit"
+						// loading={this.state.loading}
+					>
+						Filtrar
+					</Button>
+				</Form.Item>
+			</Form>
 			<Table 
 				columns={columns}
 				dataSource={data}
-				rowClassName={(record, index) => {
-					switch (getCriticidade(record.criticidade, 'color')) {
-						case 'green': return 'table-row-green-custom'
-						case 'orange': return 'table-row-orange-custom'
-						case 'red': return 'table-row-red-custom'
-						default: break;
-					}
-				}}
+				rowClassName={record => 'table-row-'+getCriticidade(record.criticidade, 'color')+'-custom'}
 			/>
 		</Card>
 	);
