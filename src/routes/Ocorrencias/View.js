@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 
-import { Card, Row, Col, Divider, Skeleton, List, message } from 'antd';
+import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, message } from 'antd';
 import Text from '../../components/Crud/DataDisplay/Text';
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
 import { api } from "util/Api"
+import { urlApi } from "util/config";
 import moment from "moment"
 
 import IntlMessages from "util/IntlMessages";
@@ -28,26 +29,25 @@ const View = (props) => {
 
 	const [data, setData] = useState({})
 
-	const anexos = [
-		{
-			id: 1,
-			nome: 'comprovante de envio de e-mail 2.pdf.jpg'
-		},
-		{
-			id: 2,
-			nome: 'comprovante de envio de e-mail.pdf'
-		},
-		{
-			id: 3,
-			nome: 'LARA OLIVEIRA COSTA BAPTISTA DE JESUS.pdf'
-		},
-	]
+	const deleteReg = async (key) => {
+		const registros = data.arquivos.filter(item => item.id !== key);
+
+		await api.get(`api/${props.controller}/anexos/excluir/${key}`)
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				setData(prev => ({...prev, arquivos: registros}))
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao excluir registro')
+		})
+	};
 
 	useEffect( () => {
-		const fetchData = async () => { 
-			await getData(setData, props.controller, props.match.params.id)
-		}
-
+		const fetchData = async () => await getData(setData, props.controller, props.match.params.id)
 		fetchData()
 	}, [props])
 
@@ -65,7 +65,8 @@ const View = (props) => {
 							<Text span={24} label="Data de nascimento">{data.remetente?.dataNascimentoRemetente}</Text>
 							<Text span={24} label="Sexo">{data.remetente?.sexoRemetente==='M'?'Masculino':'Feminino'}</Text>
 							<Text span={24} label="Email">{data.remetente?.emailRemetente}</Text>
-							<Text span={24} label="Telefone">{data.remetente?.telefoneRemetente}</Text>
+							<Text span={12} label="Celular">{data.remetente?.celularRemetente}</Text>
+							<Text span={12} label="Telefone">{data.remetente?.telefoneRemetente}</Text>
 						</Row>
 					</Skeleton>
 				</Card>
@@ -84,13 +85,29 @@ const View = (props) => {
 					<List
 						loading={false}
 						itemLayout="horizontal"
-						dataSource={anexos}
+						dataSource={data.arquivos}
 						renderItem={(item) => (
 							<List.Item
-								actions={[<a key="list-loadmore-view"><i className="icon icon-eye" /></a>, <a key="list-loadmore-delete"><i className="icon icon-trash" /></a>]}
+								actions={[
+									<a 
+										target="_blank" 
+										href={`${urlApi}api/${props.controller}/anexos/visualizar/${item.arquivo}`} 
+										key="list-loadmore-view"
+									>
+										<i className="icon icon-eye" />
+									</a>, 
+									<Popconfirm
+										title="Deseja excluir o registro?"
+										onConfirm={e => { deleteReg(item.id) }}
+										okText="Sim"
+										cancelText="Não"
+									>
+										<i className="icon icon-trash gx-link" />
+									</Popconfirm>
+								]}
 							>
 								<Skeleton loading={false} active>
-									<div>{item.nome}</div>
+									<div>{item.apelidoArquivo}</div>
 								</Skeleton>
 							</List.Item>
 						)}
@@ -114,13 +131,13 @@ const View = (props) => {
 							<Text span={5} label="Data / hora">{data.createdAt?moment(data.createdAt).format('DD/MM/YYYY HH:mm:ss'):''}</Text>
 							<Text span={4} label="Forma de envio">{data.forma?.nomeForma}</Text>
 							<Text span={4} label="Status">{data.status?.nomeStatus}</Text>
-							<Text span={4} label="Envio de carta" style={{color: 'red'}}>Não</Text>
-							<Text span={4} label="Procedencia" style={{color: 'red'}}>Procedente</Text>
+							<Text span={4} label="Envio de carta">{data.enviarCarta?'Sim':'Não'}</Text>
+							<Text span={4} label="Procedencia">{data.procedencia?'Sim':'Não'}</Text>
 							<Text span={4} label="Finalizado" style={{color: 'red'}}>Site</Text>
 						</Row>
 						<Divider />
 						<Row>
-							<Text span={12} label="Classificação da ocorrência" style={{color: 'red'}}>Formulário padrão</Text>
+							<Text span={12} label="Classificação da ocorrência">{data.tipo?.nomeTipo}</Text>
 							<Text span={12} label="Tipo de contrato">{data.contrato?.nomeContrato}</Text>
 							<Text span={12} label="Tema">{data.tema?.nomeTema}</Text>
 							<Text span={12} label="Setor anterior" style={{color: 'red'}}>(3400000)</Text>
@@ -132,7 +149,6 @@ const View = (props) => {
 					</Skeleton>
 				</Card>
 				<Card type='inner' className="gx-card">
-					{/* title="Dados da Ocorrência" */}
 					<CardTitle>Interações</CardTitle>
 					<Skeleton loading={false}>
 					</Skeleton>

@@ -126,29 +126,6 @@ const Add = (props) => {
 		}
 	}
 
-	const sendFiles = async fileList => {
-		let formData = new FormData();
-
-		fileList.map(element => {
-			formData.append('arquivos', element.originFileObj)
-        })
-		// formData.append('main', 'excalibur')
-		// formData.append('requiemMods', ['Oul', 'Vome', 'Ris', 'Xata', 'Krah', 'Lohk'])
-
-		await api.post(`api/teste`, formData)
-		.then(({data}) => {
-			if (data.ok === 1) {
-				message.success(data.mensagem)
-				// props.history.push(`/${props.controller}`)
-			} else {
-				message.error(data.mensagem)
-			}
-		})
-		.catch((err) => {
-			message.error('Erro ao enviar anexos')
-		})
-	}
-
 	const handleSubmit = async (values) => {
 		setLoading(true)
 		const body = {

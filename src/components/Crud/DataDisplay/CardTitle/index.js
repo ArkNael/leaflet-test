@@ -1,4 +1,3 @@
-import { Col } from 'antd'
 import { Container } from './styles'
 
 const CardTitle = ({children, ...rest}) => {
