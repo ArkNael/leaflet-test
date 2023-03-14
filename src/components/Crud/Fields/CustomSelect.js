@@ -6,7 +6,11 @@ const CustomSelect = ({controller, placeholder = 'Selecione uma opção', index=
     const [data, setData] = useState()
 
     const mountItems = (items = []) => {
-        return items.map((e) => { return {value: e.id, label: e[index]} })
+        return items.map((e) => {
+            let extra = {}
+            if (controller === 'formas' && e.nome === 'Aplicativo') extra = { disabled: true }
+            return {value: e.id, label: e[index], ...extra}
+        })
      }
 
     useEffect(() => {

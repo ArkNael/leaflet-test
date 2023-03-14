@@ -27,3 +27,8 @@
 .table-row-red-custom:hover td {
     background-color: #ff9494 !important;
 }
+
+
+.ant-table-container {
+    font-size: 12px;
+}

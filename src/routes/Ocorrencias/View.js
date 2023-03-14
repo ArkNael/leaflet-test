@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 
-import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, message } from 'antd';
-import Text from '../../components/Crud/DataDisplay/Text';
-import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
-
 import { api } from "util/Api"
 import { urlApi } from "util/config";
 import moment from "moment"
 
+import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, Tabs, Dropdown, message } from 'antd';
+import * as Icons from '@ant-design/icons';
+import Text from '../../components/Crud/DataDisplay/Text';
+import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags } from './components/ListagemMovimentacoes'
+import TimelineOcorrencia from '../../components/Crud/DataDisplay/TimeLineOcorrencia'
+import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
+
 import IntlMessages from "util/IntlMessages";
+import { ModalEncaminhar, ModalFinalizar, ModalResponder, ModalResponderPausa, ModalSolicitarPausa } from './components/Modal';
 
 
 const getData = async (setter, controller, id) => {
@@ -45,6 +49,60 @@ const View = (props) => {
 			message.error('Erro ao excluir registro')
 		})
 	};
+
+	const submenus = rec => [
+		{
+			key: '1',
+			label: (
+                <span
+					style={{ paddingLeft: "5px" }}
+					onClick={e => { message.error('Não é possível editar a ocorrência no momento.') }}
+				>
+					Editar ocorrência
+				</span>
+			),
+			icon: (<i className="icon icon-edit" />)
+		},
+		{
+			key: '2',
+			label: <ModalEncaminhar record={rec} />,
+			icon: <i className="icon icon-forward" />
+		},
+		{
+			key: '3',
+			label: <ModalResponderPausa record={rec} />,
+			icon: <i className="icon icon-forward" />
+		},
+		{
+			key: '4',
+			label: <ModalFinalizar record={rec} />,
+			icon: <i className="icon icon-check" />
+		},
+		{
+			key: '5',
+			label: <ModalSolicitarPausa record={rec} />,
+			icon: <Icons.PauseOutlined />
+		},
+		{
+			key: '6',
+			label: <ModalResponder record={rec} />,
+			icon: <i className="icon icon-forward" />
+		},
+		{
+			key: '7',
+			label: (
+				<Popconfirm
+					title="Deseja excluir o registro?"
+					onConfirm={e => { message.error('Não é possível excluir a ocorrência no momento.') }}
+					okText="Sim"
+					cancelText="Não"
+				>
+					<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir ocorrência</span>
+				</Popconfirm>
+			),
+			icon: (<i className="icon icon-trash" />),
+		},
+	];
 
 	useEffect( () => {
 		const fetchData = async () => await getData(setData, props.controller, props.match.params.id)
@@ -93,6 +151,7 @@ const View = (props) => {
 										target="_blank" 
 										href={`${urlApi}api/${props.controller}/anexos/visualizar/${item.arquivo}`} 
 										key="list-loadmore-view"
+										rel="noreferrer" 
 									>
 										<i className="icon icon-eye" />
 									</a>, 
@@ -142,16 +201,55 @@ const View = (props) => {
 							<Text span={12} label="Tema">{data.tema?.nomeTema}</Text>
 							<Text span={12} label="Setor anterior" style={{color: 'red'}}>(3400000)</Text>
 							<Text span={12} label="Histórico" style={{color: 'red'}}>01/02/2023 07:35</Text>
-							<Text span={12} label="Setor atual" style={{color: 'red'}}>(3400000)</Text>
 							<Text span={24} label="Assunto">{data.assuntoOcorrencia}</Text>
 							<Text span={24} label="Descrição">{data.descricaoOcorrencia}</Text>
 						</Row>
 					</Skeleton>
 				</Card>
 				<Card type='inner' className="gx-card">
-					<CardTitle>Interações</CardTitle>
+					<CardTitle
+						extra={
+							<Dropdown menu={{items: submenus(props.match.params.id)}}>
+								<span className="gx-link ant-dropdown-link">
+									<Icons.SettingOutlined />
+								</span>
+							</Dropdown>
+						}
+					>
+						Interações
+					</CardTitle>
 					<Skeleton loading={false}>
+						
 					</Skeleton>
+					<Tabs
+						items={[
+							{
+								label: 'Listagem',
+								key: 1,
+								children: <Listagem />
+							},
+							{
+								label: 'Listagem Simples',
+								key: 2,
+								children: <ListagemSimples />
+							},
+							{
+								label: 'Listagem Sovnet',
+								key: 3,
+								children: <ListagemSovnet />
+							},
+							{
+								label: 'Listagem Sovnet (Tags)',
+								key: 4,
+								children: <ListagemSovnetComTags />
+							},
+							{
+								label: 'Linha do Tempo',
+								key: 5,
+								children: <TimelineOcorrencia />
+							}
+						]}
+					/>
 				</Card>
 			</Col>
 		</Row>

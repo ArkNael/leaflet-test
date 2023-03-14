@@ -38,7 +38,7 @@ const Topbar = () => {
           />
         </div> : null}
       <Link to="/" className="gx-d-block gx-d-lg-none gx-pointer">
-        <img alt="" src="https://api.unimednatal.com.br/api/imgs/logos/unimed_quad.png"/>
+        <img alt="" src="https://api.unimednatal.com.br/api/imgs/logos/unimed_quad.png" style={{width: 40}}/>
       </Link>
       <div className="title gx-fs-xxl" style={{ paddingLeft: "10px" }}>
         <IntlMessages id="topbar.titulo" />
