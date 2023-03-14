@@ -559,7 +559,6 @@ export const ModalSolicitarPausa = ({record}) => {
 export const ModalResponderPausa = ({record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
-    const [loading, setLoading] = useState(false);
     const [acao, setAcao] = useState();
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
 
@@ -573,7 +572,6 @@ export const ModalResponderPausa = ({record}) => {
     const handleCancel = (e) => setOpen(false)
 
     const handleSubmit = values => {
-        setLoading(true)
         const submitRequest = () => {
             setTimeout(() => {
                 console.log('#---------submit---------#')
@@ -582,7 +580,6 @@ export const ModalResponderPausa = ({record}) => {
                 console.log('#---------end submit---------#')
 
                 setOpen(false)
-                setLoading(false)
                 setAcao()
                 message.success('Solicitação registrada com sucesso!')
             }, 3000)

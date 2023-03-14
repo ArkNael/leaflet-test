@@ -352,6 +352,8 @@ const List = (props) => {
 				columns={columns}
 				dataSource={data}
 				rowClassName={record => 'table-row-'+getCriticidade(record.criticidade, 'color')+'-custom'}
+				scroll={{ x: 400 }}
+
 			/>
 		</Card>
 	);
