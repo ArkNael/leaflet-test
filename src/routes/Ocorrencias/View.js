@@ -79,16 +79,6 @@ const View = (props) => {
 			icon: <i className="icon icon-check" />
 		},
 		{
-			key: '5',
-			label: <ModalSolicitarPausa record={rec} />,
-			icon: <Icons.PauseOutlined />
-		},
-		{
-			key: '6',
-			label: <ModalResponder record={rec} />,
-			icon: <i className="icon icon-forward" />
-		},
-		{
 			key: '7',
 			label: (
 				<Popconfirm
@@ -223,23 +213,23 @@ const View = (props) => {
 					</Skeleton>
 					<Tabs
 						items={[
+							// {
+							// 	label: 'Listagem',
+							// 	key: 1,
+							// 	children: <Listagem />
+							// },
+							// {
+							// 	label: 'Listagem Simples',
+							// 	key: 2,
+							// 	children: <ListagemSimples />
+							// },
+							// {
+							// 	label: 'Listagem Sovnet',
+							// 	key: 3,
+							// 	children: <ListagemSovnet />
+							// },
 							{
 								label: 'Listagem',
-								key: 1,
-								children: <Listagem />
-							},
-							{
-								label: 'Listagem Simples',
-								key: 2,
-								children: <ListagemSimples />
-							},
-							{
-								label: 'Listagem Sovnet',
-								key: 3,
-								children: <ListagemSovnet />
-							},
-							{
-								label: 'Listagem Sovnet (Tags)',
 								key: 4,
 								children: <ListagemSovnetComTags />
 							},
