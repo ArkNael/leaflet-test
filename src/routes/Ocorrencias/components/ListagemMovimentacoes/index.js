@@ -1,4 +1,4 @@
-import { Table, Timeline, Dropdown, List, Row, Col, Divider } from "antd"
+import { Table, Timeline, Dropdown, List, Row, Col } from "antd"
 import * as Icons from '@ant-design/icons';
 
 import Text from '../../../../components/Crud/DataDisplay/Text'
