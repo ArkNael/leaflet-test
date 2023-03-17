@@ -7,7 +7,7 @@ import moment from "moment"
 import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, Tabs, Dropdown, message } from 'antd';
 import * as Icons from '@ant-design/icons';
 import Text from '../../components/Crud/DataDisplay/Text';
-import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags } from './components/ListagemMovimentacoes'
+import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, TimelineMovimentacoes } from './components/ListagemMovimentacoes'
 import TimelineOcorrencia from '../../components/Crud/DataDisplay/TimeLineOcorrencia'
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
@@ -233,10 +233,15 @@ const View = (props) => {
 								key: 4,
 								children: <ListagemSovnetComTags />
 							},
+							// {
+							// 	label: 'Linha do Tempo',
+							// 	key: 5,
+							// 	children: <TimelineOcorrencia />
+							// },
 							{
 								label: 'Linha do Tempo',
-								key: 5,
-								children: <TimelineOcorrencia />
+								key: 6,
+								children: <TimelineMovimentacoes />
 							}
 						]}
 					/>

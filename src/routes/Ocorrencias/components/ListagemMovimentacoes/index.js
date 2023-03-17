@@ -1,10 +1,11 @@
-import { Table, Dropdown, List, Row } from "antd"
+import { Table, Timeline, Dropdown, List, Row, Col, Divider } from "antd"
 import * as Icons from '@ant-design/icons';
 
 import Text from '../../../../components/Crud/DataDisplay/Text'
 import CustomTooltip from "../Tooltip";
 import {InfoModal, InfoModalSovnet, InfoModalSovnetAcoes} from "../Modal";
 import CustomTag from "../CustomTag";
+import getIconeMovimentacao from "../IconeMovimentacao";
 
 const movimentacoes = [		
     {
@@ -347,5 +348,51 @@ export const ListagemSovnetComTags = () => {
                 </List.Item>
             )}
         />
+    )
+}
+
+export const TimelineMovimentacoes = ({data}) => {
+    data = movimentacoes
+
+    let timelineItems = data.map((element, key) => {
+            let label = ''
+            if (key === 0) label = 'Última Iteração'
+            if (key === data.length-1) label = 'Primeira Iteração'
+
+            let config = {
+                label
+            }
+
+            return (
+                <Timeline.Item style={{fontSize: 13}} {...getIconeMovimentacao(element.tipo)}
+                    label={
+                        <Row style={{margin: 0, display: 'flex', justifyContent: 'flex-end'}}>
+                            <Text style={{padding: 0, color: 'green'}} span={7} {...config} colon={false} />
+                            {element.tempoSetor && <Text style={{padding: 0}} span={8} label="Tempo Total setor" colon={false}>({element.tempoSetor})</Text>}
+                            <Text style={{padding: 0}} span={9} label={'Data / hora'} colon={false}>{element.createdAt}</Text>
+                        </Row>
+                    }
+                    children={<>
+                        <Text label="Usuário que Encaminhou/Respondeu">
+                            {element.usuario}
+                            {element.setorUsuario?(<><br/>({element.setorUsuario})</>):''}
+                        </Text>
+                        <Text label={<Row><Col span={13}>Origem</Col><Col span={11}>Destino</Col></Row>} colon={false}>
+                            <Row>
+                                <Col span={11}>{element.setorOrigem}</Col>
+                                <Col span={2}><Icons.ArrowRightOutlined /></Col>
+                                <Col span={11}>{element.setorDestino}</Col>
+                            </Row>
+                        </Text>
+                    </>}
+                />
+            )
+        }
+    )
+
+    return (
+        <Timeline mode='left'>
+            {timelineItems}
+        </Timeline>
     )
 }
