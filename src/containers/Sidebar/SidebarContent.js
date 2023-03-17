@@ -136,7 +136,7 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.tipos"/></span>
 								</Link>
 							</Menu.Item>
-							<Menu.Item key="centros-custo">
+							<Menu.Item key="ccustos">
 								<Link to="/ccustos">
 									<span><IntlMessages id="sidebar.ccustos"/></span>
 								</Link>
