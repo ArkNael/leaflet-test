@@ -60,7 +60,7 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								<span>
 									{" "}
 									<i className="icon icon-alert" />
-									<IntlMessages id="sidebar.ocorrencias" />
+									<span><IntlMessages id="sidebar.ocorrencias" /></span>
 								</span>
 							}
 						>
@@ -82,7 +82,7 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								<span>
 									{" "}
 									<i className="icon icon-product-list" />
-									<IntlMessages id="sidebar.cadastrosBasicos" />
+									<span><IntlMessages id="sidebar.cadastrosBasicos" /></span>
 								</span>
 							}
 						>
@@ -136,7 +136,7 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.tipos"/></span>
 								</Link>
 							</Menu.Item>
-							<Menu.Item key="centros-custo">
+							<Menu.Item key="ccustos">
 								<Link to="/ccustos">
 									<span><IntlMessages id="sidebar.ccustos"/></span>
 								</Link>

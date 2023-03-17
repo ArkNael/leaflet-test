@@ -7,7 +7,7 @@ export const ContainerItem = styled.div`
 `
 
 export const Label = styled.span`
-    font-weight: 550;
+    color: #a3a3a3;
 `
 
 export const Text = styled.span`

@@ -1,9 +1,14 @@
-import { Container } from './styles'
+import { Container, Title, Extra, CustomDivider } from './styles'
 
-const CardTitle = ({children, ...rest}) => {
+const CardTitle = ({children, extra, ...rest}) => {
     return (
         <Container {...rest}>
-            {children}
+            <Title>
+                {children}
+            </Title>
+            <Extra>
+                {extra && <><CustomDivider type='vertical'/>{extra}</>}
+            </Extra>
         </Container>
     )
 }

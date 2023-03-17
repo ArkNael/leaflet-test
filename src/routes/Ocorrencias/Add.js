@@ -82,6 +82,10 @@ const Add = (props) => {
 	}
 
 	const setRemetente = values => {
+
+		if (values.TELEFONE.startsWith('55'))
+			values.TELEFONE = values.TELEFONE.substring(2)
+
 		form.setFieldsValue({
 			nomeRemetente: 				values.NM_PESSOA,
 			celularRemetente: 			values.TELEFONE,
