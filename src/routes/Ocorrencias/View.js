@@ -16,7 +16,7 @@ import { ModalEncaminhar, ModalFinalizar, ModalResponder, ModalResponderPausa, M
 
 
 const getData = async (setter, controller, id) => {
-	await api.get(`api/${controller}/listar/${id}`)
+	await api.get(`api/${controller}/exibir/${id}`)
 	.then(({data}) => {
 		if (data.ok === 1) {
 			setter(data.retorno[0])
