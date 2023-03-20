@@ -8,7 +8,6 @@ import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, Tabs, Dropdown, me
 import * as Icons from '@ant-design/icons';
 import Text from '../../components/Crud/DataDisplay/Text';
 import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, TimelineMovimentacoes } from './components/ListagemMovimentacoes'
-import TimelineOcorrencia from '../../components/Crud/DataDisplay/TimeLineOcorrencia'
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
 import IntlMessages from "util/IntlMessages";
@@ -16,7 +15,7 @@ import { ModalEncaminhar, ModalFinalizar, ModalResponder, ModalResponderPausa, M
 
 
 const getData = async (setter, controller, id) => {
-	await api.get(`api/${controller}/listar/${id}`)
+	await api.get(`api/${controller}/exibir/${id}`)
 	.then(({data}) => {
 		if (data.ok === 1) {
 			setter(data.retorno[0])
