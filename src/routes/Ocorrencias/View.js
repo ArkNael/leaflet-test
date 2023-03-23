@@ -75,7 +75,7 @@ const View = (props) => {
 		},
 		{
 			key: '3',
-			label: <ModalResponderPausa record={rec} />,
+			label: <ModalResponderPausa historyPush={props.history.push} record={rec} />,
 			icon: <i className="icon icon-forward" />
 		},
 		{

@@ -169,8 +169,6 @@ export const InfoModalSovnet = ({record}) => {
 };
 
 export const InfoModalSovnetDinamico = ({record}) => {
-    console.log('record')
-    console.log(record)
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
@@ -240,8 +238,8 @@ export const InfoModalSovnetDinamico = ({record}) => {
                 <Text span={6} label="Localização atual">{record.setorReceptor.nomeCcusto}</Text>
                 <Divider />
                 <Text span={24} label="Mensagem">{record.resposta.mensagemResposta}</Text>
-                {record.causaRaiz &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaiz}</Text></>}
-                {record.acoesMelhoria && <><Divider /><Text span={24} label="Ações de Melhoria">{record.resposta.acoesMelhoriaResposta}</Text></>}
+                {record.resposta.causaRaizResposta &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaizResposta}</Text></>}
+                {record.resposta.acoesMelhoriaResposta && <><Divider /><Text span={24} label="Ações de Melhoria">{record.resposta.acoesMelhoriaResposta}</Text></>}
             </Row>
         </Modal>
         </>
@@ -658,12 +656,15 @@ export const ModalSolicitarPausa = ({historyPush, record}) => {
     );
 };
 
-export const ModalResponderPausa = ({record}) => {
+export const ModalResponderPausa = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [acao, setAcao] = useState();
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
 
+
+    const { authUser } = useAuth();
+    
 
     const draggleRef = useRef(null);
 
@@ -673,21 +674,44 @@ export const ModalResponderPausa = ({record}) => {
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('A: '+ acao)
-                console.log('I: '+values.motivo)
-                console.log('#---------end submit---------#')
+    const handleSubmit = async values => {
+        let urlAction = acao === 'negar' ? '/negar/pausa' : '/conceder/pausa'
 
-                setOpen(false)
-                setAcao()
-                message.success('Solicitação registrada com sucesso!')
-            }, 3000)
+        let body = {
+            ocorrenciaId: record,
+            setorReceptor: 160,
+            nomeUsuario: authUser.name.split(' ')[0],
+            resposta: values.motivo
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes${urlAction}`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Movimentação registrada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao responder pausa!')
+        })
+
+        // const submitRequest = () => {
+        //     setTimeout(() => {
+        //         console.log('#---------submit---------#')
+        //         console.log('A: '+ acao)
+        //         console.log('I: '+values.motivo)
+        //         console.log('#---------end submit---------#')
+
+        //         setOpen(false)
+        //         setAcao()
+        //         message.success('Solicitação registrada com sucesso!')
+        //     }, 3000)
+        // }
+
+        // submitRequest()
     }
 
     const onStart = (_event, uiData) => {
