@@ -3,7 +3,7 @@ import * as Icons from '@ant-design/icons';
 
 import Text from '../../../../components/Crud/DataDisplay/Text'
 import CustomTooltip from "../Tooltip";
-import {InfoModal, InfoModalSovnet, InfoModalSovnetAcoes} from "../Modal";
+import {InfoModal, InfoModalSovnet, InfoModalSovnetAcoes, InfoModalSovnetDinamico} from "../Modal";
 import CustomTag from "../CustomTag";
 import getIconeMovimentacao from "../IconeMovimentacao";
 
@@ -351,6 +351,51 @@ export const ListagemSovnetComTags = () => {
     )
 }
 
+export const ListagemSovnetComTagsDinamico = ({data}) => {
+    return (
+        <List
+            size="small"
+            style={{fontSize: 12}}
+            loading={false}
+            itemLayout="horizontal"
+            dataSource={data}
+            renderItem={(rec) => {console.log(rec) 
+                return (
+                <List.Item style={{alignItems: 'flex-start', display: 'block'}}>
+                    <Row>
+                        <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
+                            <Text span={4} colon={false} style={{paddingLeft: 0, paddingRight: 0}}>
+                                <CustomTag style={{width: '100%'}}>{rec.tipoMovimentacao.nome}</CustomTag>
+                            </Text>
+                        </CustomTooltip>
+                        <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
+                            <Text span={4} label='Data / hora'>
+                                {rec.createdAt}
+                                {rec.tempoSetor && <>
+                                    <Text label="Tempo no setor" style={{marginTop: 5}}>({rec.tempoSetor})</Text>
+                                </>}
+                            </Text>
+                        </CustomTooltip>
+                        <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
+                            <Text style={{paddingLeft: 0}} span={6} label='Usuário que Ecaminhou/Respondeu'>{rec.nomeUsuario}</Text>
+                        </CustomTooltip>
+                        <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
+                            <Text span={4} label='Setor de origem'>{rec.setorReceptor.nomeCcusto}</Text>
+                        </CustomTooltip>
+                        <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
+                            <Text span={4} label='Localização atual'>{rec.setorRemetente?.nomeCcusto}</Text>
+                        </CustomTooltip>
+                        <Text span={2} style={{paddingRight: 0}} label='Ações'>
+                            <InfoModalSovnetDinamico record={rec}/>
+                            {(data[0].id === rec.id) && <InfoModalSovnetAcoes record={rec}/>}
+                        </Text>
+                    </Row>
+                </List.Item>
+            )}}
+        />
+    )
+}
+
 export const TimelineMovimentacoes = ({data}) => {
     data = movimentacoes
 
@@ -382,6 +427,51 @@ export const TimelineMovimentacoes = ({data}) => {
                                 <Col span={11}>{element.setorOrigem}</Col>
                                 <Col span={2}><Icons.ArrowRightOutlined /></Col>
                                 <Col span={11}>{element.setorDestino}</Col>
+                            </Row>
+                        </Text>
+                    </>}
+                />
+            )
+        }
+    )
+
+    return (
+        <Timeline mode='left'>
+            {timelineItems}
+        </Timeline>
+    )
+}
+
+export const TimelineMovimentacoesDinamico = ({data}) => {
+
+    let timelineItems = data.map((element, key) => {
+            let label = ''
+            if (key === 0) label = 'Última Iteração'
+            if (key === data.length-1) label = 'Primeira Iteração'
+
+            let config = {
+                label
+            }
+
+            return (
+                <Timeline.Item style={{fontSize: 13}} {...getIconeMovimentacao(element.tipoMovimentacao.nome)}
+                    label={
+                        <Row style={{margin: 0, display: 'flex', justifyContent: 'flex-end'}}>
+                            <Text style={{padding: 0, color: 'green'}} span={7} {...config} colon={false} />
+                            {element.tempoSetor && <Text style={{padding: 0}} span={8} label="Tempo Total setor" colon={false}>({element.tempoSetor})</Text>}
+                            <Text style={{padding: 0}} span={9} label={'Data / hora'} colon={false}>{element.createdAt}</Text>
+                        </Row>
+                    }
+                    children={<>
+                        <Text label="Usuário que Encaminhou/Respondeu">
+                            {element.nomeUsuario}
+                            {element.setorUsuario?(<><br/>({element.setorUsuario})</>):''}
+                        </Text>
+                        <Text label={<Row><Col span={13}>Origem</Col><Col span={11}>Destino</Col></Row>} colon={false}>
+                            <Row>
+                                <Col span={11}>{element.setorRemetente?.nomeCcusto}</Col>
+                                <Col span={2}><Icons.ArrowRightOutlined /></Col>
+                                <Col span={11}>{element.setorReceptor.nomeCcusto}</Col>
                             </Row>
                         </Text>
                     </>}

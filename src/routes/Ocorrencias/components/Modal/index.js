@@ -1,10 +1,13 @@
-import CustomSelect from '../../../../components/Crud/Fields/CustomSelect'
+import { useRef, useState } from 'react'
+import { api } from "util/Api"
+import { useAuth } from '../../../../authentication';
 
 import { Divider, Modal, Row, Tooltip, Form, Input, Button, message } from 'antd'
-import { useRef, useState } from 'react'
+import * as Icons from '@ant-design/icons';
+
 import Draggable from 'react-draggable'
 import Text from '../../../../components/Crud/DataDisplay/Text'
-import * as Icons from '@ant-design/icons';
+import CustomSelect from '../../../../components/Crud/Fields/CustomSelect'
 
 export const InfoModal = ({record}) => {
     const [open, setOpen] = useState(false);
@@ -73,9 +76,9 @@ export const InfoModal = ({record}) => {
                 <Text span={5} label="Enviador por">{record.setorOrigem}</Text>
                 <Text span={6} label="Localização atual">{record.setorDestino}</Text>
                 <Text span={24} label="Visualizado por">
-                    {record.visualizadoPor.map(item => { return (
+                    {record.visualizadoPor.map(item => 
                         <div style={{width: '100%'}}>{item}</div>
-                    )})}
+                    )}
                 </Text>
                 <Divider />
                 <Text span={24} label="Mensagem">{record.mensagem}</Text>
@@ -159,6 +162,86 @@ export const InfoModalSovnet = ({record}) => {
                 <Text span={24} label="Mensagem">{record.mensagem}</Text>
                 {record.causaRaiz &&  <><Divider /><Text span={24} label="Causa Raiz">{record.causaRaiz}</Text></>}
                 {record.acoesMelhoria && <><Divider /><Text span={24} label="Ações de Melhoria">{record.acoesMelhoria}</Text></>}
+            </Row>
+        </Modal>
+        </>
+    );
+};
+
+export const InfoModalSovnetDinamico = ({record}) => {
+    console.log('record')
+    console.log(record)
+    const [open, setOpen] = useState(false);
+    const [disabled, setDisabled] = useState(false);
+    const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
+
+    const draggleRef = useRef(null);
+
+    const showModal = () => setOpen(true)
+
+    const handleOk = (e) => setOpen(false)
+
+    const handleCancel = (e) => setOpen(false)
+
+    const onStart = (_event, uiData) => {
+        const { clientWidth, clientHeight } = window.document.documentElement;
+        const targetRect = draggleRef.current?.getBoundingClientRect();
+
+        if (!targetRect) return
+
+        setBounds({
+            left: -targetRect.left + uiData.x,
+            right: clientWidth - (targetRect.right - uiData.x),
+            top: -targetRect.top + uiData.y,
+            bottom: clientHeight - (targetRect.bottom - uiData.y),
+        });
+    };
+    return (
+        <>
+        <Tooltip title='Detalhes'>
+            <Icons.EyeOutlined onClick={showModal} style={{fontSize: 18, padding: 2}} className='gx-link'/>
+        </Tooltip>
+        <Modal
+            title={
+                <div
+                    style={{ width: '100%', cursor: 'move'}}
+                    onMouseOver={() => {
+                        if (disabled) setDisabled(false)
+                    }}
+                    onMouseOut={() => setDisabled(true)}
+                    onFocus={() => {}}
+                    onBlur={() => {}}
+                >
+                    Detalhes da interação
+                </div>
+            }
+            open={open}
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={false}
+            modalRender={(modal) => (
+                <Draggable
+                    disabled={disabled}
+                    bounds={bounds}
+                    onStart={(event, uiData) => onStart(event, uiData)}
+                >
+                    <div ref={draggleRef}>{modal}</div>
+                </Draggable>
+            )}
+            width={1000}
+        >
+            <Row>
+                <Text span={4} label="Data de recebimento">{record.createdAt}</Text>
+                <Text span={8} label="Usuário que Encaminhou/Respondeu">
+                    <span>{record.nomeUsuario}</span>
+                    {record.setorUsuario && <><br/><span>({record.setorUsuario})</span></>}
+                </Text>
+                <Text span={6} label="Enviador por">{record.setorRemetente?.nomeCcusto}</Text>
+                <Text span={6} label="Localização atual">{record.setorReceptor.nomeCcusto}</Text>
+                <Divider />
+                <Text span={24} label="Mensagem">{record.resposta.mensagemResposta}</Text>
+                {record.causaRaiz &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaiz}</Text></>}
+                {record.acoesMelhoria && <><Divider /><Text span={24} label="Ações de Melhoria">{record.resposta.acoesMelhoriaResposta}</Text></>}
             </Row>
         </Modal>
         </>
@@ -262,7 +345,7 @@ export const InfoModalSovnetAcoes = ({record, labelType='icon'}) => {
     );
 };
 
-export const ModalEncaminhar = ({record}) => {
+export const ModalEncaminhar = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -276,6 +359,8 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
 
             Contamos com o comprometimento e a vossa responsabilidade, evitando assim que a Unimed Natal se exponha a tais penalidades.`
 
+    const { authUser } = useAuth();
+
     const draggleRef = useRef(null);
 
     const showModal = () => setOpen(true)
@@ -284,22 +369,29 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
+    const handleSubmit = async values => {
         setLoading(true)
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('I: '+values.ccusto)
-                console.log('V: '+values.desc)
-                console.log('#---------end submit---------#')
-
-                setOpen(false)
-                setLoading(false)
-                message.success('Ação registrada com sucesso!')
-            }, 3000)
+        let body = {
+            ocorrenciaId: record,
+            setorReceptor: values.ccusto,
+            nomeUsuario: authUser.name.split(' ')[0],
+            resposta: values.desc
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes/encaminhar/ocorrencia`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Movimentação registrada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao realizar movimentação!')
+        })
+        setLoading(false)
     }
 
     const onStart = (_event, uiData) => {
@@ -466,7 +558,7 @@ export const ModalFinalizar = ({record}) => {
     );
 };
 
-export const ModalSolicitarPausa = ({record}) => {
+export const ModalSolicitarPausa = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -475,27 +567,37 @@ export const ModalSolicitarPausa = ({record}) => {
 
     const draggleRef = useRef(null);
 
+    const { authUser } = useAuth();
+
     const showModal = () => setOpen(true)
 
     const handleOk = (e) => setOpen(false)
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
+    const handleSubmit = async values => {
         setLoading(true)
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('I: '+values.motivo)
-                console.log('#---------end submit---------#')
-
-                setOpen(false)
-                setLoading(false)
-                message.success('Solicitação registrada com sucesso!')
-            }, 3000)
+        
+        let body = {
+            ocorrenciaId: record,
+            setorRemetente: 165,
+            nomeUsuario: authUser.name.split(' ')[0],
+            resposta: values.motivo
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes/solicitar/pausa`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Solciitação de pausa realizada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao realizar movimentação!')
+        })
     }
 
     const onStart = (_event, uiData) => {
@@ -525,7 +627,7 @@ export const ModalSolicitarPausa = ({record}) => {
                     onFocus={() => {}}
                     onBlur={() => {}}
                 >
-                    Encaminhar ocorrência
+                    Solicitar Pausa
                 </div>
             }
             open={open}
@@ -677,12 +779,14 @@ export const ModalResponderPausa = ({record}) => {
     );
 };
 
-export const ModalResponder = ({record}) => {
+export const ModalResponder = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
 
+
+    const { authUser } = useAuth();
 
     const draggleRef = useRef(null);
 
@@ -692,23 +796,31 @@ export const ModalResponder = ({record}) => {
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
+    const handleSubmit = async values => {
         setLoading(true)
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('R: '+values.resposta)
-                console.log('C: '+values.causa)
-                console.log('M: '+values.melhoria)
-                console.log('#---------end submit---------#')
 
-                setOpen(false)
-                setLoading(false)
-                message.success('Solicitação registrada com sucesso!')
-            }, 3000)
+        let body = {
+            ocorrenciaId: record,
+            setorRemetente: 165,
+            nomeUsuario: authUser.name.split(' ')[0],
+            resposta: values.resposta,
+            causaRaiz: values.causa,
+            acoesMelhoria: values.melhoria
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes/responder/ocorrencia`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Resposta enviada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao realizar movimentação!')
+        })
     }
 
     const onStart = (_event, uiData) => {

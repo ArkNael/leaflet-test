@@ -7,7 +7,7 @@ import moment from "moment"
 import { Card, Row, Col, Divider, Skeleton, List, Popconfirm, Tabs, Dropdown, message } from 'antd';
 import * as Icons from '@ant-design/icons';
 import Text from '../../components/Crud/DataDisplay/Text';
-import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, TimelineMovimentacoes } from './components/ListagemMovimentacoes'
+import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, ListagemSovnetComTagsDinamico, TimelineMovimentacoes, TimelineMovimentacoesDinamico } from './components/ListagemMovimentacoes'
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
 import IntlMessages from "util/IntlMessages";
@@ -18,12 +18,18 @@ const getData = async (setter, controller, id) => {
 	await api.get(`api/${controller}/exibir/${id}`)
 	.then(({data}) => {
 		if (data.ok === 1) {
-			setter(data.retorno[0])
+			let newData = data.retorno[0]
+			newData.movimentacoes = newData.movimentacoes.map(item => {
+				item.createdAt = moment(new Date(item.createdAt)).format('DD/MM/YYYY HH:mm:ss')
+				return item
+			})
+			newData.movimentacoes = newData.movimentacoes.sort((a, b) => b.id - a.id);
+			setter(newData)
 		} else {
 			message.error(data.mensagem)
 		}
 	})
-	.catch((err) => {
+	.catch(err => {
 		message.error('Erro ao carregar registros')
 	})
 }
@@ -64,7 +70,7 @@ const View = (props) => {
 		},
 		{
 			key: '2',
-			label: <ModalEncaminhar record={rec} />,
+			label: <ModalEncaminhar record={rec} historyPush={props.history.push}/>,
 			icon: <i className="icon icon-forward" />
 		},
 		{
@@ -232,6 +238,11 @@ const View = (props) => {
 								key: 4,
 								children: <ListagemSovnetComTags />
 							},
+							{
+								label: 'Listagem Dinamica (WIP)',
+								key: 5,
+								children: <ListagemSovnetComTagsDinamico data={data.movimentacoes}/>
+							},
 							// {
 							// 	label: 'Linha do Tempo',
 							// 	key: 5,
@@ -241,6 +252,11 @@ const View = (props) => {
 								label: 'Linha do Tempo',
 								key: 6,
 								children: <TimelineMovimentacoes />
+							},
+							{
+								label: 'Linha do Tempo Dinâmica (WIP)',
+								key: 7,
+								children: <TimelineMovimentacoesDinamico data={data.movimentacoes}/>
 							}
 						]}
 					/>
