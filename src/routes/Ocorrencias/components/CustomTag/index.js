@@ -15,6 +15,7 @@ const CustomTag = ({children, ...rest}) => {
 		case 'Solicitacao de Pausa':	color = 'volcano';	   icon = <Icons.ClockCircleOutlined />;  children = 'Pausa Solicitada'; break;
 
 		case 'Pausa concedida':			color = 'cyan';      icon = <Icons.ClockCircleOutlined />;  								break;
+		case 'Pausa Concedida':			color = 'cyan';      icon = <Icons.ClockCircleOutlined />;  								break;
 		case 'Pausa Negada':			color = 'red';       icon = <Icons.StopOutlined />;  								  	  	break
 
 		case 'Resposta':				color = 'green';     icon = <Icons.ArrowLeftOutlined />;    								break;
