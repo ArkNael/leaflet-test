@@ -256,7 +256,7 @@ export const ListagemSimples = () => {
                             <Text span={4} label='Data / hora'>{rec.createdAt}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text span={8} label='Usuário que Ecaminhou/Respondeu'>{rec.usuario}</Text>
+                            <Text span={8} label='Usuário'>{rec.usuario}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
                             <Text span={4} label='Setor de origem'>{rec.setorOrigem}</Text>
@@ -288,7 +288,7 @@ export const ListagemSovnet = () => {
                                 <Text label="Tempo no setor" style={{marginTop: 5}}>({rec.tempoSetor})</Text>
                             </>}
                         </Text>
-                        <Text style={{paddingLeft: 0}} span={6} label='Usuário que Ecaminhou/Respondeu'>{rec.usuario}</Text>
+                        <Text style={{paddingLeft: 0}} span={6} label='Usuário'>{rec.usuario}</Text>
                         <Text span={4} label='Setor de origem'>{rec.setorOrigem}</Text>
                         <Text span={4} label='Localização atual'>{rec.setorDestino}</Text>
                         <Text span={4} label="Visualizado por">
@@ -332,7 +332,7 @@ export const ListagemSovnetComTags = () => {
                             </Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text style={{paddingLeft: 0}} span={6} label='Usuário que Ecaminhou/Respondeu'>{rec.usuario}</Text>
+                            <Text style={{paddingLeft: 0}} span={6} label='Usuário'>{rec.usuario}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
                             <Text span={4} label='Setor de origem'>{rec.setorOrigem}</Text>
@@ -377,7 +377,7 @@ export const ListagemSovnetComTagsDinamico = ({data}) => {
                             </Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text style={{paddingLeft: 0}} span={6} label='Usuário que Ecaminhou/Respondeu'>{rec.nomeUsuario}</Text>
+                            <Text style={{paddingLeft: 0}} span={6} label='Usuário'>{rec.nomeUsuario}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
                             <Text span={4} label='Setor de origem'>{rec.setorReceptor.nomeCcusto}</Text>
