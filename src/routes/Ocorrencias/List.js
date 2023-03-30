@@ -296,7 +296,6 @@ const List = (props) => {
 		.catch((err) => {
 			message.error('Erro ao carregar registros')
 		})
-		console.log('finish')
 	}
 
 	useEffect(() => {

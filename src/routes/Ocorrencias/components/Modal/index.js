@@ -442,7 +442,6 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
                     <CustomSelect
                         showSearch
                         controller='ccustos'
-                        onSearch={e => console.log(e)}
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
@@ -697,21 +696,6 @@ export const ModalResponderPausa = ({historyPush, record}) => {
         .catch((err) => {
             message.error('Erro ao responder pausa!')
         })
-
-        // const submitRequest = () => {
-        //     setTimeout(() => {
-        //         console.log('#---------submit---------#')
-        //         console.log('A: '+ acao)
-        //         console.log('I: '+values.motivo)
-        //         console.log('#---------end submit---------#')
-
-        //         setOpen(false)
-        //         setAcao()
-        //         message.success('Solicitação registrada com sucesso!')
-        //     }, 3000)
-        // }
-
-        // submitRequest()
     }
 
     const onStart = (_event, uiData) => {

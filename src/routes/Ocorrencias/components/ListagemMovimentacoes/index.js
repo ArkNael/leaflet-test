@@ -359,8 +359,7 @@ export const ListagemSovnetComTagsDinamico = ({data}) => {
             loading={false}
             itemLayout="horizontal"
             dataSource={data}
-            renderItem={(rec) => {console.log(rec) 
-                return (
+            renderItem={(rec) => 
                 <List.Item style={{alignItems: 'flex-start', display: 'block'}}>
                     <Row>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
@@ -391,7 +390,7 @@ export const ListagemSovnetComTagsDinamico = ({data}) => {
                         </Text>
                     </Row>
                 </List.Item>
-            )}}
+            }
         />
     )
 }

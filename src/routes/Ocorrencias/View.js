@@ -56,50 +56,6 @@ const View = (props) => {
 		})
 	};
 
-	// const submenus = rec => [
-	// 	{
-	// 		key: '1',
-	// 		label: (
-    //             <span
-	// 				style={{ paddingLeft: "5px" }}
-	// 				onClick={e => { message.error('Não é possível editar a ocorrência no momento.') }}
-	// 			>
-	// 				Editar ocorrência
-	// 			</span>
-	// 		),
-	// 		icon: (<i className="icon icon-edit" />)
-	// 	},
-	// 	{
-	// 		key: '2',
-	// 		label: <ModalEncaminhar record={rec} historyPush={props.history.push}/>,
-	// 		icon: <i className="icon icon-forward" />
-	// 	},
-	// 	{
-	// 		key: '3',
-	// 		label: <ModalResponderPausa record={rec} />,
-	// 		icon: <i className="icon icon-forward" />
-	// 	},
-	// 	{
-	// 		key: '4',
-	// 		label: <ModalFinalizar record={rec} />,
-	// 		icon: <i className="icon icon-check" />
-	// 	},
-	// 	{
-	// 		key: '7',
-	// 		label: (
-	// 			<Popconfirm
-	// 				title="Deseja excluir o registro?"
-	// 				onConfirm={e => { message.error('Não é possível excluir a ocorrência no momento.') }}
-	// 				okText="Sim"
-	// 				cancelText="Não"
-	// 			>
-	// 				<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir ocorrência</span>
-	// 			</Popconfirm>
-	// 		),
-	// 		icon: (<i className="icon icon-trash" />),
-	// 	},
-	// ];
-
 	useEffect( () => {
 		const fetchData = async () => await getData(setData, props.controller, props.match.params.id)
 		fetchData()
