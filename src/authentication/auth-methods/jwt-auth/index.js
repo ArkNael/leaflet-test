@@ -25,16 +25,16 @@ export const useProvideAuth = () => {
   const userLogin = (user, callbackFun) => {
     fetchStart();
     httpClient
-      .post('auth/signin', user)
+      .post('colaboradores/autenticar', user)
       .then(({ data }) => {
-        if (data.result) {
+        if (data.Data) {
           fetchSuccess();
-          httpClient.defaults.headers.common['Authorization'] = 'Bearer ' + data.token.access_token;
-          localStorage.setItem('token', data.token.access_token);
+          httpClient.defaults.headers.common['Authorization'] = 'Bearer ' + data.Data.token;
+          localStorage.setItem('token', data.Data.token);
           getAuthUser();
           if (callbackFun) callbackFun();
         } else {
-          fetchError(data.error);
+          fetchError(data.Message);
         }
       })
       .catch(function (error) {
@@ -92,7 +92,7 @@ export const useProvideAuth = () => {
   const getAuthUser = () => {
     fetchStart();
     httpClient
-      .post('auth/me')
+      .post('colaboradores/me')
       .then(({ data }) => {
         if (data.user) {
           fetchSuccess();
@@ -119,7 +119,7 @@ export const useProvideAuth = () => {
     }
 
     httpClient
-      .post('auth/me')
+      .post('colaboradores/me')
       .then(({ data }) => {
         if (data.user) {
           setAuthUser(data.user);

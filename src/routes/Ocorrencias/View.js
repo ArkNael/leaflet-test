@@ -11,7 +11,7 @@ import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, Lista
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
 import IntlMessages from "util/IntlMessages";
-import { ModalEncaminhar, ModalFinalizar, ModalResponder, ModalResponderPausa, ModalSolicitarPausa } from './components/Modal';
+import { menuInteracoes } from './components/Util';
 
 
 const getData = async (setter, controller, id) => {
@@ -21,15 +21,21 @@ const getData = async (setter, controller, id) => {
 			let newData = data.retorno[0]
 			newData.movimentacoes = newData.movimentacoes.map(item => {
 				item.createdAt = moment(new Date(item.createdAt)).format('DD/MM/YYYY HH:mm:ss')
+				// if (item.tipoMovimentacao.nome === 'Ocorrencia Finalizada') {
+				// 	item.movimentacoes.setorReceptor = {nomeCcusto: 'Remetente2'}
+				// }
 				return item
 			})
-			newData.movimentacoes = newData.movimentacoes.sort((a, b) => b.id - a.id);
+			newData.movimentacoes = newData.movimentacoes.sort((a, b) => b.id - a.id)
+			newData.statusOcorrencia = newData.movimentacoes[0].tipoMovimentacao.nome
 			setter(newData)
+			console.log(newData)
 		} else {
 			message.error(data.mensagem)
 		}
 	})
 	.catch(err => {
+		console.log(err)
 		message.error('Erro ao carregar registros')
 	})
 }
@@ -54,50 +60,6 @@ const View = (props) => {
 			message.error('Erro ao excluir registro')
 		})
 	};
-
-	const submenus = rec => [
-		{
-			key: '1',
-			label: (
-                <span
-					style={{ paddingLeft: "5px" }}
-					onClick={e => { message.error('Não é possível editar a ocorrência no momento.') }}
-				>
-					Editar ocorrência
-				</span>
-			),
-			icon: (<i className="icon icon-edit" />)
-		},
-		{
-			key: '2',
-			label: <ModalEncaminhar record={rec} historyPush={props.history.push}/>,
-			icon: <i className="icon icon-forward" />
-		},
-		{
-			key: '3',
-			label: <ModalResponderPausa historyPush={props.history.push} record={rec} />,
-			icon: <i className="icon icon-forward" />
-		},
-		{
-			key: '4',
-			label: <ModalFinalizar record={rec} />,
-			icon: <i className="icon icon-check" />
-		},
-		{
-			key: '7',
-			label: (
-				<Popconfirm
-					title="Deseja excluir o registro?"
-					onConfirm={e => { message.error('Não é possível excluir a ocorrência no momento.') }}
-					okText="Sim"
-					cancelText="Não"
-				>
-					<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir ocorrência</span>
-				</Popconfirm>
-			),
-			icon: (<i className="icon icon-trash" />),
-		},
-	];
 
 	useEffect( () => {
 		const fetchData = async () => await getData(setData, props.controller, props.match.params.id)
@@ -184,7 +146,7 @@ const View = (props) => {
 						<Row>
 							<Text span={5} label="Data / hora">{data.createdAt?moment(data.createdAt).format('DD/MM/YYYY HH:mm:ss'):''}</Text>
 							<Text span={4} label="Forma de envio">{data.forma?.nomeForma}</Text>
-							<Text span={4} label="Status">{data.status?.nomeStatus}</Text>
+							<Text span={6} label="Status">{data.statusOcorrencia}</Text>
 							<Text span={4} label="Envio de carta">{data.enviarCarta?'Sim':'Não'}</Text>
 							<Text span={4} label="Procedencia">{data.procedencia?'Sim':'Não'}</Text>
 							<Text span={4} label="Finalizado" style={{color: 'red'}}>Site</Text>
@@ -204,7 +166,7 @@ const View = (props) => {
 				<Card type='inner' className="gx-card">
 					<CardTitle
 						extra={
-							<Dropdown menu={{items: submenus(props.match.params.id)}}>
+							<Dropdown menu={{items: menuInteracoes(props.match.params.id, data.statusOcorrencia, props.history.push)}}>
 								<span className="gx-link ant-dropdown-link">
 									<Icons.SettingOutlined />
 								</span>
@@ -233,13 +195,13 @@ const View = (props) => {
 							// 	key: 3,
 							// 	children: <ListagemSovnet />
 							// },
+							// {
+							// 	label: 'Listagem',
+							// 	key: 4,
+							// 	children: <ListagemSovnetComTags />
+							// },
 							{
 								label: 'Listagem',
-								key: 4,
-								children: <ListagemSovnetComTags />
-							},
-							{
-								label: 'Listagem Dinamica (WIP)',
 								key: 5,
 								children: <ListagemSovnetComTagsDinamico data={data.movimentacoes}/>
 							},
@@ -248,13 +210,13 @@ const View = (props) => {
 							// 	key: 5,
 							// 	children: <TimelineOcorrencia />
 							// },
+							// {
+							// 	label: 'Linha do Tempo',
+							// 	key: 6,
+							// 	children: <TimelineMovimentacoes />
+							// },
 							{
 								label: 'Linha do Tempo',
-								key: 6,
-								children: <TimelineMovimentacoes />
-							},
-							{
-								label: 'Linha do Tempo Dinâmica (WIP)',
 								key: 7,
 								children: <TimelineMovimentacoesDinamico data={data.movimentacoes}/>
 							}

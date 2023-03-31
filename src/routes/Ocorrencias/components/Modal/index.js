@@ -235,7 +235,7 @@ export const InfoModalSovnetDinamico = ({record}) => {
                     {record.setorUsuario && <><br/><span>({record.setorUsuario})</span></>}
                 </Text>
                 <Text span={6} label="Enviador por">{record.setorRemetente?.nomeCcusto}</Text>
-                <Text span={6} label="Localização atual">{record.setorReceptor.nomeCcusto}</Text>
+                <Text span={6} label="Localização atual">{record.setorReceptor?.nomeCcusto}</Text>
                 <Divider />
                 <Text span={24} label="Mensagem">{record.resposta.mensagemResposta}</Text>
                 {record.resposta.causaRaizResposta &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaizResposta}</Text></>}
@@ -372,8 +372,11 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
         let body = {
             ocorrenciaId: record,
             setorReceptor: values.ccusto,
+            resposta: values.desc,
             nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.desc
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
         await api.post(`api/movimentacoes/encaminhar/ocorrencia`, body)
@@ -441,11 +444,11 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
                 <Form.Item label="Centro de custo" name="ccusto" rules={[{required: true, message: 'Campo obrigatório!'}]}>
                     <CustomSelect
                         showSearch
-                        controller='ccustos'
-                        onSearch={e => console.log(e)}
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
+                        controller='ccustos'
+                        customKey='codigo'
                     />
                 </Form.Item>
                 <Form.Item label="Descreva o encaminhamento" name="desc" rules={[{required: true, message: 'Campo obrigatório!'}]} initialValue={defaultText}>
@@ -460,12 +463,15 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
     );
 };
 
-export const ModalFinalizar = ({record}) => {
+export const ModalFinalizar = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
     const draggleRef = useRef(null);
+
+    const { authUser } = useAuth();
+
 
     const showModal = () => setOpen(true)
 
@@ -473,22 +479,33 @@ export const ModalFinalizar = ({record}) => {
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
-        setLoading(true)
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('S: '+values.solucao)
-                console.log('F: '+values.forma)
-                console.log('#---------end submit---------#')
+    const handleSubmit = async values => {
+        setLoading(false)
 
-                setOpen(false)
-                setLoading(false)
-                message.success('Ação registrada com sucesso!')
-            }, 3000)
+        let body = {
+            ocorrenciaId: record,
+            resposta: values.desc,
+            nomeUsuario: authUser.name.split(' ')[0],
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes/finalizar/ocorrencia`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Movimentação registrada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao finalizar ocorrência!')
+        })
+
+        setLoading(false)
     }
 
     const onStart = (_event, uiData) => {
@@ -556,112 +573,11 @@ export const ModalFinalizar = ({record}) => {
     );
 };
 
-export const ModalSolicitarPausa = ({historyPush, record}) => {
-    const [open, setOpen] = useState(false);
-    const [disabled, setDisabled] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
-
-
-    const draggleRef = useRef(null);
-
-    const { authUser } = useAuth();
-
-    const showModal = () => setOpen(true)
-
-    const handleOk = (e) => setOpen(false)
-
-    const handleCancel = (e) => setOpen(false)
-
-    const handleSubmit = async values => {
-        setLoading(true)
-        
-        let body = {
-            ocorrenciaId: record,
-            setorRemetente: 165,
-            nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.motivo
-        }
-
-        await api.post(`api/movimentacoes/solicitar/pausa`, body)
-        .then(({data}) => {
-            if (data.ok === 1) {
-                setOpen(false)
-                message.success('Solciitação de pausa realizada com sucesso!')
-                historyPush(`/ocorrencias/acompanhar/${record}`)
-            } else {
-                message.error(data.mensagem)
-            }
-        })
-        .catch((err) => {
-            message.error('Erro ao realizar movimentação!')
-        })
-    }
-
-    const onStart = (_event, uiData) => {
-        const { clientWidth, clientHeight } = window.document.documentElement;
-        const targetRect = draggleRef.current?.getBoundingClientRect();
-
-        if (!targetRect) return
-
-        setBounds({
-            left: -targetRect.left + uiData.x,
-            right: clientWidth - (targetRect.right - uiData.x),
-            top: -targetRect.top + uiData.y,
-            bottom: clientHeight - (targetRect.bottom - uiData.y),
-        });
-    };
-    return (
-        <>
-        <span onClick={showModal} style={{ paddingLeft: "5px" }}>Solicitar pausa</span>
-        <Modal
-            title={
-                <div
-                    style={{ width: '100%', cursor: 'move'}}
-                    onMouseOver={() => {
-                        if (disabled) setDisabled(false)
-                    }}
-                    onMouseOut={() => setDisabled(true)}
-                    onFocus={() => {}}
-                    onBlur={() => {}}
-                >
-                    Solicitar Pausa
-                </div>
-            }
-            open={open}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={false}
-            modalRender={(modal) => (
-                <Draggable
-                    disabled={disabled}
-                    bounds={bounds}
-                    onStart={(event, uiData) => onStart(event, uiData)}
-                >
-                    <div onClick={e => e.stopPropagation()} ref={draggleRef}>{modal}</div>
-                </Draggable>
-            )}
-            width={600}
-        >
-            <Form  layout="vertical" key={`form${record.id}`} onFinish={handleSubmit}>
-                <Form.Item label="Motivo da solicitação" name="motivo" rules={[{required: true, message: 'Campo obrigatório!'}]}>
-                    <Input.TextArea onKeyDown={e => e.stopPropagation()} rows={14} />
-                </Form.Item>
-                <Form.Item style={{textAlign: 'right'}}>
-                    <Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Solicitar</Button>
-                </Form.Item>
-            </Form>
-        </Modal>
-        </>
-    );
-};
-
 export const ModalResponderPausa = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [acao, setAcao] = useState();
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
-
 
     const { authUser } = useAuth();
     
@@ -679,9 +595,11 @@ export const ModalResponderPausa = ({historyPush, record}) => {
 
         let body = {
             ocorrenciaId: record,
-            setorReceptor: 160,
+            resposta: values.motivo,
             nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.motivo
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
         await api.post(`api/movimentacoes${urlAction}`, body)
@@ -697,21 +615,6 @@ export const ModalResponderPausa = ({historyPush, record}) => {
         .catch((err) => {
             message.error('Erro ao responder pausa!')
         })
-
-        // const submitRequest = () => {
-        //     setTimeout(() => {
-        //         console.log('#---------submit---------#')
-        //         console.log('A: '+ acao)
-        //         console.log('I: '+values.motivo)
-        //         console.log('#---------end submit---------#')
-
-        //         setOpen(false)
-        //         setAcao()
-        //         message.success('Solicitação registrada com sucesso!')
-        //     }, 3000)
-        // }
-
-        // submitRequest()
     }
 
     const onStart = (_event, uiData) => {
@@ -796,117 +699,6 @@ export const ModalResponderPausa = ({historyPush, record}) => {
                         >
                             Conceder Pausa
                         </Button>
-                    </Form.Item>
-            </Form>
-        </Modal>
-        </>
-    );
-};
-
-export const ModalResponder = ({historyPush, record}) => {
-    const [open, setOpen] = useState(false);
-    const [disabled, setDisabled] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
-
-
-    const { authUser } = useAuth();
-
-    const draggleRef = useRef(null);
-
-    const showModal = () => setOpen(true)
-
-    const handleOk = (e) => setOpen(false)
-
-    const handleCancel = (e) => setOpen(false)
-
-    const handleSubmit = async values => {
-        setLoading(true)
-
-        let body = {
-            ocorrenciaId: record,
-            setorRemetente: 165,
-            nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.resposta,
-            causaRaiz: values.causa,
-            acoesMelhoria: values.melhoria
-        }
-
-        await api.post(`api/movimentacoes/responder/ocorrencia`, body)
-        .then(({data}) => {
-            if (data.ok === 1) {
-                setOpen(false)
-                message.success('Resposta enviada com sucesso!')
-                historyPush(`/ocorrencias/acompanhar/${record}`)
-            } else {
-                message.error(data.mensagem)
-            }
-        })
-        .catch((err) => {
-            message.error('Erro ao realizar movimentação!')
-        })
-    }
-
-    const onStart = (_event, uiData) => {
-        const { clientWidth, clientHeight } = window.document.documentElement;
-        const targetRect = draggleRef.current?.getBoundingClientRect();
-
-        if (!targetRect) return
-
-        setBounds({
-            left: -targetRect.left + uiData.x,
-            right: clientWidth - (targetRect.right - uiData.x),
-            top: -targetRect.top + uiData.y,
-            bottom: clientHeight - (targetRect.bottom - uiData.y),
-        });
-    };
-    return (
-        <>
-        <span onClick={showModal} style={{ paddingLeft: "5px" }}>Responder ocorrência</span>
-        <Modal
-            title={
-                <div
-                    style={{ width: '100%', cursor: 'move'}}
-                    onMouseOver={() => {
-                        if (disabled) setDisabled(false)
-                    }}
-                    onMouseOut={() => setDisabled(true)}
-                    onFocus={() => {}}
-                    onBlur={() => {}}
-                >
-                    Responder ocorrência
-                </div>
-            }
-            open={open}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={false}
-            modalRender={(modal) => (
-                <Draggable
-                    disabled={disabled}
-                    bounds={bounds}
-                    onStart={(event, uiData) => onStart(event, uiData)}
-                >
-                    <div onClick={e => e.stopPropagation()} ref={draggleRef}>{modal}</div>
-                </Draggable>
-            )}
-            width={600}
-        >
-            <Form  layout="vertical" key={`form${record.id}`} onFinish={handleSubmit} >
-                <Form.Item label="Responda a ocorrência" name="resposta" rules={[{required: true, message: 'Descreva a resposta da ocorrência!'}]}>
-                    <Input.TextArea onKeyDown={e => e.stopPropagation()} rows={5} />
-                </Form.Item>
-                <Divider />
-                <Form.Item label="Causa raiz" name="causa" rules={[{required: true, message: 'Informa a causa raiz do problema!'}]}>
-                    <Input.TextArea onKeyDown={e => e.stopPropagation()} rows={5} />
-                </Form.Item>
-                <Divider />
-                <Form.Item label="Ações de melhoria" name="melhoria" rules={[{required: true, message: 'Informe o que foi feito de melhoria!'}]}>
-                    <Input.TextArea onKeyDown={e => e.stopPropagation()} rows={5} />
-                </Form.Item>
-                <Divider />
-                    <Form.Item style={{textAlign: 'right'}}>
-                        <Button className="gx-mb-0" htmlType="submit" loading={loading} type="primary">Responder</Button>
                     </Form.Item>
             </Form>
         </Modal>

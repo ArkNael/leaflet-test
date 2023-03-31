@@ -42,8 +42,6 @@ const Add = (props) => {
 			level: ''
 		}
 
-		console.log(obj)
-
 		let total = obj.quem + obj.quando + obj.quanto + obj.como
 
 		if (total >= 4 && total <= 6) {

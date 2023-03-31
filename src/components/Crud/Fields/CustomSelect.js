@@ -2,14 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { api } from "../../../util/Api"
 import { Select, message } from 'antd'
 
-const CustomSelect = ({controller, placeholder = 'Selecione uma opção', index='nome', ...rest}) => {
+const CustomSelect = ({controller, placeholder = 'Selecione uma opção', index='nome', customKey='id', ...rest}) => {
     const [data, setData] = useState()
 
     const mountItems = (items = []) => {
         return items.map((e) => {
             let extra = {}
             if (controller === 'formas' && e.nome === 'Aplicativo') extra = { disabled: true }
-            return {value: e.id, label: e[index], ...extra}
+            return {value: e[customKey], label: e[index], ...extra}
         })
      }
 
