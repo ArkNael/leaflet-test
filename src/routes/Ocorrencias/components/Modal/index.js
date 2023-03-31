@@ -235,7 +235,7 @@ export const InfoModalSovnetDinamico = ({record}) => {
                     {record.setorUsuario && <><br/><span>({record.setorUsuario})</span></>}
                 </Text>
                 <Text span={6} label="Enviador por">{record.setorRemetente?.nomeCcusto}</Text>
-                <Text span={6} label="Localização atual">{record.setorReceptor.nomeCcusto}</Text>
+                <Text span={6} label="Localização atual">{record.setorReceptor?.nomeCcusto}</Text>
                 <Divider />
                 <Text span={24} label="Mensagem">{record.resposta.mensagemResposta}</Text>
                 {record.resposta.causaRaizResposta &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaizResposta}</Text></>}
@@ -372,8 +372,11 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
         let body = {
             ocorrenciaId: record,
             setorReceptor: values.ccusto,
+            resposta: values.desc,
             nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.desc
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
         await api.post(`api/movimentacoes/encaminhar/ocorrencia`, body)
@@ -441,10 +444,11 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
                 <Form.Item label="Centro de custo" name="ccusto" rules={[{required: true, message: 'Campo obrigatório!'}]}>
                     <CustomSelect
                         showSearch
-                        controller='ccustos'
                         filterOption={(input, option) =>
                             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                         }
+                        controller='ccustos'
+                        customKey='codigo'
                     />
                 </Form.Item>
                 <Form.Item label="Descreva o encaminhamento" name="desc" rules={[{required: true, message: 'Campo obrigatório!'}]} initialValue={defaultText}>
@@ -459,12 +463,15 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
     );
 };
 
-export const ModalFinalizar = ({record}) => {
+export const ModalFinalizar = ({historyPush, record}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
     const draggleRef = useRef(null);
+
+    const { authUser } = useAuth();
+
 
     const showModal = () => setOpen(true)
 
@@ -472,22 +479,33 @@ export const ModalFinalizar = ({record}) => {
 
     const handleCancel = (e) => setOpen(false)
 
-    const handleSubmit = values => {
-        setLoading(true)
-        const submitRequest = () => {
-            setTimeout(() => {
-                console.log('#---------submit---------#')
-                console.log('S: '+values.solucao)
-                console.log('F: '+values.forma)
-                console.log('#---------end submit---------#')
+    const handleSubmit = async values => {
+        setLoading(false)
 
-                setOpen(false)
-                setLoading(false)
-                message.success('Ação registrada com sucesso!')
-            }, 3000)
+        let body = {
+            ocorrenciaId: record,
+            resposta: values.desc,
+            nomeUsuario: authUser.name.split(' ')[0],
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
-        submitRequest()
+        await api.post(`api/movimentacoes/finalizar/ocorrencia`, body)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                setOpen(false)
+                message.success('Movimentação registrada com sucesso!')
+                historyPush(`/ocorrencias/acompanhar/${record}`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao finalizar ocorrência!')
+        })
+
+        setLoading(false)
     }
 
     const onStart = (_event, uiData) => {
@@ -561,7 +579,6 @@ export const ModalResponderPausa = ({historyPush, record}) => {
     const [acao, setAcao] = useState();
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
 
-
     const { authUser } = useAuth();
     
 
@@ -578,9 +595,11 @@ export const ModalResponderPausa = ({historyPush, record}) => {
 
         let body = {
             ocorrenciaId: record,
-            setorReceptor: 160,
+            resposta: values.motivo,
             nomeUsuario: authUser.name.split(' ')[0],
-            resposta: values.motivo
+            matriculaUsuario: authUser.cod_usuario,
+            codCcustoUsuario: authUser.cod_setor,
+            nomeCcustoUsuario: authUser.setor
         }
 
         await api.post(`api/movimentacoes${urlAction}`, body)

@@ -376,13 +376,13 @@ export const ListagemSovnetComTagsDinamico = ({data}) => {
                             </Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text style={{paddingLeft: 0}} span={6} label='Usuário'>{rec.nomeUsuario}</Text>
+                            <Text style={{paddingLeft: 0}} span={4} label='Usuário'>{rec.nomeUsuario}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text span={4} label='Setor de origem'>{rec.setorReceptor.nomeCcusto}</Text>
+                            <Text span={5} label='Setor de origem'>{rec.setorRemetente?.nomeCcusto || 'OUVMED'}</Text>
                         </CustomTooltip>
                         <CustomTooltip type='visualizacoes' data={rec.visualizadoPor}>
-                            <Text span={4} label='Localização atual'>{rec.setorRemetente?.nomeCcusto}</Text>
+                            <Text span={5} label='Localização atual'>{rec.setorReceptor?.nomeCcusto || 'Remetente'}</Text>
                         </CustomTooltip>
                         <Text span={2} style={{paddingRight: 0}} label='Ações'>
                             <InfoModalSovnetDinamico record={rec}/>
@@ -462,15 +462,15 @@ export const TimelineMovimentacoesDinamico = ({data}) => {
                         </Row>
                     }
                     children={<>
-                        <Text label="Usuário que Encaminhou/Respondeu">
+                        <Text label={<><CustomTag textOnly={true}>{element.tipoMovimentacao.nome}</CustomTag> por</>}>
                             {element.nomeUsuario}
                             {element.setorUsuario?(<><br/>({element.setorUsuario})</>):''}
                         </Text>
-                        <Text label={<Row><Col span={13}>Origem</Col><Col span={11}>Destino</Col></Row>} colon={false}>
+                        <Text label={<Row><Col span={11}>Origem</Col><Col span={11}>Destino</Col></Row>} colon={false}>
                             <Row>
-                                <Col span={11}>{element.setorRemetente?.nomeCcusto}</Col>
+                                <Col span={9}>{element.setorRemetente?.nomeCcusto || 'OUVMED'}</Col>
                                 <Col span={2}><Icons.ArrowRightOutlined /></Col>
-                                <Col span={11}>{element.setorReceptor.nomeCcusto}</Col>
+                                <Col span={11}>{element.setorReceptor?.nomeCcusto || 'Remetente'}</Col>
                             </Row>
                         </Text>
                     </>}

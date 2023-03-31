@@ -21,16 +21,21 @@ const getData = async (setter, controller, id) => {
 			let newData = data.retorno[0]
 			newData.movimentacoes = newData.movimentacoes.map(item => {
 				item.createdAt = moment(new Date(item.createdAt)).format('DD/MM/YYYY HH:mm:ss')
+				// if (item.tipoMovimentacao.nome === 'Ocorrencia Finalizada') {
+				// 	item.movimentacoes.setorReceptor = {nomeCcusto: 'Remetente2'}
+				// }
 				return item
 			})
 			newData.movimentacoes = newData.movimentacoes.sort((a, b) => b.id - a.id)
 			newData.statusOcorrencia = newData.movimentacoes[0].tipoMovimentacao.nome
 			setter(newData)
+			console.log(newData)
 		} else {
 			message.error(data.mensagem)
 		}
 	})
 	.catch(err => {
+		console.log(err)
 		message.error('Erro ao carregar registros')
 	})
 }
@@ -190,13 +195,13 @@ const View = (props) => {
 							// 	key: 3,
 							// 	children: <ListagemSovnet />
 							// },
+							// {
+							// 	label: 'Listagem',
+							// 	key: 4,
+							// 	children: <ListagemSovnetComTags />
+							// },
 							{
 								label: 'Listagem',
-								key: 4,
-								children: <ListagemSovnetComTags />
-							},
-							{
-								label: 'Listagem Dinamica (WIP)',
 								key: 5,
 								children: <ListagemSovnetComTagsDinamico data={data.movimentacoes}/>
 							},
@@ -205,13 +210,13 @@ const View = (props) => {
 							// 	key: 5,
 							// 	children: <TimelineOcorrencia />
 							// },
+							// {
+							// 	label: 'Linha do Tempo',
+							// 	key: 6,
+							// 	children: <TimelineMovimentacoes />
+							// },
 							{
 								label: 'Linha do Tempo',
-								key: 6,
-								children: <TimelineMovimentacoes />
-							},
-							{
-								label: 'Linha do Tempo Dinâmica (WIP)',
 								key: 7,
 								children: <TimelineMovimentacoesDinamico data={data.movimentacoes}/>
 							}

@@ -17,11 +17,11 @@ export const menuInteracoes = (rec, status, historyPush) => {
         }
     ]
 
-    if (status !== 'Ocorrencia Encaminhada' && status !== 'Última Iteração' && status !== 'Pausa Concedida') {
+    if (status !== 'Ocorrencia Encaminhada' && status !== 'Última Iteração' && status !== 'Pausa Concedida' && status !== 'Solicitacao de Pausa') {
         items.push(
             {
                 key: '2',
-                label: <ModalEncaminhar record={rec} historyPush={historyPush}/>,
+                label: <ModalEncaminhar record={rec} historyPush={historyPush} />,
                 icon: <i className="icon icon-forward" />
             }
         )
@@ -31,7 +31,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
         items.push(
             {
                 key: '2',
-                label: <ModalResponderPausa record={rec} />,
+                label: <ModalResponderPausa record={rec} historyPush={historyPush} />,
                 icon: <i className="icon icon-forward" />
             }
         )
@@ -40,7 +40,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
     if (status !== 'Última Iteração') {
         items.push({
             key: '3',
-            label: <ModalFinalizar record={rec} />,
+            label: <ModalFinalizar record={rec} historyPush={historyPush} />,
             icon: <i className="icon icon-check" />
         })
     }
