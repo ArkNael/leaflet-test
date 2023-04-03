@@ -17,7 +17,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
         }
     ]
 
-    if (status !== 'Ocorrencia Encaminhada' && status !== 'Última Iteração' && status !== 'Pausa Concedida' && status !== 'Solicitacao de Pausa') {
+    if (status !== 'Ocorrencia Encaminhada' && status !== 'Última Iteração' && status !== 'Pausa Concedida' && status !== 'Solicitacao de Pausa' && status !== 'Ocorrencia Finalizada') {
         items.push(
             {
                 key: '2',
@@ -37,7 +37,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
         )
     }
 
-    if (status !== 'Última Iteração') {
+    if (status !== 'Última Iteração' && status !== 'Ocorrencia Finalizada') {
         items.push({
             key: '3',
             label: <ModalFinalizar record={rec} historyPush={historyPush} />,
