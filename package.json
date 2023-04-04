@@ -1,6 +1,6 @@
 {
 	"name": "ouvidoria",
-	"version": "0.10.5",
+	"version": "0.10.8",
 	"private": true,
 	"dependencies": {
 		"@amcharts/amcharts3-react": "^3.1.0",
