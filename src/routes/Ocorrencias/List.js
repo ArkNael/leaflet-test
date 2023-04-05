@@ -10,6 +10,8 @@ import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
 import './styles.css'
 
+import { getSituacaoLabel } from "./components/Util";
+
 
 const getCriticidade = (val, type='level') => {
 	let res = ''
@@ -40,6 +42,7 @@ const processData = data => {
 		remetente: item.remetente.nomeRemetente,
 		reclamado: item.reclamado.nomeReclamado,
 		ultimoSetor: item.ultimoSetor,
+		situacao: getSituacaoLabel(item.status),
 		diasSetor: Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()),
 		diasSetorString: (Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()) || '<1'),
 		criticidade: getCriticidade(item.criticidade),
@@ -140,6 +143,41 @@ const List = (props) => {
 			),
 	});
 
+	const getFiltersStatus = [
+		{
+			text: 'Ocorrência Criada',
+			value: 'Ocorrência Criada'
+		},
+		{
+			text: 'Encaminhado',
+			value: 'Encaminhado'
+		},
+		{
+			text: 'Pausa Solicitada',
+			value: 'Pausa Solicitada'
+		},
+		{
+			text: 'Pausa Concedida',
+			value: 'Pausa Concedida'
+		},
+		{
+			text: 'Pausa Negada',
+			value: 'Pausa Negada'
+		},
+		{
+			text: 'Resposta',
+			value: 'Resposta'
+		},
+		{
+			text: 'Respondido',
+			value: 'Respondido'
+		},
+		{
+			text: 'Finalizado',
+			value: 'Finalizado'
+		}
+	]
+
 	const columns = [
 		{
 			title: 'Protocolo',
@@ -171,6 +209,13 @@ const List = (props) => {
 			dataIndex: 'diasSetorString',
 			sorter: (a, b) => a.diasSetor - b.diasSetor,
 			...getColumnSearchProps('diasSetorString')
+		},
+		{
+			title: 'Situação',
+			dataIndex: 'situacao',
+			sorter: (a, b) => String(a.situacao).localeCompare(String(b.situacao)),
+			filters: getFiltersStatus,
+			onFilter: (value, record) => record.situacao.indexOf(value) === 0,
 		},
 		{
 			title: 'Adicionado em',
