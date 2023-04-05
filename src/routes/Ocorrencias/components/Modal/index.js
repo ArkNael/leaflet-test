@@ -237,9 +237,9 @@ export const InfoModalSovnetDinamico = ({record}) => {
                 <Text span={6} label="Enviador por">{record.setorRemetente?.nomeCcusto}</Text>
                 <Text span={6} label="Localização atual">{record.setorReceptor?.nomeCcusto}</Text>
                 <Divider />
-                <Text span={24} label="Mensagem">{record.resposta.mensagemResposta}</Text>
-                {record.resposta.causaRaizResposta &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta.causaRaizResposta}</Text></>}
-                {record.resposta.acoesMelhoriaResposta && <><Divider /><Text span={24} label="Ações de Melhoria">{record.resposta.acoesMelhoriaResposta}</Text></>}
+                <Text span={24} label="Mensagem">{record.resposta?.mensagemResposta}</Text>
+                {record.resposta?.causaRaizResposta &&  <><Divider /><Text span={24} label="Causa Raiz">{record.resposta?.causaRaizResposta}</Text></>}
+                {record.resposta?.acoesMelhoriaResposta && <><Divider /><Text span={24} label="Ações de Melhoria">{record.resposta?.acoesMelhoriaResposta}</Text></>}
             </Row>
         </Modal>
         </>
@@ -484,6 +484,7 @@ export const ModalFinalizar = ({historyPush, record}) => {
 
         let body = {
             ocorrenciaId: record,
+            formaSaida: values.forma,
             resposta: values.desc,
             nomeUsuario: authUser.name.split(' ')[0],
             matriculaUsuario: authUser.cod_usuario,
