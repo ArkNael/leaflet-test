@@ -11,7 +11,7 @@ import { Listagem, ListagemSimples, ListagemSovnet, ListagemSovnetComTags, Lista
 import CardTitle from '../../components/Crud/DataDisplay/CardTitle';
 
 import IntlMessages from "util/IntlMessages";
-import { menuInteracoes } from './components/Util';
+import { menuInteracoes, getSetorAnterior } from './components/Util';
 
 
 const getData = async (setter, controller, id) => {
@@ -21,15 +21,11 @@ const getData = async (setter, controller, id) => {
 			let newData = data.retorno[0]
 			newData.movimentacoes = newData.movimentacoes.map(item => {
 				item.createdAt = moment(new Date(item.createdAt)).format('DD/MM/YYYY HH:mm:ss')
-				// if (item.tipoMovimentacao.nome === 'Ocorrencia Finalizada') {
-				// 	item.movimentacoes.setorReceptor = {nomeCcusto: 'Remetente2'}
-				// }
 				return item
 			})
 			newData.movimentacoes = newData.movimentacoes.sort((a, b) => b.id - a.id)
 			newData.statusOcorrencia = newData.movimentacoes[0].tipoMovimentacao.nome
 			setter(newData)
-			console.log(newData)
 		} else {
 			message.error(data.mensagem)
 		}
@@ -43,6 +39,7 @@ const getData = async (setter, controller, id) => {
 const View = (props) => {
 
 	const [data, setData] = useState({})
+	const [setorAnterior, setSetorAnterior] = useState()
 
 	const deleteReg = async (key) => {
 		const registros = data.arquivos.filter(item => item.id !== key);
@@ -61,10 +58,14 @@ const View = (props) => {
 		})
 	};
 
-	useEffect( () => {
+	useEffect(() => {
 		const fetchData = async () => await getData(setData, props.controller, props.match.params.id)
 		fetchData()
 	}, [props])
+
+	useEffect(() => {
+		if (data.id) getSetorAnterior(data.id, setSetorAnterior)
+	}, [data])
 
 	return (
 		<Card className="gx-card" title={<IntlMessages id={`sidebar.${props.controller}.acompanhar`} />}>
@@ -149,14 +150,14 @@ const View = (props) => {
 							<Text span={6} label="Status">{data.statusOcorrencia}</Text>
 							<Text span={4} label="Envio de carta">{data.enviarCarta?'Sim':'Não'}</Text>
 							<Text span={4} label="Procedencia">{data.procedencia?'Sim':'Não'}</Text>
-							<Text span={4} label="Finalizado" style={{color: 'red'}}>Site</Text>
+							<Text span={4} label="Finalizado">{data.formaSaida?.nomeForma}</Text>
 						</Row>
 						<Divider />
 						<Row>
 							<Text span={12} label="Classificação da ocorrência">{data.tipo?.nomeTipo}</Text>
 							<Text span={12} label="Tipo de contrato">{data.contrato?.nomeContrato}</Text>
 							<Text span={12} label="Tema">{data.tema?.nomeTema}</Text>
-							<Text span={12} label="Setor anterior" style={{color: 'red'}}>(3400000)</Text>
+							<Text span={12} label="Setor anterior">{setorAnterior}</Text>
 							<Text span={12} label="Histórico" style={{color: 'red'}}>01/02/2023 07:35</Text>
 							<Text span={24} label="Assunto">{data.assuntoOcorrencia}</Text>
 							<Text span={24} label="Descrição">{data.descricaoOcorrencia}</Text>

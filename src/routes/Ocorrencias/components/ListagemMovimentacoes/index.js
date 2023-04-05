@@ -1,6 +1,7 @@
 import { Table, Timeline, Dropdown, List, Row, Col } from "antd"
 import * as Icons from '@ant-design/icons';
 
+import { getTempoSetor } from "../Util";
 import Text from '../../../../components/Crud/DataDisplay/Text'
 import CustomTooltip from "../Tooltip";
 import {InfoModal, InfoModalSovnet, InfoModalSovnetAcoes, InfoModalSovnetDinamico} from "../Modal";
@@ -352,6 +353,9 @@ export const ListagemSovnetComTags = () => {
 }
 
 export const ListagemSovnetComTagsDinamico = ({data}) => {
+
+    data = getTempoSetor(data)
+
     return (
         <List
             size="small"

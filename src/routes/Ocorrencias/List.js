@@ -39,8 +39,9 @@ const processData = data => {
 		protocolo: item.protocolo,
 		remetente: item.remetente.nomeRemetente,
 		reclamado: item.reclamado.nomeReclamado,
-		ultimoSetor: 'OUVIDORIA',
-		diasSetor: '1',
+		ultimoSetor: item.ultimoSetor,
+		diasSetor: Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()),
+		diasSetorString: (Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()) || '<1'),
 		criticidade: getCriticidade(item.criticidade),
 		createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
 	}})
@@ -167,9 +168,9 @@ const List = (props) => {
 		},
 		{
 			title: 'Dias no Setor',
-			dataIndex: 'diasSetor',
-			sorter: (a, b) => a.diasSetor?.localeCompare(b.diasSetor),
-			...getColumnSearchProps('diasSetor')
+			dataIndex: 'diasSetorString',
+			sorter: (a, b) => a.diasSetor - b.diasSetor,
+			...getColumnSearchProps('diasSetorString')
 		},
 		{
 			title: 'Adicionado em',
