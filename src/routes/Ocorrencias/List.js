@@ -40,7 +40,7 @@ const processData = data => {
 		id: item.id,
 		protocolo: item.protocolo,
 		remetente: item.remetente.nomeRemetente,
-		reclamado: item.reclamado.nomeReclamado,
+		reclamado: item.reclamado?.nomeReclamado || '',
 		ultimoSetor: item.ultimoSetor,
 		situacao: getSituacaoLabel(item.status),
 		diasSetor: Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()),
@@ -355,6 +355,8 @@ const List = (props) => {
 				}
 			})
 			.catch((err) => {
+				console.log('err')
+				console.log(err)
 				message.error('Erro ao carregar registros')
 			})
 		}

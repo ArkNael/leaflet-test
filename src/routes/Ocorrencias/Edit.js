@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { api } from "util/Api"
 import { useAuth } from "../../authentication";
@@ -30,6 +30,8 @@ const Edit = (props) => {
 	const [loadingCodigo, setLoadingCodigo] = useState(false)
 
 	const [form] = Form.useForm()
+	const formRef = useRef(null)
+	const celularRemetenteRef = useRef(null)
 
 	const setProtAnt = value => {
 		value = value.replace(/\D/g, "")
@@ -264,7 +266,22 @@ const Edit = (props) => {
 			cartaAutomatica:			data.enviarCarta,
 		})
 
+		// formRef.current.getFieldInstance('celularRemetente').setValue(data.remetente.celularRemetente.replace(/\D/g, ""))
+		// console.log("formRef.current.getFieldInstance('celularRemetente')")
+		// console.log(formRef.current.getFieldInstance('celularRemetente').input.setValue(data.remetente.celularRemetente))
+
 		if (data.protocoloAnterior) setProtocoloAnterior(data.protocoloAnterior)
+
+		calculateCriticidade({
+			quem: Number(data.criticidade.criticidadeQuem),
+			quando: Number(data.criticidade.criticidadeQuando),
+			quanto: Number(data.criticidade.criticidadeQuanto),
+			como: Number(data.criticidade.criticidadeComo),
+		})
+
+		if (celularRemetenteRef.current) {
+			celularRemetenteRef.current.props.value = 'null'
+		}
 	}
 
 	useEffect(() => {
@@ -279,7 +296,7 @@ const Edit = (props) => {
 				}
 			})
 			.catch(err => {
-				message.error('Erro ao carregar registros')
+				// message.error('Erro ao carregar registros')
 			})
 		}
 
@@ -297,7 +314,7 @@ const Edit = (props) => {
 
 	return (
 		<Card className="gx-card" title={<IntlMessages id={`sidebar.${props.controller}.new`} />}>
-			<Form form={form} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
+			<Form form={form} ref={formRef} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
 
 				<Form.Item label="Qual a finalidade desta ocorrência?" name="finalidade" rules={[{ required: false, message: 'Informe a finalidade desta ocorrência!' }]} wrapperCol={{span: 10}}>
 					<CustomSelect placeholder='Selecione a finalidade' controller="finalidades" />
@@ -346,7 +363,7 @@ const Edit = (props) => {
 					<Input disabled={!clienteOutroEstado} />
 				</Form.Item>
 				<Form.Item label="Celular:" name="celularRemetente" rules={[required]} wrapperCol={{span: 6}} >
-					<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}}/>
+					<MaskedInput mask="(00) 00000-0000" ref={celularRemetenteRef} maskOptions={{lazy: true}} />
 				</Form.Item>
 				<Form.Item label="Telefone:" name="telefoneRemetente" wrapperCol={{span: 6}}>
 					<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}} />

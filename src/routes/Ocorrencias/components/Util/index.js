@@ -3,7 +3,7 @@ import { ModalEncaminhar, ModalFinalizar, ModalResponderPausa } from '../../comp
 import { api } from '../../../../util/Api'
 import moment from 'moment'
 
-export const menuInteracoes = (rec, status, historyPush) => {
+export const menuInteracoes = (rec, status, historyPush, data) => {
     const items = [
         {
             key: '1',
@@ -28,7 +28,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
             }
         )
     }
-
+    
     if (status === 'Solicitacao de Pausa') {
         items.push(
             {
@@ -42,7 +42,7 @@ export const menuInteracoes = (rec, status, historyPush) => {
     if (status !== 'Última Iteração' && status !== 'Ocorrencia Finalizada') {
         items.push({
             key: '3',
-            label: <ModalFinalizar record={rec} historyPush={historyPush} />,
+            label: <ModalFinalizar record={rec} historyPush={historyPush} finalidade={data.finalidade?.nomeFinalidade}/>,
             icon: <i className="icon icon-check" />
         })
     }
@@ -73,9 +73,9 @@ export const getSetorAnterior = async (id, setter) => {
             if (data.ok === 1 && data.retorno.length > 0) {
                 let movimentacoes = data.retorno[0].movimentacoes.sort((a, b) => b.id - a.id)
                 if (setter) {
-                    setter(movimentacoes[0].setorRemetente.nomeCcusto)
+                    setter(movimentacoes[0].setorRemetente?.nomeCcusto)
                 }
-                return movimentacoes[0].setorRemetente.nomeCcusto
+                return movimentacoes[0].setorRemetente?.nomeCcusto
             }
         })
     }
@@ -90,7 +90,11 @@ export const getTempoSetor = data => {
             let duration
             
             if (i === 0) {
-                duration = moment.duration(moment().diff(moment(item.createdAt, 'DD/MM/YYYY HH:mm:ss')))
+                if (item.tipoMovimentacao.nome === 'Ocorrencia Finalizada') {
+                    duration = moment.duration(moment(item.createdAt, 'DD/MM/YYYY HH:mm:ss').diff(moment(data[i+1].createdAt, 'DD/MM/YYYY HH:mm:ss')))
+                } else {
+                    duration = moment.duration(moment().diff(moment(item.createdAt, 'DD/MM/YYYY HH:mm:ss')))
+                }
             } else {
                 duration = moment.duration(moment(data[i-1].createdAt, 'DD/MM/YYYY HH:mm:ss').diff(moment(item.createdAt, 'DD/MM/YYYY HH:mm:ss')))
             }

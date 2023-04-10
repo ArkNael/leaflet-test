@@ -184,8 +184,8 @@ const Add = (props) => {
 
 		for (let key in body) formData.append(key, body[key] || '')
 		
-		if (values.anexos.length > 0) {
-			values.anexos.map(element => formData.append('arquivos', element.originFileObj))
+		if (values.anexos?.length > 0) {
+			values.anexos?.map(element => formData.append('arquivos', element.originFileObj))
 		}
 
 		
@@ -216,7 +216,7 @@ const Add = (props) => {
 
 	return (
 		<Card className="gx-card" title={<IntlMessages id={`sidebar.${props.controller}.new`} />}>
-			<Form form={form} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
+			<Form form={form} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}} scrollToFirstError>
 
 				<Divider orientation='left'>Informações da Ocorrência</Divider>
 				<Form.Item label="Quem está abrindo a ocorrência?" name="origem" rules={[{ required: false, message: 'Informe quem está abrindo a ocorrencia!' }]} wrapperCol={{span: 10}}>

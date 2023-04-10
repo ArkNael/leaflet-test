@@ -1,13 +1,14 @@
 import { useRef, useState } from 'react'
 import { api } from "util/Api"
-import { useAuth } from '../../../../authentication';
+import { useAuth } from '../../../../authentication'
 
-import { Divider, Modal, Row, Tooltip, Form, Input, Button, message } from 'antd'
-import * as Icons from '@ant-design/icons';
+import { Divider, Modal, Row, Tooltip, Form, Input, Button, Switch, message } from 'antd'
+import * as Icons from '@ant-design/icons'
 
 import Draggable from 'react-draggable'
 import Text from '../../../../components/Crud/DataDisplay/Text'
 import CustomSelect from '../../../../components/Crud/Fields/CustomSelect'
+import CustomUpload from '../../../../components/Crud/Fields/CustomUpload'
 
 export const InfoModal = ({record}) => {
     const [open, setOpen] = useState(false);
@@ -463,12 +464,15 @@ Ao não cumprir as regras da ANS, a operadora comete infrações administrativas
     );
 };
 
-export const ModalFinalizar = ({historyPush, record}) => {
+export const ModalFinalizar = ({historyPush, record, finalidade}) => {
     const [open, setOpen] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [loading, setLoading] = useState(false);
     const [bounds, setBounds] = useState({ left: 0, top: 0, bottom: 0, right: 0 });
     const draggleRef = useRef(null);
+    const [reversao, setReversao] = useState()
+
+    const [form] = Form.useForm()
 
     const { authUser } = useAuth();
 
@@ -484,15 +488,24 @@ export const ModalFinalizar = ({historyPush, record}) => {
 
         let body = {
             ocorrenciaId: record,
-            formaSaida: values.forma,
             resposta: values.desc,
+            formaSaida: values.forma,
+            codReversao: values.codReversao,
             nomeUsuario: authUser.name.split(' ')[0],
             matriculaUsuario: authUser.cod_usuario,
             codCcustoUsuario: authUser.cod_setor,
             nomeCcustoUsuario: authUser.setor
         }
 
-        await api.post(`api/movimentacoes/finalizar/ocorrencia`, body)
+        const formData = new FormData();
+
+		for (let key in body) formData.append(key, body[key] || '')
+        
+		if (values.anexos?.length > 0) {
+			values.anexos?.map(element => formData.append('arquivos', element.originFileObj))
+		}
+
+        await api.post(`api/movimentacoes/finalizar/ocorrencia`, formData)
         .then(({data}) => {
             if (data.ok === 1) {
                 setOpen(false)
@@ -522,6 +535,7 @@ export const ModalFinalizar = ({historyPush, record}) => {
             bottom: clientHeight - (targetRect.bottom - uiData.y),
         });
     };
+
     return (
         <>
         <span onClick={showModal} style={{ paddingLeft: "5px" }}>Finalizar ocorrência</span>
@@ -554,7 +568,7 @@ export const ModalFinalizar = ({historyPush, record}) => {
             )}
             width={600}
         >
-            <Form  layout="vertical" key={`form${record.id}`} onFinish={handleSubmit}>
+            <Form form={form} layout="vertical" key={`form${record.id}`} onFinish={handleSubmit}>
                 <Form.Item label="Descreva a solução" name="solucao" rules={[{required: true, message: 'Descreva a solução da ocorrência!'}]}>
                     <Input.TextArea onKeyDown={e => e.stopPropagation()} rows={5} />
                 </Form.Item>
@@ -565,6 +579,17 @@ export const ModalFinalizar = ({historyPush, record}) => {
                         filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
                     />
                 </Form.Item>
+                {finalidade === 'Reanálise' && <>
+                    <Form.Item label="Reversão">
+                        <Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setReversao} />
+                    </Form.Item>
+                    {reversao && 
+                        <Form.Item label="Tipo de reversão" name="tipoReversao" rules={[{required: true, message: 'Informe a forma de envio da resposta!'}]}>
+                            <CustomSelect controller="reversoes" />
+                        </Form.Item>
+                    }
+                </>}
+                <CustomUpload form={form} />
                 <Form.Item style={{textAlign: 'right'}}>
                     <Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Finalizar</Button>
                 </Form.Item>
