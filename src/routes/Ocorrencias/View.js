@@ -167,7 +167,7 @@ const View = (props) => {
 				<Card type='inner' className="gx-card">
 					<CardTitle
 						extra={
-							<Dropdown menu={{items: menuInteracoes(props.match.params.id, data.statusOcorrencia, props.history.push)}}>
+							<Dropdown menu={{items: menuInteracoes(props.match.params.id, data.statusOcorrencia, props.history.push, data)}}>
 								<span className="gx-link ant-dropdown-link">
 									<Icons.SettingOutlined />
 								</span>
