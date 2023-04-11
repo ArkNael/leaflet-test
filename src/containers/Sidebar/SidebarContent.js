@@ -142,7 +142,7 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								</Link>
 							</Menu.Item>
 						</Menu.SubMenu>
-						{/* <Menu.SubMenu
+						<Menu.SubMenu
 							key="relatorios"
 							className={getNavStyleSubMenuClass(navStyle)}
 							title={
@@ -153,12 +153,13 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 								</span>
 							}
 						>
-							<Menu.Item key="relatorios">
-								<Link to="/relatorios">
-									<span><IntlMessages id="sidebar.relatorios.ocorrencias"/></span>
+							
+							<Menu.Item key="relatorios/formas-entrada">
+								<Link to="/relatorios/formas-entrada">
+									<span><IntlMessages id="sidebar.relatorios.formasEntrada"/></span>
 								</Link>
 							</Menu.Item>
-						</Menu.SubMenu> */}
+						</Menu.SubMenu>
 
 					</Menu>
 				</CustomScrollbars>

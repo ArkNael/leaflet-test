@@ -8,7 +8,7 @@ const Relatorios = () => {
     return (
         <div className="gx-main-content-wrapper">
             <Switch>
-                <Route exact path={`/${controller}`} component={(props) => <FormasEntrada {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/formas-entrada`} component={(props) => <FormasEntrada {...props} controller={controller} />} />
             </Switch>
         </div>
     )
