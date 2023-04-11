@@ -70,5 +70,8 @@
 	"sidebar.ccustos": "Centros de Custo",
 	"sidebar.ccustos.add": "Adicionar",
 	"sidebar.ccustos.new": "cadastrar novo centro de custo",
-	"sidebar.ccustos.edit": "modificar centro de custo"
+	"sidebar.ccustos.edit": "modificar centro de custo",
+
+	"sidebar.relatorios": "Relatórios",
+	"sidebar.relatorios.ocorrencias": "Ocorrências"
 }
