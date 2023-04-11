@@ -1,14 +1,14 @@
 import React from "react"
 import { Route, Switch } from "react-router-dom"
 
-import List from "../../components/Crud/Listing/DefaultList"
+import FormasEntrada from "./FormasEntrada"
 
 const controller = "relatorios"
 const Relatorios = () => {
     return (
         <div className="gx-main-content-wrapper">
             <Switch>
-                <Route exact path={`/${controller}`} component={(props) => <List {...props} controller={controller} />} />
+                <Route exact path={`/${controller}`} component={(props) => <FormasEntrada {...props} controller={controller} />} />
             </Switch>
         </div>
     )
