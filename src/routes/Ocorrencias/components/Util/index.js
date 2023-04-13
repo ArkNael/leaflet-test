@@ -5,6 +5,22 @@ import moment from 'moment'
 import { Link } from 'react-router-dom'
 
 export const menuInteracoes = (rec, status, historyPush, data) => {
+
+    const deleteReg = async (key) => {
+        await api.get(`api/ocorrencias/excluir/${key}`)
+        .then(({data}) => {
+            if (data.ok === 1) {
+                message.success(data.mensagem)
+                historyPush(`/ocorrencias`)
+            } else {
+                message.error(data.mensagem)
+            }
+        })
+        .catch((err) => {
+            message.error('Erro ao excluir registro')
+        })
+    }
+
     const items = [
         {
             key: '1',
@@ -50,7 +66,7 @@ export const menuInteracoes = (rec, status, historyPush, data) => {
         label: (
             <Popconfirm
                 title="Deseja excluir o registro?"
-                onConfirm={e => { message.error('Não é possível excluir a ocorrência no momento.') }}
+                onConfirm={e => { deleteReg(rec) }}
                 okText="Sim"
                 cancelText="Não"
             >

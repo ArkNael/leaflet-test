@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { api } from "util/Api"
 import moment from "moment"
 
-import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, message } from "antd";
+import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, Popconfirm, message } from "antd";
 import Highlighter from 'react-highlight-words';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
@@ -293,37 +293,35 @@ const List = (props) => {
 			),
 			icon: (<i className="icon icon-edit" />),
 		},
-		{
-			key: '3',
-			label: (
-				<Link to={`/${props.controller}/excluir/${rec.id}`}>
-					<span style={{ paddingLeft: "5px" }}>Exluir</span>
-				</Link>
-			),
-			icon: (<i className="icon icon-trash" />),
-			disabled: true,
-		},
 		// {
 		// 	key: '3',
 		// 	label: (
-		// 		<Popconfirm
-		// 			title="Deseja excluir o registro?"
-		// 			onConfirm={e => { deleteReg(rec.id) }}
-		// 			okText="Sim"
-		// 			cancelText="Não"
-		// 		>
-		// 			<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
-		// 		</Popconfirm>
+		// 		<Link to={`/${props.controller}/excluir/${rec.id}`}>
+		// 			<span style={{ paddingLeft: "5px" }}>Exluir</span>
+		// 		</Link>
 		// 	),
 		// 	icon: (<i className="icon icon-trash" />),
-		// 	disabled: true,
 		// },
+		{
+			key: '3',
+			label: (
+				<Popconfirm
+					title="Deseja excluir o registro?"
+					onConfirm={e => { deleteReg(rec.id) }}
+					okText="Sim"
+					cancelText="Não"
+				>
+					<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
+				</Popconfirm>
+			),
+			icon: (<i className="icon icon-trash" />),
+		},
 	];
 
 	const deleteReg = async (key) => {
 		const registros = data.filter(item => item.id !== key);
 
-		await api.post(`api/${props.controller}/excluir/${key}`)
+		await api.get(`api/${props.controller}/excluir/${key}`)
 		.then(({data}) => {
 			if (data.ok === 1) {
 				message.success(data.mensagem)
