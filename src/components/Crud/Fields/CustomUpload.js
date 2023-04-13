@@ -50,20 +50,22 @@ const CustomUpload = ({form, ...rest}) => {
 
     return (
         <Form.Item label='Anexos:' name="anexos">
-            <Upload
-                listType="picture-card"
-                onPreview={handlePreview}
-                onChange={handleChange}
-                multiple={true}
-                customRequest={dummyRequest}
-                className="upload-list-inline"
-                {...rest}
-            >
-                {fileList.length >= 8 ? null : uploadButton}
-            </Upload>
-            <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                <img alt="preview" style={{ width: '100%' }} src={previewImage}/>
-            </Modal>
+            <>
+                <Upload
+                    listType="picture-card"
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    multiple={true}
+                    customRequest={dummyRequest}
+                    className="upload-list-inline"
+                    {...rest}
+                >
+                    {fileList.length >= 8 ? null : uploadButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                    <img alt="preview" style={{ width: '100%' }} src={previewImage}/>
+                </Modal>
+            </>
         </Form.Item>
   );
 };

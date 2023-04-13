@@ -142,7 +142,7 @@ const View = (props) => {
 			</Col>
 			<Col span={16}>
 				<Card type='inner' className="gx-card">
-					<CardTitle>Dados da Ocorrência</CardTitle>
+					<CardTitle extra={`Solicitação - ${data?.protocolo}`} extraDivider={false}>Dados da Ocorrência</CardTitle>
 					<Skeleton loading={false}>
 						<Row>
 							<Text span={5} label="Data / hora">{data.createdAt?moment(data.createdAt).format('DD/MM/YYYY HH:mm:ss'):''}</Text>
@@ -173,6 +173,7 @@ const View = (props) => {
 								</span>
 							</Dropdown>
 						}
+						extraFontSize={20}
 					>
 						Interações
 					</CardTitle>

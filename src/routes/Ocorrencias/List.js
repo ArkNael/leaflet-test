@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { api } from "util/Api"
 import moment from "moment"
 
-import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, message } from "antd";
+import { Space, Card, Button, Input, Table, Dropdown, Tag, Form, DatePicker, Popconfirm, message } from "antd";
 import Highlighter from 'react-highlight-words';
 import * as Icons from '@ant-design/icons';
 import IntlMessages from "util/IntlMessages";
@@ -22,9 +22,18 @@ const getCriticidade = (val, type='level') => {
 					Number(val.criticidadeQuanto) + 
 					Number(val.criticidadeComo)
 
+		if (total < 4) res = 'Nova'
 		if (total >= 4 && total <= 6) res = 'Baixa'
 		if (total >= 7 && total <= 10) res = 'Média ou Atenção'
 		if (total >= 11 && total <= 12) res = 'Alta'
+
+	} else if (type === 'level-int') {
+		let total = Number(val.criticidadeQuem) + 
+					Number(val.criticidadeQuando) + 
+					Number(val.criticidadeQuanto) + 
+					Number(val.criticidadeComo)
+
+		res = total
 
 	} else {
 		if (val === 'Baixa') res = type==='color-hex'?'#9dff64':'green'
@@ -46,6 +55,7 @@ const processData = data => {
 		diasSetor: Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()),
 		diasSetorString: (Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()) || '<1'),
 		criticidade: getCriticidade(item.criticidade),
+		criticidadeNivel: getCriticidade(item.criticidade, 'level-int'),
 		createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
 	}})
 	return newData
@@ -55,9 +65,9 @@ const processData = data => {
 const List = (props) => {
 
 	const [data, setData] = useState(null)
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
+	const [searchText, setSearchText] = useState('')
+	const [searchedColumn, setSearchedColumn] = useState('')
+	const searchInput = useRef(null)
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
@@ -141,7 +151,7 @@ const List = (props) => {
 			) : (
 				text
 			),
-	});
+	})
 
 	const getFiltersStatus = [
 		{
@@ -228,7 +238,7 @@ const List = (props) => {
 			title: 'Criticidade',
 			dataIndex: 'criticidade',
 			render: item => <Tag style={{margin: 0, padding: '4px 10px', fontSize: 15, width: '100%', textAlign: 'center'}} color={getCriticidade(item, 'color')} key={'1'}>{item}</Tag>,
-			sorter: (a, b) => a.criticidade?.localeCompare(b.criticidade),
+			sorter: (a, b) => a.criticidadeNivel - b.criticidadeNivel,
 			filters: [
 				{
 					text: 'Baixa',
@@ -241,6 +251,10 @@ const List = (props) => {
 				{
 					text: 'Alta',
 					value: 'Alta',
+				},
+				{
+					text: 'Nova',
+					value: 'Nova',
 				},
 			],
 			onFilter: (value, record) => record.criticidade.indexOf(value) === 0,
@@ -258,7 +272,7 @@ const List = (props) => {
 				</div>
 			  )
 		},
-	];
+	]
 
 	const submenus = rec => [
 		{
@@ -278,39 +292,27 @@ const List = (props) => {
 				</Link>
 			),
 			icon: (<i className="icon icon-edit" />),
-			disabled: true,
 		},
 		{
 			key: '3',
 			label: (
-				<Link to={`/${props.controller}/excluir/${rec.id}`}>
-					<span style={{ paddingLeft: "5px" }}>Exluir</span>
-				</Link>
+				<Popconfirm
+					title="Deseja excluir o registro?"
+					onConfirm={e => { deleteReg(rec.id) }}
+					okText="Sim"
+					cancelText="Não"
+				>
+					<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
+				</Popconfirm>
 			),
 			icon: (<i className="icon icon-trash" />),
-			disabled: true,
 		},
-		// {
-		// 	key: '3',
-		// 	label: (
-		// 		<Popconfirm
-		// 			title="Deseja excluir o registro?"
-		// 			onConfirm={e => { deleteReg(rec.id) }}
-		// 			okText="Sim"
-		// 			cancelText="Não"
-		// 		>
-		// 			<span style={{ paddingLeft: "5px" }} className="gx-link">Excluir</span>
-		// 		</Popconfirm>
-		// 	),
-		// 	icon: (<i className="icon icon-trash" />),
-		// 	disabled: true,
-		// },
-	];
+	]
 
 	const deleteReg = async (key) => {
 		const registros = data.filter(item => item.id !== key);
 
-		await api.post(`api/${props.controller}/excluir/${key}`)
+		await api.get(`api/${props.controller}/excluir/${key}`)
 		.then(({data}) => {
 			if (data.ok === 1) {
 				message.success(data.mensagem)
@@ -322,7 +324,7 @@ const List = (props) => {
 		.catch((err) => {
 			message.error('Erro ao excluir registro')
 		})
-	};
+	}
 
 	const onSubmit = async values => {
 		let filter = {
@@ -355,8 +357,6 @@ const List = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log('err')
-				console.log(err)
 				message.error('Erro ao carregar registros')
 			})
 		}
@@ -389,7 +389,6 @@ const List = (props) => {
 						className="gx-mb-0"
 						type="primary"
 						htmlType="submit"
-						// loading={this.state.loading}
 					>
 						Filtrar
 					</Button>
