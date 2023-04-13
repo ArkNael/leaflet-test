@@ -65,9 +65,9 @@ const processData = data => {
 const List = (props) => {
 
 	const [data, setData] = useState(null)
-	const [searchText, setSearchText] = useState('');
-	const [searchedColumn, setSearchedColumn] = useState('');
-	const searchInput = useRef(null);
+	const [searchText, setSearchText] = useState('')
+	const [searchedColumn, setSearchedColumn] = useState('')
+	const searchInput = useRef(null)
 
 	const handleSearch = (selectedKeys, confirm, dataIndex) => {
 		confirm();
@@ -151,7 +151,7 @@ const List = (props) => {
 			) : (
 				text
 			),
-	});
+	})
 
 	const getFiltersStatus = [
 		{
@@ -272,7 +272,7 @@ const List = (props) => {
 				</div>
 			  )
 		},
-	];
+	]
 
 	const submenus = rec => [
 		{
@@ -293,15 +293,6 @@ const List = (props) => {
 			),
 			icon: (<i className="icon icon-edit" />),
 		},
-		// {
-		// 	key: '3',
-		// 	label: (
-		// 		<Link to={`/${props.controller}/excluir/${rec.id}`}>
-		// 			<span style={{ paddingLeft: "5px" }}>Exluir</span>
-		// 		</Link>
-		// 	),
-		// 	icon: (<i className="icon icon-trash" />),
-		// },
 		{
 			key: '3',
 			label: (
@@ -316,7 +307,7 @@ const List = (props) => {
 			),
 			icon: (<i className="icon icon-trash" />),
 		},
-	];
+	]
 
 	const deleteReg = async (key) => {
 		const registros = data.filter(item => item.id !== key);
@@ -333,7 +324,7 @@ const List = (props) => {
 		.catch((err) => {
 			message.error('Erro ao excluir registro')
 		})
-	};
+	}
 
 	const onSubmit = async values => {
 		let filter = {
@@ -398,7 +389,6 @@ const List = (props) => {
 						className="gx-mb-0"
 						type="primary"
 						htmlType="submit"
-						// loading={this.state.loading}
 					>
 						Filtrar
 					</Button>
