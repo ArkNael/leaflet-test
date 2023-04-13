@@ -22,9 +22,18 @@ const getCriticidade = (val, type='level') => {
 					Number(val.criticidadeQuanto) + 
 					Number(val.criticidadeComo)
 
+		if (total < 4) res = 'Nova'
 		if (total >= 4 && total <= 6) res = 'Baixa'
 		if (total >= 7 && total <= 10) res = 'Média ou Atenção'
 		if (total >= 11 && total <= 12) res = 'Alta'
+
+	} else if (type === 'level-int') {
+		let total = Number(val.criticidadeQuem) + 
+					Number(val.criticidadeQuando) + 
+					Number(val.criticidadeQuanto) + 
+					Number(val.criticidadeComo)
+
+		res = total
 
 	} else {
 		if (val === 'Baixa') res = type==='color-hex'?'#9dff64':'green'
@@ -46,6 +55,7 @@ const processData = data => {
 		diasSetor: Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()),
 		diasSetorString: (Math.floor(moment.duration(moment().diff(moment(item.tempoSetor))).asDays()) || '<1'),
 		criticidade: getCriticidade(item.criticidade),
+		criticidadeNivel: getCriticidade(item.criticidade, 'level-int'),
 		createdAt: moment(item.createdAt).format('DD/MM/YYYY HH:mm:ss')
 	}})
 	return newData
@@ -228,7 +238,7 @@ const List = (props) => {
 			title: 'Criticidade',
 			dataIndex: 'criticidade',
 			render: item => <Tag style={{margin: 0, padding: '4px 10px', fontSize: 15, width: '100%', textAlign: 'center'}} color={getCriticidade(item, 'color')} key={'1'}>{item}</Tag>,
-			sorter: (a, b) => a.criticidade?.localeCompare(b.criticidade),
+			sorter: (a, b) => a.criticidadeNivel - b.criticidadeNivel,
 			filters: [
 				{
 					text: 'Baixa',
@@ -241,6 +251,10 @@ const List = (props) => {
 				{
 					text: 'Alta',
 					value: 'Alta',
+				},
+				{
+					text: 'Nova',
+					value: 'Nova',
 				},
 			],
 			onFilter: (value, record) => record.criticidade.indexOf(value) === 0,
