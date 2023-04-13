@@ -16,12 +16,7 @@ import { MaskedInput } from 'antd-mask-input';
 const Edit = (props) => {
 	const { authUser } = useAuth();
 
-	// const [data, setData] = useState()
-	const [finalidade, setFinalidade] = useState()
-	const [contrato, setContrato] = useState()
-	const [tema, setTema] = useState()
-	const [assunto, setAssunto] = useState()
-	const [comlexidade, setComplexidade] = useState()
+	const [data, setData] = useState()
 	const [clienteOutroEstado, setClienteOutroEstado] = useState(false)
 	const [protocoloAnterior, setProtocoloAnterior] = useState()
 	const [criticidade, setCriticidade] = useState({})
@@ -66,79 +61,8 @@ const Edit = (props) => {
 		setCriticidade(obj)
 	}
 
-	const unsetRemetente = () => {
-		form.setFieldsValue({
-			nomeRemetente: 				'',
-			celularRemetente: 			'',
-			telefoneRemetente: 			'',
-			emailRemetente: 			'',
-			dataNascimentoRemetente: 	'',
-			sexoRemetente: 				'',
-			cepRemetente: 				'',
-			ufRemetente: 				'',
-			cidadeRemetente: 			'',
-			bairroRemetente: 			'',
-			ruaRemetente: 				'',
-			numeroRemetente: 			''
-		})
-	}
-
-	const setRemetente = values => {
-
-		if (values.TELEFONE.startsWith('55'))
-			values.TELEFONE = values.TELEFONE.substring(2)
-		
-		console.log('value.TELEFONE')
-		console.log(values.TELEFONE)
-		console.log(values.CEP)
-
-		form.setFieldsValue({
-			nomeRemetente: 				values.NM_PESSOA,
-			celularRemetente: 			values.TELEFONE,
-			telefoneRemetente: 			'',
-			emailRemetente: 			values.EMAIL,
-			dataNascimentoRemetente: 	moment(values.DT_NASCIMENTO, 'DD/MM/YYYY'),
-			sexoRemetente: 				values.SEXO,
-			cepRemetente: 				values.CEP,
-			ufRemetente: 				values.UF,
-			cidadeRemetente: 			values.CIDADE,
-			bairroRemetente: 			values.BAIRRO,
-			ruaRemetente: 				values.LOGRADOURO,
-			numeroRemetente: 			values.NUM_LOGRADOURO
-		})
-	}
-
-	const getRemetente = async search => {
-		search = search.replace(/\D/g, "");
-
-		form.setFieldsValue({codigoRemetente: search})
-		unsetRemetente()
-		if (search.length === 11 || search.length === 17) {
-			setLoadingCodigo(true)
-			await api.get(`api/${props.controller}/buscar-beneficiario`, {params: {busca: search}})
-			.then(({data}) => {
-				if (data.ok === 1) {
-					setLoadingCodigo(false)
-					if (data.retorno.length === 0) {
-						message.error('Código não encontrado. Verifique e tente novamente.')
-					} else {
-						setRemetente(data.retorno[0])
-					}
-				} else {
-					setLoadingCodigo(false)
-					message.error(data.mensagem)
-				}
-			})
-			.catch((err) => {
-				message.error('Erro ao buscar registro')
-			})
-			
-		}
-	}
-
-	const handleSubmit = async (values) => {
+	const handleSubmit = async values => {
 		setLoading(true)
-		console.log(values)
 		const body = {
 			nomeReclamado:				values.nomeReclamado,
 			emailReclamado:				values.emailReclamado,
@@ -188,33 +112,24 @@ const Edit = (props) => {
 			protocoloAnterior:			values.numProtocoloAnterior
 		}
 
- 
-		// const formData = new FormData();
-
-		// for (let key in body) formData.append(key, body[key] || '')
-		
-		// if (values.anexos.length > 0) {
-		// 	values.anexos.map(element => formData.append('arquivos', element.originFileObj))
-		// }
-
-		
-		// await api.post(`api/${props.controller}/adicionar`, formData)
-		// .then(({data}) => {
-		// 	if (data.ok === 1) {
-		// 		message.success(data.mensagem)
-		// 		props.history.push(`/${props.controller}`)
-		// 	} else {
-		// 		message.error(data.mensagem)
-		// 	}
-		// })
-		// .catch((err) => {
-		// 	message.error('Erro ao salvar registro')
-		// })
+		await api.post(`api/${props.controller}/editar/${props.match.params.id}`, body)
+		.then(({data}) => {
+			if (data.ok === 1) {
+				message.success(data.mensagem)
+				props.history.push(`/${props.controller}`)
+			} else {
+				message.error(data.mensagem)
+			}
+		})
+		.catch((err) => {
+			message.error('Erro ao salvar registro')
+		})
 
 		setLoading(false)
 	}
 
 	const setFormData = data => {
+		console.log('data')
 		console.log(data)
 		form.setFieldsValue({
 			finalidade: 				data.finalidade.id,
@@ -222,66 +137,51 @@ const Edit = (props) => {
 			protocoloAnterior:			data.protocoloAnterior,
 			numProtocoloAnterior:		data.protocoloAnterior,
 			
-			codigoRemetente: 			data.remetente.codigoRemetente,
-			nomeRemetente: 				data.remetente.nomeRemetente,
-			celularRemetente: 			data.remetente.celularRemetente.replace(/\D/g, ""),
+			codigoRemetente: 			data.remetente?.codigoRemetente,
+			nomeRemetente: 				data.remetente?.nomeRemetente,
+			celularRemetente: 			data.remetente?.celularRemetente?.replace(/\D/g, ""),
 			telefoneRemetente: 			'',
-			emailRemetente: 			data.remetente.emailRemetente,
-			dataNascimentoRemetente: 	moment(data.remetente.dataNascimentoRemetente, 'DD/MM/YYYY'),
-			sexoRemetente: 				data.remetente.sexoRemetente.toUpperCase(),
-			cepRemetente: 				data.remetente.cepRemetente,
-			ufRemetente: 				data.remetente.ufRemetente,
-			cidadeRemetente: 			data.remetente.cidadeRemetente,
-			bairroRemetente: 			data.remetente.bairroRemetente,
-			ruaRemetente: 				data.remetente.ruaRemetente,
-			numeroRemetente: 			data.remetente.numeroCasaRemetente,
+			emailRemetente: 			data.remetente?.emailRemetente,
+			dataNascimentoRemetente: 	data.remetente?.dataNascimentoRemetente?moment(data.remetente.dataNascimentoRemetente, 'DD/MM/YYYY'):moment(new Date(), 'DD/MM/YYYY'),
+			sexoRemetente: 				data.remetente?.sexoRemetente?.toUpperCase(),
+			cepRemetente: 				data.remetente?.cepRemetente,
+			ufRemetente: 				data.remetente?.ufRemetente,
+			cidadeRemetente: 			data.remetente?.cidadeRemetente,
+			bairroRemetente: 			data.remetente?.bairroRemetente,
+			ruaRemetente: 				data.remetente?.ruaRemetente,
+			numeroRemetente: 			data.remetente?.numeroCasaRemetente,
 
-			nomeReclamado:				data.reclamado.nomeReclamado,
-			extraReclamado:				data.reclamado.infoExtraReclamado,
-			telefoneReclamado:			data.reclamado.telefoneReclamado,
-			emailReclamado:				data.reclamado.emailReclamado,
-			cepReclamado:				data.reclamado.cepReclamado,
-			ufReclamado:				data.reclamado.ufReclamado,
-			cidadeReclamado:			data.reclamado.cidadeReclamado,
-			bairroReclamado:			data.reclamado.bairroReclamado,
-			ruaReclamado:				data.reclamado.ruaReclamado,
-			numeroReclamado:			data.reclamado.numeroCasaReclamado,
+			nomeReclamado:				data.reclamado?.nomeReclamado,
+			extraReclamado:				data.reclamado?.infoExtraReclamado,
+			telefoneReclamado:			data.reclamado?.telefoneReclamado,
+			emailReclamado:				data.reclamado?.emailReclamado,
+			cepReclamado:				data.reclamado?.cepReclamado,
+			ufReclamado:				data.reclamado?.ufReclamado,
+			cidadeReclamado:			data.reclamado?.cidadeReclamado,
+			bairroReclamado:			data.reclamado?.bairroReclamado,
+			ruaReclamado:				data.reclamado?.ruaReclamado,
+			numeroReclamado:			data.reclamado?.numeroCasaReclamado,
 
 			descricaoAssunto:			data.assuntoOcorrencia,
-			tipoOcorrencia:				data.tipo.nomeTipo,
-			formaEnvio:					data.forma.nomeForma,
+			tipoOcorrencia:				data.tipo?.id,
+			formaEnvio:					data.forma?.id,
 			classificacao:				Number(data.procedencia),
 			descricao:					data.descricaoOcorrencia,
-			contrato:					data.contrato.id,
-			tema:						data.tema.id,
-			assunto:					data.assunto.id,
-			complexidade:				data.complexidade.id,
+			contrato:					data.contrato?.id,
+			tema:						data.tema?.id,
+			assunto:					data.assunto?.id,
+			complexidade:				data.complexidade?.id,
 
-			quem:						Number(data.criticidade.criticidadeQuem),
-			quando:						Number(data.criticidade.criticidadeQuando),
-			quanto:						Number(data.criticidade.criticidadeQuanto),
-			como:						Number(data.criticidade.criticidadeComo),
+			quem:						Number(data.criticidade.criticidadeQuem)?Number(data.criticidade.criticidadeQuem):null,
+			quando:						Number(data.criticidade.criticidadeQuando)?Number(data.criticidade.criticidadeQuando):null,
+			quanto:						Number(data.criticidade.criticidadeQuanto)?Number(data.criticidade.criticidadeQuanto):null,
+			como:						Number(data.criticidade.criticidadeComo)?Number(data.criticidade.criticidadeComo):null,
 			historicoNip:				data.temHistoricoNips,
 			acaoJudicial:				data.temAcaoJudicial,
 			cartaAutomatica:			data.enviarCarta,
 		})
 
-		// formRef.current.getFieldInstance('celularRemetente').setValue(data.remetente.celularRemetente.replace(/\D/g, ""))
-		// console.log("formRef.current.getFieldInstance('celularRemetente')")
-		// console.log(formRef.current.getFieldInstance('celularRemetente').input.setValue(data.remetente.celularRemetente))
-
-		if (data.protocoloAnterior) setProtocoloAnterior(data.protocoloAnterior)
-
-		calculateCriticidade({
-			quem: Number(data.criticidade.criticidadeQuem),
-			quando: Number(data.criticidade.criticidadeQuando),
-			quanto: Number(data.criticidade.criticidadeQuanto),
-			como: Number(data.criticidade.criticidadeComo),
-		})
-
-		if (celularRemetenteRef.current) {
-			celularRemetenteRef.current.props.value = 'null'
-		}
+		form.current.getFieldInstance('celularRemetente').setValue(data.remetente.celularRemetente)
 	}
 
 	useEffect(() => {
@@ -289,7 +189,7 @@ const Edit = (props) => {
 			await api.get(`api/${props.controller}/exibir/${props.match.params.id}`)
 			.then(({data}) => {
 				if (data.ok === 1) {
-					// setData(data.retorno[0])
+					setData(data.retorno[0])
 					setFormData(data.retorno[0])
 				} else {
 					message.error(data.mensagem)
@@ -303,6 +203,17 @@ const Edit = (props) => {
 		getData()
 	}, [])
 
+	useEffect(() => {
+		calculateCriticidade({
+			quem: Number(data?.criticidade.criticidadeQuem),
+			quando: Number(data?.criticidade.criticidadeQuando),
+			quanto: Number(data?.criticidade.criticidadeQuanto),
+			como: Number(data?.criticidade.criticidadeComo),
+		})
+
+		setProtocoloAnterior(data?.protocoloAnterior)
+	}, [data])
+
 
 	const required = { required: true, message: 'Campo obrigatório!' }
 
@@ -313,7 +224,7 @@ const Edit = (props) => {
 	]
 
 	return (
-		<Card className="gx-card" title={<IntlMessages id={`sidebar.${props.controller}.new`} />}>
+		<Card className="gx-card" title={<><IntlMessages id={`sidebar.${props.controller}.edit`} />{` - ${data?.protocolo}`}</>}>
 			<Form form={form} ref={formRef} name="form_basic" colon={false} layout="horizontal" onFinish={handleSubmit} labelCol={{span: 9}}>
 
 				<Form.Item label="Qual a finalidade desta ocorrência?" name="finalidade" rules={[{ required: false, message: 'Informe a finalidade desta ocorrência!' }]} wrapperCol={{span: 10}}>
@@ -333,7 +244,7 @@ const Edit = (props) => {
 
 				<Divider orientation="left" style={{marginTop: '50px'}}>Informe seus dados (Todos os campos com * são obrigatórios)</Divider>
 				<Form.Item label="Cliente de outro Estado (Intercâmbio)?" name="clienteOutroEstado">
-					<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setClienteOutroEstado}/>
+					<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} onChange={setClienteOutroEstado} disabled={true}/>
 				</Form.Item>
 				<Form.Item 
 					label={(
@@ -357,10 +268,10 @@ const Edit = (props) => {
 					rules={[required]} 
 					wrapperCol={{span: 8}}
 				>
-					<Input.Search onChange={e => getRemetente(e.target.value)} maxLength={17} loading={loadingCodigo}/>
+					<Input.Search maxLength={17} loading={loadingCodigo} disabled={true}/>
 				</Form.Item>
 				<Form.Item label="Nome:" name="nomeRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 12}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 				<Form.Item label="Celular:" name="celularRemetente" rules={[required]} wrapperCol={{span: 6}} >
 					<MaskedInput mask="(00) 00000-0000" ref={celularRemetenteRef} maskOptions={{lazy: true}} />
@@ -369,10 +280,10 @@ const Edit = (props) => {
 					<MaskedInput mask="(00) 00000-0000" maskOptions={{lazy: true}} />
 				</Form.Item>
 				<Form.Item label="Email:" name="emailRemetente" rules={[clienteOutroEstado?required:{}]} wrapperCol={{span: 8}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 				<Form.Item label="Data de nascimento:" name="dataNascimentoRemetente" wrapperCol={{span: 8}}>
-					<DatePicker format="DD/MM/YYYY" disabled={!clienteOutroEstado} />
+					<DatePicker format="DD/MM/YYYY" />
 				</Form.Item>
 				<Form.Item label="Sexo:" name="sexoRemetente" rules={[required]} wrapperCol={{span: 8}}>
 					<Radio.Group>
@@ -381,22 +292,22 @@ const Edit = (props) => {
 					</Radio.Group>
 				</Form.Item>
 				<Form.Item label="CEP:" name="cepRemetente" wrapperCol={{span: 8}}>
-					<MaskedInput mask="00000-000" maskOptions={{lazy: true}} disabled={!clienteOutroEstado}/>
+					<MaskedInput mask="00000-000" maskOptions={{lazy: true}} />
 				</Form.Item>
 				<Form.Item label="UF:" name="ufRemetente" wrapperCol={{span: 2}}>
-					<Input disabled={!clienteOutroEstado} maxLength={2} />
+					<Input maxLength={2} />
 				</Form.Item>
 				<Form.Item label="Cidade:" name="cidadeRemetente" wrapperCol={{span: 8}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 				<Form.Item label="Bairro:" name="bairroRemetente" wrapperCol={{span: 8}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 				<Form.Item label="Rua:" name="ruaRemetente" wrapperCol={{span: 8}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 				<Form.Item label="Numero:" name="numeroRemetente" wrapperCol={{span: 3}}>
-					<Input disabled={!clienteOutroEstado} />
+					<Input />
 				</Form.Item>
 
 
@@ -491,14 +402,9 @@ const Edit = (props) => {
 				<Form.Item label="Deseja que o sistema envie carta automática?" name="cartaAutomatica" valuePropName='checked'>
 					<Switch checkedChildren={<Icons.CheckOutlined />} unCheckedChildren={<Icons.CloseOutlined />} style={{marginLeft: '15px'}} />
 				</Form.Item>
-				
-				
-				<Divider orientation="left" style={{marginTop: '50px'}}>Caso deseje anexar arquivos, utilize o campo abaixo:</Divider>
-				<CustomUpload form={form}/>
-
 
 				<Form.Item label=' ' wrapperCol={{span: 24}}>
-					<Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Abrir</Button>
+					<Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Salvar</Button>
 				</Form.Item>
 				
 			</Form>

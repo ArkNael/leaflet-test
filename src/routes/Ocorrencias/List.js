@@ -278,7 +278,6 @@ const List = (props) => {
 				</Link>
 			),
 			icon: (<i className="icon icon-edit" />),
-			disabled: true,
 		},
 		{
 			key: '3',
@@ -355,8 +354,6 @@ const List = (props) => {
 				}
 			})
 			.catch((err) => {
-				console.log('err')
-				console.log(err)
 				message.error('Erro ao carregar registros')
 			})
 		}

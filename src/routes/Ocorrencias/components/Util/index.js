@@ -2,18 +2,16 @@ import { Popconfirm, message } from 'antd'
 import { ModalEncaminhar, ModalFinalizar, ModalResponderPausa } from '../../components/Modal'
 import { api } from '../../../../util/Api'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 export const menuInteracoes = (rec, status, historyPush, data) => {
     const items = [
         {
             key: '1',
             label: (
-                <span
-                    style={{ paddingLeft: "5px" }}
-                    onClick={e => { message.error('Não é possível editar a ocorrência no momento.') }}
-                >
-                    Editar ocorrência
-                </span>
+                <Link to={`/ocorrencias/editar/${rec}`}>
+					<span style={{ paddingLeft: "5px" }}>Editar ocorrência</span>
+				</Link>
             ),
             icon: (<i className="icon icon-edit" />)
         }
