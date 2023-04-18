@@ -1,189 +1,170 @@
-import { Card, Table } from 'antd';
+import { useEffect, useState, useRef } from 'react'
 
-import IntlMessages from "../../../util/IntlMessages";
-import { useEffect, useState } from 'react';
+import { Card, Form, Button, Table, Select, message } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
 
-// const dataSource = [
-// 	{ key: '1', name: 'John Brown', age: 32, address: 'New York No. 1 Lake Park', amount: 100 },
-// 	{ key: '2', name: 'Jim Green', age: 42, address: 'London No. 1 Lake Park', amount: 200 },
-// 	{ key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', amount: 300 },
-// 	{ key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', amount: 300 },
-// 	{ key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', amount: 300 },
-// 	{ key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', amount: 300 },
-// 	{ key: '3', name: 'Joe Black', age: 32, address: 'Sidney No. 1 Lake Park', amount: 300 },
-// ];
+import { api } from '../../../util/Api'
+import { getYears, rowClassName, transformData } from '../util/Basic'
+import { exportToExcel } from '../util/XlsxConvert'
 
-const dataSource = [
-	{
-		"nome": "outros",
-		"dados": {
-			"Jan": 0,
-			"Fev": 0,
-			"Mar": 0,
-			"Abr": 0,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 0,
-			"Total": 0
-		}
-	},
-	{
-		"nome": "telefone",
-		"dados": {
-			"Jan": 0,
-			"Fev": 0,
-			"Mar": 0,
-			"Abr": 0,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 0,
-			"Total": 0
-		}
-	},
-	{
-		"nome": "totem",
-		"dados": {
-			"Jan": 2,
-			"Fev": 4,
-			"Mar": 2,
-			"Abr": 2,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 10,
-			"Total": 20
-		}
-	},
-	{
-		"nome": "aplicativo",
-		"dados": {
-			"Jan": 0,
-			"Fev": 0,
-			"Mar": 0,
-			"Abr": 0,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 0,
-			"Total": 0
-		}
-	},
-	{
-		"nome": "site",
-		"dados": {
-			"Jan": 17,
-			"Fev": 29,
-			"Mar": 40,
-			"Abr": 11,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 97,
-			"Total": 194
-		}
-	},
-	{
-		"nome": "email",
-		"dados": {
-			"Jan": 139,
-			"Fev": 129,
-			"Mar": 160,
-			"Abr": 52,
-			"Mai": 0,
-			"Jun": 0,
-			"Jul": 0,
-			"Ago": 0,
-			"Set": 0,
-			"Out": 0,
-			"Nov": 0,
-			"Dez": 480,
-			"Total": 960
-		}
-	}
-]
+import IntlMessages from "../../../util/IntlMessages"
 
-const columns = [
-	{
-		title: 'Name',
-		dataIndex: 'name',
-		key: 'name',
-	},
-	{
-		title: 'Age',
-		dataIndex: 'age',
-		key: 'age',
-	},
-	{
-		title: 'Address',
-		dataIndex: 'address',
-		key: 'address',
-	},
-	{
-		title: 'Amount',
-		dataIndex: 'amount',
-		key: 'amount',
-	},
-];
+import './styles.css'
 
-const FormasEntrada = (props) => {
-	const [data, setData] = useState(dataSource)
+const FormasEntrada = props => {
+	const [data, setData] = useState([])
+	const tableRef = useRef()
 
-	const Footer = ({ data, dataIndex }) => {
-		const total = data.reduce((acc, curr) => acc + curr[dataIndex], 0);
-		return (
-			<div style={{ fontWeight: 'bold' }}>
-				Total: {total}
-			</div>
-		);
-	};
+	const columns = [
+		{
+			title: 'Categoria',
+			dataIndex: 'nome',
+			key: 'categoria',
+			width: '18%'
+		},
+		{
+			title: 'Jan',
+			dataIndex: ['dados', 'jan'],
+			key: 'jan',
+			width: '6%'
+		},
+		{
+			title: 'Fev',
+			dataIndex: ['dados', 'fev'],
+			key: 'fev',
+			width: '6%'
+		},
+		{
+			title: 'Mar',
+			dataIndex: ['dados', 'mar'],
+			key: 'mar',
+			width: '6%'
+		},
+		{
+			title: 'Abr',
+			dataIndex: ['dados', 'abr'],
+			key: 'abr',
+			width: '6%'
+		},
+		{
+			title: 'Mai',
+			dataIndex: ['dados', 'mai'],
+			key: 'mai',
+		},
+		{
+			title: 'Jun',
+			dataIndex: ['dados', 'jun'],
+			key: 'jun',
+			width: '6%'
+		},
+		{
+			title: 'Jul',
+			dataIndex: ['dados', 'jul'],
+			key: 'jul',
+			width: '6%'
+		},
+		{
+			title: 'Ago',
+			dataIndex: ['dados', 'ago'],
+			key: 'ago',
+			width: '6%'
+		},
+		{
+			title: 'Set',
+			dataIndex: ['dados', 'set'],
+			key: 'set',
+			width: '6%'
+		},
+		{
+			title: 'Out',
+			dataIndex: ['dados', 'out'],
+			key: 'out',
+		},
+		{
+			title: 'Nov',
+			dataIndex: ['dados', 'nov'],
+			key: 'nov',
+			width: '6%'
+		},
+		{
+			title: 'Dez',
+			dataIndex: ['dados', 'dez'],
+			key: 'dez',
+			width: '6%'
+		},
+		{
+			title: 'Total',
+			dataIndex: ['dados', 'Total'],
+			key: 'total',
+			width: '10%'
+		},
+	]
 
-	
+	const handleSubmit = values => {}
 
 	useEffect(() => {
-		const total = dataSource.reduce((acc, curr) => acc + curr.amount, 0);
+		const getData = async () => {
+			api.get('api/relatorios/forma/entrada')
+			.then(({data}) => {
+				const newData = transformData(data, 'formas')
 
-		setData(prev => [...prev, {
-			key: dataSource.length+1, 
-			name: 'TOTAL',
-			amount: 100,
-		}])
+				const total = newData.reduce((r, o) => {
+					for (let prop in o.dados) {
+						r.dados[prop] += o.dados[prop]
+					}
+					return r
+				}, {
+					dados: { jan: 0, fev: 0, mar: 0, abr: 0, mai: 0, jun: 0, jul: 0, ago: 0, set: 0, out: 0, nov: 0, dez: 0, Total: 0 }
+				})
+
+				setData([...newData, {...total, nome: 'Total', key: newData.length+1, isFooter: true}])
+			})
+			.catch(err => message.error('Ocorreu um erro ao carregar as informações'))
+		}
+		getData()
 	}, [])
 
 	return (
 		<Card
 			className="gx-card" 
 			type="inner" 
-			title={ <h2 className="title gx-mb-4"><IntlMessages id={`sidebar.${props.controller}`} /></h2> }
+			title={ <h2 className="title gx-mb-4"><IntlMessages id={`sidebar.${props.controller}.formasEntrada`} /></h2> }
 		>
+			<Form layout="inline" onFinish={handleSubmit}>
+				<Form.Item label="Data" name="data" initialValue={new Date().getFullYear()}>
+					<Select
+						options={getYears().map(item => ({value: item}))}
+					/>
+				</Form.Item>
+				<Form.Item>
+					<Button
+						className="gx-mb-0"
+						type="primary"
+						htmlType="submit"
+					>
+						Filtrar
+					</Button>
+				</Form.Item>
+				<Form.Item>
+					<Button
+						className="gx-mb-0"
+						onClick={e => exportToExcel([tableRef], ["Formas de Entrada"])}
+						icon={<DownloadOutlined />}
+					>
+						Exportar
+					</Button>
+				</Form.Item>
+			</Form>
 			<Table
+				ref={tableRef}
 				dataSource={data}
 				columns={columns}
 				pagination={false}
+				rowClassName={rowClassName}
+				scroll={{ x: 400 }}
 			/>
 		</Card>
-	);
-};
+	)
+}
 
-export default FormasEntrada;
+export default FormasEntrada
