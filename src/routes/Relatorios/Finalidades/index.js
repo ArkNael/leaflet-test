@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef } from 'react'
 
-import { Card, Form, Button, Table, Select, message } from 'antd'
-import { DownloadOutlined } from '@ant-design/icons'
-
 import { api } from '../../../util/Api'
 import { getYears, rowClassName, transformData } from '../util/Basic'
 import { exportToExcel } from '../util/XlsxConvert'
+
+import { Card, Form, Button, Table, Select, message } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
 
 import IntlMessages from "../../../util/IntlMessages"
 
 import './styles.css'
 
-const FormasEntrada = props => {
+const Finalidades = props => {
 	const [data, setData] = useState([])
 	const tableRef = useRef()
 
@@ -104,9 +104,9 @@ const FormasEntrada = props => {
 
 	useEffect(() => {
 		const getData = async () => {
-			api.get('api/relatorios/forma/entrada')
+			await api.get('api/relatorios/finalidades')
 			.then(({data}) => {
-				const newData = transformData(data, 'formas')
+				const newData = transformData(data, 'finalidades')
 
 				const total = newData.reduce((r, o) => {
 					for (let prop in o.dados) {
@@ -128,7 +128,7 @@ const FormasEntrada = props => {
 		<Card
 			className="gx-card" 
 			type="inner" 
-			title={ <h2 className="title gx-mb-4"><IntlMessages id={`sidebar.${props.controller}.formasEntrada`} /></h2> }
+			title={ <h2 className="title gx-mb-4"><IntlMessages id={`sidebar.${props.controller}.finalidades`} /></h2> }
 		>
 			<Form layout="inline" onFinish={handleSubmit}>
 				<Form.Item label="Data" name="data" initialValue={new Date().getFullYear()}>
@@ -148,7 +148,7 @@ const FormasEntrada = props => {
 				<Form.Item>
 					<Button
 						className="gx-mb-0"
-						onClick={e => exportToExcel([tableRef], ["Formas de Entrada"])}
+						onClick={e => exportToExcel([tableRef], ["Finalidades"])}
 						icon={<DownloadOutlined />}
 					>
 						Exportar
@@ -167,4 +167,4 @@ const FormasEntrada = props => {
 	)
 }
 
-export default FormasEntrada
+export default Finalidades

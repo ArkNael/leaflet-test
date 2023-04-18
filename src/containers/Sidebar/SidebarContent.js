@@ -159,6 +159,31 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.relatorios.formasEntrada"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="relatorios/complexidades">
+								<Link to="/relatorios/complexidades">
+									<span><IntlMessages id="sidebar.relatorios.complexidades"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="relatorios/finalidades">
+								<Link to="/relatorios/finalidades">
+									<span><IntlMessages id="sidebar.relatorios.finalidades"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="relatorios/origens">
+								<Link to="/relatorios/origens">
+									<span><IntlMessages id="sidebar.relatorios.origens"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="relatorios/criticidades">
+								<Link to="/relatorios/criticidades">
+									<span><IntlMessages id="sidebar.relatorios.criticidades"/></span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="relatorios/contratos">
+								<Link to="/relatorios/contratos">
+									<span><IntlMessages id="sidebar.relatorios.contratos"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 
 					</Menu>

@@ -137,14 +137,14 @@ export const getTempoSetor = data => {
 export const getSituacaoLabel = value => {
 
 	switch (value) {
-		case 'Ocorrencia Criada':		    return 'Ocorrência Criada'
+		case 'Ocorrencia Criada':		    return 'Iniciado'
 		case 'Ocorrencia Encaminhada':      return 'Encaminhado'
 		case 'Solicitacao de Pausa':	    return 'Pausa Solicitada'
 		case 'Pausa Concedida':		       	return 'Pausa Concedida'
 		case 'Pausa Negada':		        return 'Pausa Negada'
-		case 'Resposta':			        return 'Resposta'
 		case 'Ocorrencia Respondida':       return 'Respondido';
 		case 'Ocorrencia Finalizada':	   	return 'Finalizado';
+		case 'Ocorrencia Escalada':	   	    return 'Escalado';
 
 		default: break;
 	}

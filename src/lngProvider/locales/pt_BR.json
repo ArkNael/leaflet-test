@@ -73,5 +73,10 @@
 	"sidebar.ccustos.edit": "modificar centro de custo",
 
 	"sidebar.relatorios": "Relatórios",
-	"sidebar.relatorios.formasEntrada": "Formas de Entrada"
+	"sidebar.relatorios.formasEntrada": "Formas de Entrada",
+	"sidebar.relatorios.complexidades": "Complexidades",
+	"sidebar.relatorios.finalidades": "Finalidades",
+	"sidebar.relatorios.origens": "Origens",
+	"sidebar.relatorios.criticidades": "Criticidades",
+	"sidebar.relatorios.contratos": "Contratos"
 }
