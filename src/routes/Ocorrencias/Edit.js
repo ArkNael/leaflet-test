@@ -129,8 +129,6 @@ const Edit = (props) => {
 	}
 
 	const setFormData = data => {
-		console.log('data')
-		console.log(data)
 		form.setFieldsValue({
 			finalidade: 				data.finalidade.id,
 
@@ -176,9 +174,9 @@ const Edit = (props) => {
 			quando:						Number(data.criticidade.criticidadeQuando)?Number(data.criticidade.criticidadeQuando):null,
 			quanto:						Number(data.criticidade.criticidadeQuanto)?Number(data.criticidade.criticidadeQuanto):null,
 			como:						Number(data.criticidade.criticidadeComo)?Number(data.criticidade.criticidadeComo):null,
-			historicoNip:				data.temHistoricoNips,
-			acaoJudicial:				data.temAcaoJudicial,
-			cartaAutomatica:			data.enviarCarta,
+			historicoNip:				Number(data.temHistoricoNips),
+			acaoJudicial:				Number(data.temAcaoJudicial),
+			cartaAutomatica:			Number(data.enviarCarta),
 		})
 
 		form.current.getFieldInstance('celularRemetente').setValue(data.remetente.celularRemetente)
