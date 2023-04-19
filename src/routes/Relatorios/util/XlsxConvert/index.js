@@ -1,6 +1,6 @@
 import * as XLSX from 'xlsx';
 
-export const exportToExcel = (tables, titles) => {
+export const exportToExcel = (tables, titles, fileName='dados') => {
   // Verifica se as referências para as tabelas são válidas
   if (!tables || !Array.isArray(tables) || tables.some(table => !table.current)) {
     console.error('Referência para a tabela inválida');
@@ -25,7 +25,7 @@ export const exportToExcel = (tables, titles) => {
   // Cria um link para o download do arquivo
   const link = document.createElement("a");
   link.href = url;
-  link.download = "dados.xlsx";
+  link.download = fileName+".xlsx";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

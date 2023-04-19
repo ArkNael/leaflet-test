@@ -13,6 +13,7 @@ import './styles.css'
 
 const Criticidades = props => {
 	const [data, setData] = useState([])
+	const [year, setYear] = useState(new Date().getFullYear())
 	const tableRef = useRef()
 
 	const columns = [
@@ -106,7 +107,7 @@ const Criticidades = props => {
 		const getData = async () => {
 			api.get('api/relatorios/criticidades')
 			.then(({data}) => {
-				const newData = transformData(data, 'formas')
+				const newData = transformData(data, 'criticidades')
 
 				const total = newData.reduce((r, o) => {
 					for (let prop in o.dados) {
@@ -119,7 +120,9 @@ const Criticidades = props => {
 
 				setData([...newData, {...total, nome: 'Total', key: newData.length+1, isFooter: true}])
 			})
-			.catch(err => message.error('Ocorreu um erro ao carregar as informações'))
+			.catch(err => {
+				message.error('Ocorreu um erro ao carregar as informações')
+			})
 		}
 		getData()
 	}, [])
@@ -134,6 +137,7 @@ const Criticidades = props => {
 				<Form.Item label="Data" name="data" initialValue={new Date().getFullYear()}>
 					<Select
 						options={getYears().map(item => ({value: item}))}
+						onChange={setYear}
 					/>
 				</Form.Item>
 				<Form.Item>
@@ -148,7 +152,7 @@ const Criticidades = props => {
 				<Form.Item>
 					<Button
 						className="gx-mb-0"
-						onClick={e => exportToExcel([tableRef], ["Criticidades"])}
+						onClick={e => exportToExcel([tableRef], ["Criticidades"], `Criticidades_${year}`)}
 						icon={<DownloadOutlined />}
 					>
 						Exportar

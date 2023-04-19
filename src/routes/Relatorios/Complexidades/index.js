@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Card, Form, Button, Table, Select, Divider } from 'antd'
+import { DownloadOutlined } from '@ant-design/icons'
+
 // import { getYears, rowClassName } from '../util/Basic'
 import { exportToExcel } from '../util/XlsxConvert'
 
@@ -129,6 +131,7 @@ const columns = [
 
 const Complexidades = (props) => {
 	const [data, setData] = useState(dataSource)
+	const [year, setYear] = useState(new Date().getFullYear())
 	const tableRef = useRef(null)
 	const tableRef2 = useRef(null)
 	const tableRef3 = useRef(null)
@@ -175,6 +178,7 @@ const Complexidades = (props) => {
 				<Form.Item label="Data" name="data" initialValue={new Date().getFullYear()}>
 					<Select
 						options={getYears().map(item => ({value: item}))}
+						onChange={setYear}
 					/>
 				</Form.Item>
 				<Form.Item>
@@ -189,7 +193,8 @@ const Complexidades = (props) => {
 				<Form.Item>
 					<Button
 						className="gx-mb-0"
-						onClick={e => exportToExcel([tableRef, tableRef2, tableRef3, tableRef4], ["Geral", "Complexa", "Simples", "1ª Instância"])}
+						onClick={e => exportToExcel([tableRef, tableRef2, tableRef3, tableRef4], ["Geral", "Complexa", "Simples", "1ª Instância"], `Complexidades_${year}`)}
+						icon={<DownloadOutlined />}
 					>
 						Exportar
 					</Button>

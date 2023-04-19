@@ -13,6 +13,7 @@ import './styles.css'
 
 const Origens = props => {
 	const [data, setData] = useState([])
+	const [year, setYear] = useState(new Date().getFullYear())
 	const tableRef = useRef()
 
 	const columns = [
@@ -134,6 +135,7 @@ const Origens = props => {
 				<Form.Item label="Data" name="data" initialValue={new Date().getFullYear()}>
 					<Select
 						options={getYears().map(item => ({value: item}))}
+						onChange={setYear}
 					/>
 				</Form.Item>
 				<Form.Item>
@@ -148,7 +150,7 @@ const Origens = props => {
 				<Form.Item>
 					<Button
 						className="gx-mb-0"
-						onClick={e => exportToExcel([tableRef], ["Origens"])}
+						onClick={e => exportToExcel([tableRef], ["Origens"], `Origens_${year}`)}
 						icon={<DownloadOutlined />}
 					>
 						Exportar
