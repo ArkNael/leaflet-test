@@ -8,6 +8,7 @@ import Auxiliary from "util/Auxiliary";
 import OcorrenciasMes from "components/dashboard/Ocorrencias/Metragem";
 import Historico from "components/dashboard/Ocorrencias/Historico";
 import OrderHistory from "components/dashboard/Ocorrencias/Atrasos";
+import OcorrenciasAbertas from "../../components/dashboard/Ocorrencias/Abertas";
 
 const Dashboard = () => {
 	return (
@@ -79,7 +80,7 @@ const Dashboard = () => {
 					<OcorrenciasMes/>
 				</Col>
 				<Col xl={12} lg={24} md={24} sm={24} xs={24}>
-					<Historico/>
+					<OcorrenciasAbertas />
 				</Col>
 				<Col xl={24} lg={24} md={24} sm={24} xs={24}>
 					<OrderHistory/>
