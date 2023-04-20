@@ -7,6 +7,7 @@ import Finalidades from "./Finalidades"
 import Origens from "./Origens"
 import Criticidades from "./Criticidades"
 import Contratos from "./Contratos"
+import Facilitadores from "./Facilitadores"
 
 const controller = "relatorios"
 const Relatorios = () => {
@@ -19,6 +20,7 @@ const Relatorios = () => {
                 <Route exact path={`/${controller}/origens`} component={(props) => <Origens {...props} controller={controller} />} />
                 <Route exact path={`/${controller}/criticidades`} component={(props) => <Criticidades {...props} controller={controller} />} />
                 <Route exact path={`/${controller}/contratos`} component={(props) => <Contratos {...props} controller={controller} />} />
+                <Route exact path={`/${controller}/facilitadores`} component={(props) => <Facilitadores {...props} controller={controller} />} />
             </Switch>
         </div>
     )
