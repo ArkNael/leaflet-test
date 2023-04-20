@@ -184,6 +184,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.relatorios.contratos"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="relatorios/facilitadores">
+								<Link to="/relatorios/facilitadores">
+									<span><IntlMessages id="sidebar.relatorios.facilitadores"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 
 					</Menu>
