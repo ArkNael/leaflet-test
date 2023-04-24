@@ -28,7 +28,7 @@ const RestrictedRoute = ({component: Component, location, authUser, ...rest}) =>
   <Route
     {...rest}
     render={props =>
-      authUser
+      (authUser || location.pathname.substring(0, 20) === '/pesquisa-satisfacao')
         ? <Component {...props} />
         : <Redirect
           to={{
@@ -114,7 +114,7 @@ const App = () => {
 
   useEffect(() => {
     if (!isLoadingUser) {
-      if (!authUser) {
+      if (!authUser && initURL.substring(0, 20) !== '/pesquisa-satisfacao') {
         history.push('/signin');
       } else if (initURL === '' || initURL === '/' || initURL === '/signin') {
         history.push('/dashboard');
