@@ -9,20 +9,21 @@ const App = ({match}) => (
 	<div className="gx-main-content-wrapper">
 		<Migalha />
 		<Switch>
-			<Route path={`${match.url}dashboard`} component={asyncComponent(() => import('./Dashboard'))}/>
-			<Route path={`${match.url}Ocorrencias`} component={asyncComponent(() => import('./Ocorrencias'))}/>
-			<Route path={`${match.url}temas`} component={asyncComponent(() => import('./Temas'))}/>
-			<Route path={`${match.url}formas`} component={asyncComponent(() => import('./Formas'))}/>
-			<Route path={`${match.url}tipos`} component={asyncComponent(() => import('./Tipos'))}/>
-			<Route path={`${match.url}status`} component={asyncComponent(() => import('./Status'))}/>
-			<Route path={`${match.url}finalidades`} component={asyncComponent(() => import('./Finalidades'))}/>
-			<Route path={`${match.url}origens`} component={asyncComponent(() => import('./Origens'))}/>
-			<Route path={`${match.url}destinos`} component={asyncComponent(() => import('./Destinos'))}/>
-			<Route path={`${match.url}contratos`} component={asyncComponent(() => import('./Contratos'))}/>
-			<Route path={`${match.url}assuntos`} component={asyncComponent(() => import('./Assuntos'))}/>
-			<Route path={`${match.url}reversoes`} component={asyncComponent(() => import('./Reversoes'))}/>
-			<Route path={`${match.url}ccustos`} component={asyncComponent(() => import('./CentrosCusto'))}/>
-			<Route path={`${match.url}relatorios`} component={asyncComponent(() => import('./Relatorios'))}/>
+			<Route path={`${match.url}dashboard`} 	component={asyncComponent(() => import('./Dashboard'))} />
+			<Route path={`${match.url}Ocorrencias`} component={asyncComponent(() => import('./Ocorrencias'))} />
+			<Route path={`${match.url}temas`} 		component={asyncComponent(() => import('./Temas'))} />
+			<Route path={`${match.url}formas`} 		component={asyncComponent(() => import('./Formas'))} />
+			<Route path={`${match.url}tipos`} 		component={asyncComponent(() => import('./Tipos'))} />
+			<Route path={`${match.url}status`} 		component={asyncComponent(() => import('./Status'))} />
+			<Route path={`${match.url}finalidades`} component={asyncComponent(() => import('./Finalidades'))} />
+			<Route path={`${match.url}origens`} 	component={asyncComponent(() => import('./Origens'))} />
+			<Route path={`${match.url}destinos`} 	component={asyncComponent(() => import('./Destinos'))} />
+			<Route path={`${match.url}contratos`} 	component={asyncComponent(() => import('./Contratos'))} />
+			<Route path={`${match.url}assuntos`} 	component={asyncComponent(() => import('./Assuntos'))} />
+			<Route path={`${match.url}reversoes`} 	component={asyncComponent(() => import('./Reversoes'))} />
+			<Route path={`${match.url}ccustos`} 	component={asyncComponent(() => import('./CentrosCusto'))} />
+			<Route path={`${match.url}relatorios`} 	component={asyncComponent(() => import('./Relatorios'))} />
+			<Route path={`${match.url}pesquisa-satisfacao/`} 		component={asyncComponent(() => import('./Nps'))} />
 		</Switch>
 	</div>
 );
