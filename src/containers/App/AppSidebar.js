@@ -16,7 +16,7 @@ const AppSidebar = ({navStyle}) => {
   const location = useLocation();
 
   if (width < TAB_SIZE || SIDEBAR_VISIBLE_ON.includes(navStyle)) {
-    return location.pathname.substring(0, 4) !== '/nps' && <Sidebar/>;
+    return location.pathname.substring(0, 20) !== '/pesquisa-satisfacao' && <Sidebar/>;
   }
 
   return null;
