@@ -73,11 +73,9 @@ const NpsRate = props => {
 
     useEffect(() => {
         const verifyHash = async () => {
-            console.log(props.match.params)
             api.get(`api/nps/validar/${props.match.params.id}`, {params: {hash: props.match.params.hash}})
             .then(({data}) => {
                 if (data.ok === 1 && data.autenticado === false) {
-                    console.log(data)
                     setTitleMessage('Sua avaliação foi enviada!')
                     setInfoMessage('Obrigado por responder a nossa pesquisa de satisfação da Ouvidoria Unimed Natal!')
                 }
