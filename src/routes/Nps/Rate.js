@@ -73,11 +73,11 @@ const NpsRate = props => {
 
     useEffect(() => {
         const verifyHash = async () => {
-            api.get(`api/nps/validar/${props.match.params.id}`, {params: props.match.params.hash})
+            api.get(`api/nps/validar/${props.match.params.id}`, {params: {hash: props.match.params.hash}})
             .then(({data}) => {
                 if (data.ok === 1 && data.autenticado === false) {
                     setTitleMessage('Sua avaliação foi enviada!')
-                    setInfoMessage('Obrigado por responder à nossa pesquisa de satisfação da Ouvidoria Unimed Natal!')
+                    setInfoMessage('Obrigado por responder a nossa pesquisa de satisfação da Ouvidoria Unimed Natal!')
                 }
             })
             .catch(err => {
@@ -98,7 +98,7 @@ const NpsRate = props => {
             >
                 {(infoMessage && <CustomMessage title={titleMessage}>{infoMessage}</CustomMessage>) ||
                     <Form colon={false} layout="vertical" onFinish={handleSubmit}>
-                        <Form.Item label="Em uma escala de 0 à 10, o quanto você indicaria a Unimed Natal à um amigo ou familiar?">
+                        <Form.Item label="Em uma escala de 0 a 10, o quanto você indicaria a Unimed Natal à um amigo ou familiar?">
                             {renderScoreButtons()}
                         </Form.Item>
                         <Form.Item name="descricao" label="Em poucas palavras, descreva o que motivou sua nota sobre a  indicação (opcional)">
