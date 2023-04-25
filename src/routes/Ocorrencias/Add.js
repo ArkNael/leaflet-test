@@ -199,7 +199,7 @@ const Add = (props) => {
 			}
 		})
 		.catch((err) => {
-			message.error('Erro ao salvar registro')
+			message.error(err.message)
 		})
 
 		setLoading(false)
