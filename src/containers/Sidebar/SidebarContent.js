@@ -189,6 +189,11 @@ const SidebarContent = ({sidebarCollapsed, setSidebarCollapsed}) => {
 									<span><IntlMessages id="sidebar.relatorios.facilitadores"/></span>
 								</Link>
 							</Menu.Item>
+							<Menu.Item key="relatorios/tempo-resolucao">
+								<Link to="/relatorios/tempo-resolucao">
+									<span><IntlMessages id="sidebar.relatorios.tempoResolucao"/></span>
+								</Link>
+							</Menu.Item>
 						</Menu.SubMenu>
 
 					</Menu>
