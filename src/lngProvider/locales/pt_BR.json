@@ -79,5 +79,6 @@
 	"sidebar.relatorios.origens": "Origens",
 	"sidebar.relatorios.criticidades": "Criticidades",
 	"sidebar.relatorios.contratos": "Contratos",
-	"sidebar.relatorios.facilitadores": "Facilitadores"
+	"sidebar.relatorios.facilitadores": "Facilitadores",
+	"sidebar.relatorios.tempoResolucao": "Tempo de Resolução"
 }
