@@ -1,6 +1,6 @@
 {
-	"nomeSistema": "Sistema Gerenciador de Manifestações da Ouvidoria",
-	"topbar.titulo": "OuvMed",
+	"nomeSistema": "Teste da lib de geo localização open source Leaflet",
+	"topbar.titulo": "Leaflet",
 	
 	"sidebar.main": "Principal",
 	"app.userAuth.signIn": "Login",
