@@ -1,12 +1,13 @@
 import React, { useRef, useState } from "react"
-import {Button, Card, Col, Form, Input, Row} from "antd"
+import {Button, Card, Col, DatePicker, Form, Input, message, Row, Select, Tooltip} from "antd"
 import Auxiliary from "util/Auxiliary"
 
 import L from 'leaflet'
-import { Circle, FeatureGroup, MapContainer, TileLayer } from 'react-leaflet'
+import { Circle, FeatureGroup, MapContainer, TileLayer, Marker } from 'react-leaflet'
 import { EditControl } from "react-leaflet-draw"
 import "leaflet/dist/leaflet.css"
 import "leaflet-draw/dist/leaflet.draw.css"
+import { api } from "../../util/Api"
 
 const calcularDistancia = (lat1, lon1, lat2, lon2) => {
 	// Raio da Terra em quilômetros
@@ -50,13 +51,54 @@ const Dashboard = () => {
 	const [layer, setLayer] = useState(null)
 	const [initialCircles, setInitialCircles] = useState([])
 	const [circles, setCircles] = useState([])
+	const [markers, setMarkers] = useState([])
 	const [distance, setDistance] = useState()
+	
+	const [loading, setLoading] = useState(false)
 
 	const featureGroupRef = useRef()
 
+	const getData = async filter => {
+		setLoading(true)
+
+		let res = []
+		await api.get('/indicadores/log-cerca-virtual', { params: filter })
+			.then(({ data }) => {
+				if (data.Result === 1) {
+					res = data.Data
+				} else {
+					message.error('Ocorreu um erro ao tentar carregar os dados.')
+				}
+			})
+			.catch(err => console.log('err', err))
+
+		const circlesHelper = []
+		const markersHelper = []
+
+		res.forEach(item => {
+			circlesHelper.push({ lat: item.lat, lng: item.lon, rad: item.raio })
+
+			item.logs.forEach(item => { markersHelper.push({
+				lat: item.lat,
+				lng: item.lon,
+				cdGuia: item.guia,
+				cdProcedimento: item.procedimento,
+				cdMedico: item.cdMedico,
+				tipoLocal: item.tipoLocal,
+				distancia: item.distanciaMetrosArea,
+				dataHora: item.dataHora
+			}) })
+		})
+
+		setCircles(circlesHelper)
+		setMarkers(markersHelper)
+
+		setLoading(false)
+	}
+
 	useState(() => {
+		getData()
 		setInitialCircles([{ lat: -5.7863289362114925, lng: -35.19982627509986, rad: 20 }])
-		setCircles([{ lat: -5.7863289362114925, lng: -35.19982627509986, rad: 20 }])
 	}, [])
 
 	const _onCreated = e => {
@@ -93,7 +135,18 @@ const Dashboard = () => {
 		setCircles([])
 	}
 
-	const handleSubmit = e => {
+	const handleCopy = textToCopy => {
+		navigator.clipboard.writeText(textToCopy)
+			.then(() => {
+				message.success('Coordenadas copiadas para a área de transferência.')
+			})
+			.catch((err) => {
+				message.error('Falha ao copiar coodenadas.', err.message)
+			})
+	}
+	
+
+	const handleCalc = e => {
 		console.log('submit', e)
 
 		let { latLngInitial, latLngFinal } = e
@@ -105,6 +158,20 @@ const Dashboard = () => {
 
 		const d = calcularDistancia(xLat1, yLat1, xLat2, yLat2)
 		setDistance((d*1000).toFixed(2))
+	}
+
+	const handleSubmit = values => {
+		const filter = {
+			cdPrestador: 	values.cdPrestador,
+			cdGuia: 		values.cdGuia,
+			cdProcedimento: values.cdProcedimento,
+			cdMedico: 		values.cdMedico,
+			tipoLocal: 		values.tipoLocal,
+			dtInicial: 		values.periodo?.[0] ? values.periodo[0].format('DD/MM/YYYY') : null,
+			dtFinal: 		values.periodo?.[1] ? values.periodo[1].format('DD/MM/YYYY') : null
+		}
+
+		getData(filter)
 	}
 
 	return (
@@ -132,8 +199,50 @@ const Dashboard = () => {
 								}}
 							/>
 							{initialCircles.map((circle, index) => (
-								<Circle key={index} center={[circle.lat, circle.lng]} radius={circle.rad} />
-							))}
+								<Circle key={'ini-'+index} center={[circle.lat, circle.lng]} radius={circle.rad} />
+							)).concat(circles.map((circle, index) => (
+								<Circle key={'sec-'+index} center={[circle.lat, circle.lng]} radius={circle.rad} />
+							))).concat(markers.map((marker, index) => (
+								<Marker
+									key={'mrk-'+index}
+									position={[marker.lat, marker.lng]}
+									title={`
+										LAT: ${marker.lat}
+										LON: ${marker.lng}
+										CD_GUIA: ${marker.cdGuia}
+										CD_PROC: ${marker.cdProcedimento}
+										CD_MEDICO: ${marker.cdMedico}
+										TIPO_LOCAL: ${marker.tipoLocal}
+										DISTÂNCIA: ${marker.distancia}
+										DATA: ${marker.dataHora}
+									`.replace(/\t/g, '')}
+									eventHandlers={{
+										click: () => handleCopy(`${marker.lat}, ${marker.lng}`),
+										mouseover: () => 
+											<Tooltip 
+												title={
+													<>
+													<p>Para beneficiário, utilizar carteira ou CPF.</p>
+													<p>LAT: {marker.lat}</p>
+													<p>LON: {marker.lng}</p>
+													<p>CD_GUIA: {marker.cdGuia}</p>
+													<p>CD_PROC: {marker.cdProcedimento}</p>
+													<p>CD_MEDICO: {marker.cdMedico}</p>
+													<p>TIPO_LOCAL: {marker.tipoLocal}</p>
+													<p>DISTÂNCIA: {marker.distancia}</p>
+													<p>DATA: {marker.dataHora}</p>
+													</>
+												}
+												color="#00995d"
+												placement="topRight"
+												style={{ maxWidth: 500, zIndex: 2000 }}
+											>
+												teste
+											</Tooltip>
+									}}
+									riseOnHover
+								/>
+							)))}
 						</FeatureGroup>
 						<TileLayer
 							attribution='&copy <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -144,6 +253,37 @@ const Dashboard = () => {
 				<Col xl={6} lg={6} md={6} sm={12} xs={24}>
 					<Card className="gx-card">
 						<Form layout="vertical" onFinish={handleSubmit}>
+							<Form.Item name="cdPrestador" label="Código do Prestador:">
+								<Input />
+							</Form.Item>
+							<Form.Item name="cdGuia" label="Código da Guia:">
+								<Input />
+							</Form.Item>
+							<Form.Item name="cdProcedimento" label="Código do Procedimento:">
+								<Input />
+							</Form.Item>
+							<Form.Item name="cdMedico" label="Código do médico:">
+								<Input />
+							</Form.Item>
+							<Form.Item name="tipoLocal" label="Local de atendimento:">
+								<Select defaultValue="">
+									<Select.Option key="">Todos</Select.Option>
+									<Select.Option key="C">Clínica</Select.Option>
+									<Select.Option key="D">Domiciliar</Select.Option>
+									<Select.Option key="E">Escolar</Select.Option>
+								</Select>
+							</Form.Item>
+							<Form.Item label="Período" name="periodo" labelCol={{xs: {span: 24}, sm: {span: 24}}}>
+								<DatePicker.RangePicker format='DD/MM/YYYY' />
+							</Form.Item>
+							<Form.Item>
+								<Button className="gx-mb-0" type="primary" htmlType="submit" loading={loading}>Calcular distância</Button>
+							</Form.Item>
+							{ distance && `A distância é de ${distance} metros.` }
+						</Form>
+					</Card>
+					<Card className="gx-card">
+						<Form layout="vertical" onFinish={handleCalc}>
 							<Form.Item name="latLngInitial" label="Coordenadas Iniciais:">
 								<Input placeholder="-5.7863252, -35.1998252" />
 							</Form.Item>

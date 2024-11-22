@@ -13,7 +13,8 @@ export const httpClient = axios.create({
 export const api = axios.create({
 	baseURL: urlApi,
 	headers: {
-		"Content-Type": "application/json"
+		"Content-Type": "application/json",
+		"Authorization": "Basic QVBJX1RFQTpAQHVuaW1lZDA2Ml9hcGktdGVhQEA="
 	}
 });
 
