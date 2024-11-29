@@ -133,7 +133,7 @@ const Dashboard = () => {
 		
 		setCircles(uniqueCircles)
 		setMarkers(markersHelper)
-		setCenter([parseFloat(markersHelper[0].lat), parseFloat(markersHelper[0].lng)])
+		markersHelper[0] && setCenter([parseFloat(markersHelper[0].lat), parseFloat(markersHelper[0].lng)])
 
 		setLoading(false)
 	}
